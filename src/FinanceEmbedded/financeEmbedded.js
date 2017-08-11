@@ -1,6 +1,8 @@
 let template = require('./views/base.html')
 
-const financeEmbedded = ($sce, $window, FinanceEmbeddedService) => {
+import templateTitleReceive from './pages/title/titleReceive/titleReceiveListLayout.html'
+
+const financeEmbedded = ($sce, FinanceEmbeddedService) => {
     return {
         restrict: 'E',
         templateUrl: template,
@@ -22,7 +24,6 @@ const financeEmbedded = ($sce, $window, FinanceEmbeddedService) => {
                 FinanceEmbeddedService.baseUrl = scope.configuration.proxyUrl;
 
                 const getToken = () => {
-                    console.log('entrou')
                     if (scope.configuration.eternalToken) {
                         return scope.configuration.eternalToken;
                     }
@@ -41,21 +42,53 @@ const financeEmbedded = ($sce, $window, FinanceEmbeddedService) => {
                     return user.organizationHierarchyCode
                 }
 
-                getToken();
-                getOrganizationHierarchyCode();
+                FinanceEmbeddedService.token = getToken();
+                FinanceEmbeddedService.oi = getOrganizationHierarchyCode();
+
+                scope.tabLayout = {
+                    titlePay: {
+                        title: 'Titulo a Pagar',
+                        content: '<title-pay></title-pay>',
+                    },
+                    titleReceive: {
+                        title: 'Titulo a Receber',
+                        content: templateTitleReceive,
+                        controller: 'TitleReceiveListController'
+                    },
+                    // parcelPay: {
+                    //     title: 'Contas a Pagar',
+                    //     content: templateParcelPay,
+                    //     controller: 'ParcelPayListController'
+                    // },
+                    // parcelPay: {
+                    //     title: 'Contas a Receber',
+                    //     content: templateParcelReceive,
+                    //     controller: 'ParcelReceiveListController'
+                    // },
+                    // checkin: {
+                    //     title: 'Abertura de Caixa',
+                    //     content: templateCheckin,
+                    //     controller: 'CheckinListController'
+                    // },
+                    // checkout: {
+                    //     title: 'Fechamento de Caixa',
+                    //     content: templateCheckout,
+                    //     controller: 'CheckoutListController'
+                    // }
+                }
 
                 const mountLayout = () => {
-                    return !scope.configuration.layout ? ['title', 'payment', 'checking', 'checkout'] : scope.configuration.layout.split(',')
+                    return !scope.configuration.layout ? ['titlePay', 'titleReceive', 'parcelPay', 'parcelReceive', 'checkin', 'checkout'] : scope.configuration.layout.split(',')
                 }
-                console.log(mountLayout())
-
-
+                scope.layout = mountLayout();
+                scope.initSuccess = 'success';
+                console.log(scope.layout)
             };
 
             scope.initConfiguration();
         }
     }
 }
-financeEmbedded.$inject = ['$sce', '$window', 'FinanceEmbeddedService'];
+financeEmbedded.$inject = ['$sce', 'FinanceEmbeddedService'];
 
 module.exports = financeEmbedded;

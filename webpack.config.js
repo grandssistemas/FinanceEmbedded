@@ -29,6 +29,12 @@ module.exports = {
         new ExtractTextPlugin({
             filename: baseName + ".min.css",
             allChunks: true
+        }),
+        new webpack.ProvidePlugin({
+            $: "jquery",
+            jquery: "jquery",
+            jQuery: "jquery",
+            "window.jquery": "jquery"
         })
     ],
     module: {
