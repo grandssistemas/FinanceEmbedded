@@ -13,7 +13,7 @@ const titlePay = () => {
                         </div>
                       </div>`,
         link: function (scope, el, attr) {
-            scope.selection = 'list';
+            scope.selection = 'form';
             scope.titlePayList = {
                 layout: templateTitlePayList,
                 controller: 'TitlePayListController'
@@ -21,8 +21,14 @@ const titlePay = () => {
 
             scope.titlePayForm = {
                 layout: templateTitlePayForm,
-                controller: 'TitleReceiveListController'
+                controller: 'TitlePayFormController'
             }
+
+            scope.$on('changeTitlePay', (event, data) => {
+                scope.selection = data
+                console.log(event)
+                console.log(data)
+            });
 
 
         }

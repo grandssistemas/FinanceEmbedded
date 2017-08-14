@@ -29,7 +29,9 @@
     "gumga-date-ng": "*",
     "gumga-generic-filter-ng": "*",
     "gumga-query-filter-ng": "*",
-    "gumga-list-ng": "*"
+    "gumga-list-ng": "*",
+    "angular-input-masks": "~1.4.2",
+    "angular-ui-select": "^0.19.8"
   },
   "private": true,
   "appPath": "src",

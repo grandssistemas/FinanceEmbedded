@@ -2,7 +2,7 @@ const TitlePayListController = ($scope, gumgaController, TitleService) => {
     TitleService.resetDefaultState();
     gumgaController.createRestMethods($scope, TitleService, 'title')
 
-    $scope.currentPage = 1;    
+    $scope.currentPage = 1;
 
     $scope.toPage = (page) => {
         $scope.currentPage = page;
@@ -13,6 +13,11 @@ const TitlePayListController = ($scope, gumgaController, TitleService) => {
     };
 
     $scope.toPage($scope.currentPage);
+
+
+    $scope.changePage = () => {
+        $scope.$emit('changeTitlePay', 'form')
+    }
 
     $scope.tableConf = {
         columns: 'titleType, issuedAt,documentNumber, participationsFormatted, postedAt, docname, value, btns',

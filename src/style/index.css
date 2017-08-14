@@ -1,3 +1,10 @@
+@import url('./finance.css');
+@import url('./utils.css');
+
+
 .tab-content {
     margin-top: 2%;
+}
+.bg-white {
+    background-color: #FFFFFF;
 }

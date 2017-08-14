@@ -19,6 +19,8 @@ import gumgaGenericFilter from '../../bower_components/gumga-generic-filter-ng/d
 import gumgaQueryFilter from '../../bower_components/gumga-query-filter-ng/dist/gumga-query-filter.min.js'
 import gumgaList from '../../bower_components/gumga-list-ng/dist/gumga-list.min'
 import gumgaDate from '../../bower_components/gumga-date-ng/dist/gumga-date.min.js'
+import InputMask from '../../bower_components/angular-input-masks/angular-input-masks.min.js'
+import UiSelect from '../../bower_components/angular-ui-select/dist/select.min'
 
 export default angular.module('group.dependencies', [
     'gumga.rest',
@@ -41,5 +43,8 @@ export default angular.module('group.dependencies', [
     'gumga.queryfilter',
     'gumga.genericfilter',
     'gumga.list',
-    'gumga.date'
+    'gumga.date',
+    'ui.utils.masks',
+    'gumga.layout',
+    'ui.select'
 ])
