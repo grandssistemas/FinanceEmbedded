@@ -15,8 +15,10 @@ const TitlePayFormController = (
     gumgaController.createRestMethods($scope, RatioPlanService, 'ratioPlan');
     gumgaController.createRestMethods($scope, PlanLeafService, 'planLeaf');
     // gumgaController.createRestMethods($scope, WalletService, 'wallet');
-    gumgaController.createRestMethods($scope, TitleService, 'title')
+    // gumgaController.createRestMethods($scope, TitleService, 'title')
     $scope.individual.methods.search('name', '');
+
+    $scope.title = {};
 
     $scope.editParcels = false;
     $scope.selectArrays = [];
@@ -60,13 +62,13 @@ const TitlePayFormController = (
     };
     $scope.selectedRatio = (item, planType, index) => {
         if (item.isTag) {
-            let position = $scope.title.data.planLeafs[index].length - 1;
+            let position = $scope.title.planLeafs[index].length - 1;
             let leaf = {
                 name: item.name,
                 planType: planType
             };
             PlanLeafService.save(leaf).then((response) => {
-                $scope.title.data.planLeafs[index][position] = response.data.data;
+                $scope.title.planLeafs[index][position] = response.data.data;
             });
         }
     };
@@ -79,16 +81,16 @@ const TitlePayFormController = (
 
 
     $scope.automaticRatio = (value) => {
-        let total = $scope.sumParcels($scope.title.data.parcel);
+        let total = $scope.sumParcels($scope.title.parcel);
         RatioPlanService.getAutomaticRatio(value.label, total).then((response) => {
-            $scope.title.data.planLeafs = response.data;
+            $scope.title.planLeafs = response.data;
         });
     };
 
     $scope.disable = false;
     $scope.changeStep = (numStep) => {
         if (numStep === 1) {
-            if ($scope.title.data.hasPayment || $scope.title.data.fullPaid || $scope.renegotiation) {
+            if ($scope.title.hasPayment || $scope.title.fullPaid || $scope.renegotiation) {
                 $scope.disable = true;
                 $scope.step = numStep;
             } else {
@@ -136,28 +138,29 @@ const TitlePayFormController = (
         }
     };
 
-    $scope.title.data.parcel = $scope.title.data.parcel || [];
-    $scope.title.data.numberParcel = $scope.title.data.numberParcel || 0;
-    $scope.title.data.billetCollection = $scope.title.data.billetCollection || 0;
-    $scope.title.data.parcelpenalty = $scope.title.data.parcelpenalty || 0;
-    $scope.title.data.parcelinterest = $scope.title.data.parcelinterest || 0;
-    $scope.title.data.expiration = $scope.title.data.expiration ? new Date($scope.title.data.expiration) : new Date();
+    $scope.title.parcel = $scope.title.parcel || [];
+    $scope.title.numberParcel = $scope.title.numberParcel || 0;
+    $scope.title.billetCollection = $scope.title.billetCollection || 0;
+    $scope.title.parcelpenalty = $scope.title.parcelpenalty || 0;
+    $scope.title.parcelinterest = $scope.title.parcelinterest || 0;
+    $scope.title.expiration = $scope.title.expiration ? new Date($scope.title.expiration) : new Date();
+    console.log($scope.title)
 
     $scope.calculatedInterest = () => {
         $scope.interestActive = !$scope.interestActive;
         if (!$scope.interestActive) {
-            $scope.title.data.mora = $scope.title.data.value * $scope.title.data.parcelinterest / 30
+            $scope.title.mora = $scope.title.value * $scope.title.parcelinterest / 30
         } else {
-            $scope.title.data.parcelinterest = 30 * $scope.title.data.mora / $scope.title.data.value
+            $scope.title.parcelinterest = 30 * $scope.title.mora / $scope.title.value
         }
     };
 
-    if ($scope.title.data.parcel.length > 0) {
-        $scope.title.data.emissionDate = new Date($scope.title.data.emissionDate) || new Date();
+    if ($scope.title.parcel.length > 0) {
+        $scope.title.emissionDate = new Date($scope.title.emissionDate) || new Date();
     }
 
 
-    if ($scope.title.data.hasPayment || $scope.title.data.fullPaid) {
+    if ($scope.title.hasPayment || $scope.title.fullPaid) {
         $scope.disable = true;
     }
 
@@ -169,27 +172,27 @@ const TitlePayFormController = (
     };
     //Função para pegar os dados do barCode e retornar os valores dos campos preenchidos.
     $scope.getDataFromBarcode = () => {
-        let barcode = $scope.title.data.barcode;
+        let barcode = $scope.title.barcode;
         if (barcode) {
-            $scope.title.data.billetCollection++;
+            $scope.title.billetCollection++;
             TitleService.readBarCode(barcode).then((response) => {
-                $scope.title.data.documentType = { "name": response.data.classe };
+                $scope.title.documentType = { "name": response.data.classe };
                 if (response.data.individual.length > 0) {
-                    $scope.title.data.assignedIndividual = response.data.individual[0];
+                    $scope.title.assignedIndividual = response.data.individual[0];
                     if (response.data.individual[0].preferentialRatioPlan !== null) {
                         $scope.automaticRatio(response.data.individual[0].preferentialRatioPlan)
                     }
                 }
-                $scope.title.data.documentNumber = response.data.ourNumber;
-                $scope.title.data.value = response.data.numberValue;
+                $scope.title.documentNumber = response.data.ourNumber;
+                $scope.title.value = response.data.numberValue;
 
                 if (response.data.checkDigit === "9" || response.data.checkDigit === "4") {
-                    $scope.title.data.expiration = new Date();
+                    $scope.title.expiration = new Date();
                 } else {
-                    $scope.title.data.expiration = new Date(response.data.expirationDate)
+                    $scope.title.expiration = new Date(response.data.expirationDate)
                 }
                 let itemLabel = { value: response.data.classe, isTag: true };
-                $scope.title.data.labels = [itemLabel];
+                $scope.title.labels = [itemLabel];
                 $scope.addParcel();
             }, (error) => {
                 console.error(error);
@@ -199,7 +202,7 @@ const TitlePayFormController = (
     };
 
     $scope.save = (vava) => {
-        let av = angular.copy($scope.title.data)
+        let av = angular.copy($scope.title)
         console.log(av)
         TitleService.saveTitle(av);
     };
@@ -217,9 +220,9 @@ const TitlePayFormController = (
             }
         });
         uibModalInstance.result.then((financeunitReturn) => {
-            $scope.title.data.automaticFinanceUnit = financeunitReturn.automaticFinanceUnit;
-            $scope.title.data.registerAsPayed = financeunitReturn.registerAsPayed;
-            $scope.save($scope.title.data);
+            $scope.title.automaticFinanceUnit = financeunitReturn.automaticFinanceUnit;
+            $scope.title.registerAsPayed = financeunitReturn.registerAsPayed;
+            $scope.save($scope.title);
         });
     };
 
@@ -251,8 +254,8 @@ const TitlePayFormController = (
     };
 
     $scope.selected = (params) => {
-        $scope.title.data.parcelinterest = params.interest.value;
-        $scope.title.data.parcelpenalty = params.penalty.value;
+        $scope.title.parcelinterest = params.interest.value;
+        $scope.title.parcelpenalty = params.penalty.value;
     };
 
     //somar folha do rateio
@@ -282,8 +285,8 @@ const TitlePayFormController = (
 
     //verifica a troca do input de data para transforma-lá em um objeto para chamar a função de calcular parcelas.
     $scope.change = () => {
-        if ($scope.title.data.expiration) {
-            $scope.title.data.expiration = new Date($scope.title.data.expiration);
+        if ($scope.title.expiration) {
+            $scope.title.expiration = new Date($scope.title.expiration);
             $scope.calculateParcels();
         }
         $timeout(() => {
@@ -300,63 +303,63 @@ const TitlePayFormController = (
     };
 
     $scope.calculateParcels = () => {
-        let valueParcel = $scope.title.data.value;
-        let numberParcel = $scope.title.data.numberParcel;
-        $scope.title.data.parcel = [];
-        let expiration = new Date($scope.title.data.expiration);
-        for (let i = 0; i < $scope.title.data.numberParcel; i++) {
+        let valueParcel = $scope.title.value;
+        let numberParcel = $scope.title.numberParcel;
+        $scope.title.parcel = [];
+        let expiration = new Date($scope.title.expiration);
+        for (let i = 0; i < $scope.title.numberParcel; i++) {
             let currentParcel = {
                 number: i + 1,
                 value: valueParcel,
                 expiration: setExpiration(i, expiration)
             }
-            $scope.title.data.parcel.push(currentParcel);
+            $scope.title.parcel.push(currentParcel);
         }
-        $scope.elem = angular.copy($scope.title.data.parcel);
+        $scope.elem = angular.copy($scope.title.parcel);
     }
 
-    if (!$scope.title.data.id) {
+    if (!$scope.title.id) {
         $scope.calculateParcels();
     }
 
     $scope.valores = (model, account) => {
-        angular.forEach($scope.title.data.planLeafs, (data) => {
+        angular.forEach($scope.title.planLeafs, (data) => {
             if (account.id === data[model].id) {
-                data[model].value = $scope.sumParcels($scope.title.data.parcel);
-                data[model].valueLeaf = $scope.sumParcels($scope.title.data.parcel);
+                data[model].value = $scope.sumParcels($scope.title.parcel);
+                data[model].valueLeaf = $scope.sumParcels($scope.title.parcel);
             }
         })
     };
     //Função para adicionar as parcelas na tabela a direita
     $scope.addParcel = () => {
-        $scope.title.data.numberParcel++;
+        $scope.title.numberParcel++;
         let parcel = {
-            number: $scope.title.data.numberParcel,
-            value: $scope.title.data.value,
-            expiration: $scope.title.data.expiration,
-            barCode: $scope.title.data.barcode
+            number: $scope.title.numberParcel,
+            value: $scope.title.value,
+            expiration: $scope.title.expiration,
+            barCode: $scope.title.barcode
         };
 
-        if ($scope.title.data.numberParcel === 1) {
-            $scope.title.data.parcel[0] = parcel;
+        if ($scope.title.numberParcel === 1) {
+            $scope.title.parcel[0] = parcel;
         } else {
-            $scope.title.data.parcel.push(parcel);
+            $scope.title.parcel.push(parcel);
         }
-        $scope.title.data.barcode = null;
+        $scope.title.barcode = null;
     };
 
-    $scope.title.data.planLeafs = $scope.title.data.planLeafs || [];
+    $scope.title.planLeafs = $scope.title.planLeafs || [];
     $scope.addPlanLeaf = () => {
-        $scope.title.data.planLeafs.push($scope.temp.planLeaf);
+        $scope.title.planLeafs.push($scope.temp.planLeaf);
         $scope.temp.planEntry = null;
     };
 
-    $scope.title.data.planEntries = $scope.title.data.planEntries || [];
+    $scope.title.planEntries = $scope.title.planEntries || [];
     $scope.mountPlanEntries = () => {
-        angular.forEach($scope.title.data.planLeafs, (c) => {
-            $scope.title.data.planEntries.push(c);
+        angular.forEach($scope.title.planLeafs, (c) => {
+            $scope.title.planEntries.push(c);
             angular.forEach(c.subPlanLeafs, (sc) => {
-                $scope.title.data.planEntries.push(sc);
+                $scope.title.planEntries.push(sc);
             });
         });
     };
@@ -397,10 +400,10 @@ const TitlePayFormController = (
     };
 
     //Função que redireciona quando o formulário é salvo.
-    $scope.title.on('putSuccess', () => {
-        // $state.go('title.listpay');
-        $scope.changePage();
-    });
+    // $scope.title.on('putSuccess', () => {
+    //     // $state.go('title.listpay');
+    //     $scope.changePage();
+    // });
 
     //Função para somar o valor total das parcelas.
     $scope.sumParcels = (array) => {
@@ -410,7 +413,7 @@ const TitlePayFormController = (
     };
 
     $scope.changeValueParcel = (value, index) => {
-        $scope.elem = angular.copy($scope.title.data.parcel);
+        $scope.elem = angular.copy($scope.title.parcel);
         if (angular.equals($scope.elem[index].value, value)) {
             swal({
                 title: "Valor",
@@ -425,8 +428,8 @@ const TitlePayFormController = (
             },
                 (isConfirm) => {
                     if (isConfirm) {
-                        for (index; index < $scope.title.data.parcel.length; index++) {
-                            $scope.title.data.parcel[index].value = value;
+                        for (index; index < $scope.title.parcel.length; index++) {
+                            $scope.title.parcel[index].value = value;
                         }
                         swal("Alterado!", "Os valores foram alterados", "success");
                     } else {
@@ -437,7 +440,7 @@ const TitlePayFormController = (
     }
 
     $scope.changeDateParcel = (value, index) => {
-        if (!angular.equals($scope.title.data.parcel[index].expiration, new Date(value).getTime())) {
+        if (!angular.equals($scope.title.parcel[index].expiration, new Date(value).getTime())) {
             swal({
                 title: "Vencimento",
                 text: "Deseja alterar o vencimento das demais parcelas?",
@@ -451,8 +454,8 @@ const TitlePayFormController = (
             },
                 (isConfirm) => {
                     if (isConfirm) {
-                        for (index; index < $scope.title.data.parcel.length; index++) {
-                            $scope.title.data.parcel[index].expiration = setExpiration(index, value);
+                        for (index; index < $scope.title.parcel.length; index++) {
+                            $scope.title.parcel[index].expiration = setExpiration(index, value);
                         }
                         swal("Alterado!", "Os vencimentos foram alterados", "success");
                     } else {
@@ -464,16 +467,16 @@ const TitlePayFormController = (
 
     $scope.paymentRest = 0;
     // if ($scope.titleType === 'editpay' || $scope.titleType === 'editreceive') {
-    //     // $scope.title.data.parcel.map(function (elem) {
+    //     // $scope.title.parcel.map(function (elem) {
     //     //     return new Date(elem.expiration);
     //     // });
-    //     angular.forEach($scope.title.data.parcel, function (params, index) {
-    //         $scope.title.data.parcel[index].expiration = new Date(params.expiration);
+    //     angular.forEach($scope.title.parcel, function (params, index) {
+    //         $scope.title.parcel[index].expiration = new Date(params.expiration);
     //         if (!params.fullPaid) {
     //             $scope.paymentRest += params.value;
     //         }
     //         if (params.number === "1") {
-    //             $scope.title.data.expiration = new Date(params.expiration) || new Date();
+    //             $scope.title.expiration = new Date(params.expiration) || new Date();
     //         }
     //     });
 }
