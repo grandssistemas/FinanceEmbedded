@@ -3,10 +3,10 @@ var webpack = require('webpack');
 var stylus_plugin = require('poststylus');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-var baseName = "grands-components";
+var baseName = "finance-embedded";
 
 module.exports = {
-    entry: path.join(__dirname, 'src', 'app'),
+    entry: path.join(__dirname, 'src', 'index'),
     output: {
         path: path.join(__dirname, '.'),
         filename: baseName + '.min.js'

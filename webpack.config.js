@@ -8,7 +8,7 @@ var baseName = "finance-embedded";
 module.exports = {
     entry: './src/index.js',
     output: {
-        path: './',
+        path: path.join(__dirname, 'dist/'),
         filename: baseName + '.min.js'
     },
     devServer: {
