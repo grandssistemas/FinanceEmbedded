@@ -1,11 +1,11 @@
 CashCheckoutEmbeddedFormController.$inject = ['$scope',
-    'CashCheckoutEmbeddedService',
+    'CashCheckinService',
     'SweetAlert',
     '$filter',
 ];
 
 function CashCheckoutEmbeddedFormController($scope,
-                                            CashCheckoutEmbeddedService,
+                                            CashCheckinService,
                                             SweetAlert,
                                             $filter){
     $scope.entity = angular.copy($scope.$ctrl.entity);
@@ -25,7 +25,7 @@ function CashCheckoutEmbeddedFormController($scope,
                     if (isConfirm) {
                         entity.cashCheckouts = entity.cashCheckouts || [];
                         entity.cashCheckouts.push({date: new Date(), status: 'NORMAL', change: $scope.change});
-                        CashCheckoutEmbeddedService.update(entity).then(function () {
+                        CashCheckinService.update(entity).then(function () {
                             $scope.$ctrl.onGoHome();
                         })
                     }
@@ -44,7 +44,7 @@ function CashCheckoutEmbeddedFormController($scope,
 
     function calcMovement() {
         if ($scope.entity && $scope.entity.date) {
-            CashCheckoutEmbeddedService.getByCurrentCashCheckin($scope.entity.date)
+            CashCheckinService.getByCurrentCashCheckin($scope.entity.date)
                 .then(function (data) {
                     $scope.entity.values = $scope.entity.group.financeUnits.map(function (financeUnit) {
                         let movementedValue = data.data.filter(function (entry) {

@@ -1,12 +1,12 @@
 CashCheckinEmbeddedFormController.$inject = ['$scope',
-    'CashCheckinEmbeddedService',
+    'CashCheckinService',
     'FinanceUnitGroupService',
     'FinanceUnitService',
     '$filter',
     '$timeout'];
 
 function CashCheckinEmbeddedFormController($scope,
-                                           CashCheckinEmbeddedService,
+                                           CashCheckinService,
                                            FinanceUnitGroupService,
                                            FinanceUnitService,
                                            $filter,
@@ -14,7 +14,6 @@ function CashCheckinEmbeddedFormController($scope,
     $scope.entity = {};
     $scope.entity.employee = angular.copy($scope.$ctrl.employee);
     $scope.entity.date = new Date();
-
     $scope.disableOpening = $scope.$ctrl.disableOpening;
 
     $scope.getGroups = function (param) {
@@ -25,7 +24,8 @@ function CashCheckinEmbeddedFormController($scope,
 
     $scope.open = function (entity) {
         entity.status = 'NORMAL';
-        CashCheckinEmbeddedService.update(entity).then(function () {
+        CashCheckinService.update(entity).then(function () {
+            console.log('nakamura');
             $scope.$ctrl.onGoHome();
         })
     };
@@ -76,7 +76,7 @@ function CashCheckinEmbeddedFormController($scope,
     }
 
     $scope.disabledOpenCash = function(entity){
-        return $scope.disableOpening || entity.employee == null || entity.group.id == null ||
+        return $scope.disableOpening || entity.employee == null || (entity.group == null || entity.group.id == null) ||
             (entity.change && (entity.originChange == null || entity.destinyChange == null))
     }
 }
