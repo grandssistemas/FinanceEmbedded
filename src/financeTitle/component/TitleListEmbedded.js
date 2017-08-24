@@ -2,7 +2,7 @@ let template = require('../views/list.html');
 
 module.exports = {
     templateUrl: template,
-    controller: 'TitleListController',
+    controller: 'TitleListEmbeddedController',
     bindings:{
         titleType: '@',
         onNewTitle: '&',

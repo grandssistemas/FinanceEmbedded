@@ -1,13 +1,14 @@
-TitleListController.$inject = [
+TitleListEmbeddedController.$inject = [
     '$scope',
-    'TitleEmbeddedService',
+    'TitleService',
     'gumgaController'];
-function TitleListController(
+function TitleListEmbeddedController(
     $scope,
     TitleService,
     gumgaController) {
+
         TitleService.resetDefaultState();
-        console.log($scope.$ctrl);
+
         gumgaController.createRestMethods($scope, TitleService, 'title');
         $scope.participation = "";
         $scope.currentPage = 1;
@@ -176,4 +177,4 @@ function TitleListController(
         }
     };
 
-module.exports =  TitleListController;
+module.exports =  TitleListEmbeddedController;
