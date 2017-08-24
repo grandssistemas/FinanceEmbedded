@@ -1,4 +1,4 @@
-IndividualService.inject = ['GumgaRest', '$http', 'FinanceEmbeddedService']
+IndividualService.$inject = ['GumgaRest', '$http', 'FinanceEmbeddedService']
 
 function IndividualService(GumgaRest, $http, FinanceEmbeddedService) {
     var Service = new GumgaRest(FinanceEmbeddedService.getDefaultConfiguration().api + '/individual');

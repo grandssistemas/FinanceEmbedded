@@ -1,5 +1,5 @@
 
-DocumentTypeService.inject = ['GumgaRest', 'FinanceEmbeddedService']
+DocumentTypeService.$inject = ['GumgaRest', 'FinanceEmbeddedService']
 
 function DocumentTypeService(GumgaRest, FinanceEmbeddedService) {
     var Service = new GumgaRest(FinanceEmbeddedService.getDefaultConfiguration().api + '/documenttype');

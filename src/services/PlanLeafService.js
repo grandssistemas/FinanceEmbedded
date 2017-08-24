@@ -1,4 +1,4 @@
-PlanLeafService.inject = ['GumgaRest', '$http', 'FinanceEmbeddedService']
+PlanLeafService.$inject = ['GumgaRest', '$http', 'FinanceEmbeddedService']
 
 function PlanLeafService(GumgaRest, $http, FinanceEmbeddedService) {
     var Service = new GumgaRest(FinanceEmbeddedService.getDefaultConfiguration().api + '/planleaf');
