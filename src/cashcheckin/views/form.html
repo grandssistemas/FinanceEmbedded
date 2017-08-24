@@ -1,0 +1,127 @@
+<form name="forms" novalidate>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 align-layout-panel cl-dark-primary text-uppercase">
+            <label style="font-size: 24px" gumga-translate-tag="cashcheckin.opening">Opening</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 align-layout-panel">
+            <div class="panel gmd">
+                <ul class="nav nav-tabs gmd" role="tablist">
+                    <li role="start" ng-class="{'active': !disableOpening}">
+                        <a href="#start" target="_self" aria-controls="start" role="tab" data-toggle="tab"
+                           class="text-uppercase"
+                           gumga-translate-tag="cashcheckin.movementin">Cash Check-In</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane" ng-class="{'active': !disableOpening}" id="start">
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="ibox float-e-margins">
+                                        <div class="ibox-content">
+                                            <div class="row" ng-show="disableOpening">
+                                                <div class="col-lg-12">
+                                                    <span class="text-danger" gumga-translate-tag="cashcheckin.hasopen">This user already have
+                                                        a opening active</span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label><span
+                                                            gumga-translate-tag="cashcheckin.cash">Cash</span></label>
+
+                                                    <gumga-many-to-one
+                                                            value="entity.group"
+                                                            search-method="getGroups(param)"
+                                                            authorize-add="false"
+                                                            field="name"
+                                                            async="true"
+                                                            display-info="false"
+                                                            data-disabled="disableOpening"
+                                                            on-select="onSelectGroup(value)"
+                                                            on-deselect="onDeselectGroup(value)">
+                                                        <match>
+                                                            <div>{{match.model.name}}</div>
+                                                        </match>
+                                                    </gumga-many-to-one>
+                                                </div>
+                                            </div>
+                                            <div ng-show="entity.employee != null">
+                                                <div class="row m-t">
+                                                    <div class="col-md-12">
+                                                        <label gumga-translate-tag="cashcheckin.user">Operator</label>
+                                                        <input type="text" ng-model="entity.employee.login"
+                                                               class="form-control"
+                                                               disabled/>
+                                                    </div>
+                                                </div>
+                                                <div class="row m-t">
+                                                    <div class="col-md-6">
+                                                        <label gumga-translate-tag="cashcheckin.date">Date/Hour</label><br/>
+                                                        <span style="font-size: 15px">{{entity.date | date: 'dd/MM/yyyy HH:mm:ss'}}</span>&nbsp;
+                                                    </div>
+                                                </div>
+
+                                                <div class="row m-t b-t" ng-show="entity.group.id">
+                                                    <div class="col-md-12">
+                                                        <label gumga-translate-tag="cashcheckin.changeorigin">Change origin</label><br/>
+                                                        <gumga-many-to-one
+                                                                value="entity.originChange"
+                                                                search-method="getChangeOrigin(param)"
+                                                                authorize-add="false"
+                                                                field="name"
+                                                                async="true"
+                                                                class="gmd"
+                                                                display-info="false"
+                                                                data-disabled="disableOpening"
+                                                                on-select="onSelectOrigin(value)">
+                                                            <match>
+                                                                <div>{{match.model.name}}</div>
+                                                            </match>
+                                                        </gumga-many-to-one>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <label gumga-translate-tag="cashcheckin.changedestiny">Change destiny</label><br/>
+                                                        <gumga-many-to-one
+                                                                list="financeUnits"
+                                                                value="entity.destinyChange"
+                                                                authorize-add="false"
+                                                                class="gmd"
+                                                                data-async="false"
+                                                                editable="false"
+                                                                field="name"
+                                                                display-info="false"
+                                                                data-disabled="disableOpening"
+                                                                on-select="onSelectDestiny(value)">
+                                                            <match>
+                                                                <div>{{match.model.name}}</div>
+                                                            </match>
+                                                        </gumga-many-to-one>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <label gumga-translate-tag="cashcheckin.changevalue">Change Value</label><br/>
+                                                        <input type="text" class="form-control" ui-money-mask ng-model="entity.change" ng-disabled="disableOpening">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn btn-primary pull-right button-ok"
+                                            ng-click="open(entity, cashCheckout.change)"
+                                            ng-disabled="disabledOpenCash(entity)"><i
+                                            class="fa fa-key"></i> <span
+                                            gumga-translate-tag="cashcheckin.opencash">Open Cash</span></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
