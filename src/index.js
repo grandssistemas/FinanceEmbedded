@@ -1,4 +1,7 @@
 import Style from './style/index.css'
+require('./title/module');
+require('./cashcheckin/module');
+require('./cashcheckout/module');
 require('./financeTitle/module');
 require('./services/module');
 require('./providers/module');
@@ -13,6 +16,9 @@ import bindHtmlCompile from './Utils/bindHtmlCompile'
 
 const finance = angular.module('finance.embedded', ['ui.bootstrap', 'group.dependencies', 'finance.providers', 'finance.services', 'finance.title'])
 
+const finance = angular.module('finance.embedded', ['ui.bootstrap', 'group.dependencies', 'finance.title.list', 'finance.cashcheckinembedded', 'finance.cashcheckoutembedded'])
+
+finance.provider('FinanceEmbeddedService', FinanceEmbeddedService)
 finance.directive('ngDynamicController', ngDynamicController)
 finance.directive('bindHtmlCompile', bindHtmlCompile)
 
