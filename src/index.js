@@ -1,5 +1,10 @@
 import Style from './style/index.css'
-require('./title/module');
+require('./cashcheckin/module');
+require('./cashcheckout/module');
+require('./financeTitle/module');
+require('./services/module');
+require('./providers/module');
+
 
 // DEPENDENCIAS
 import GroupDependencies from './Utils/GroupDependencies'
@@ -8,11 +13,7 @@ import GroupDependencies from './Utils/GroupDependencies'
 import ngDynamicController from './Utils/DynamicController'
 import bindHtmlCompile from './Utils/bindHtmlCompile'
 
-// SERVICES
-import FinanceEmbeddedService from './services/financeembedded.provider'
-// 'ngSanitize',
-
-const finance = angular.module('finance.embedded', ['ui.bootstrap', 'group.dependencies', 'finance.title.list'])
+const finance = angular.module('finance.embedded', ['ui.bootstrap', 'group.dependencies', 'finance.providers', 'finance.services', 'finance.title', 'finance.cashcheckinembedded', 'finance.cashcheckoutembedded'])
 
 finance.provider('FinanceEmbeddedService', FinanceEmbeddedService)
 finance.directive('ngDynamicController', ngDynamicController)
