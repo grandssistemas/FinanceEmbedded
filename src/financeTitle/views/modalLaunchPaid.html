@@ -1,0 +1,36 @@
+<form name="modalPaid">
+    <div class="modal-header">
+        <h3 class="modal-title">Inserir</h3>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div>
+                    <label gumga-translate-tag="title.financeUnit"></label>
+                    <gumga-many-to-one
+                                value="title.data.automaticFinanceUnit"
+                                list="automaticFinanceUnit"
+                                search-method="financeunit.methods.asyncSearch('name',param)"
+                                field="name"
+                                display-info="false"
+                                authorize-add="false"
+                                tab-seq="1">
+                    </gumga-many-to-one>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" ng-click="ok(title.data)">Salvar</button>
+        <button type="button" class="btn btn-warning" ng-click="cancel()">Cancelar</button>
+    </div>
+</form>
+
+
+<!--<div class="col-md-2">
+<label gumga-translate-tag="title.registerAsPayed"></label>
+<button type="button" class="btn btn-block" tabindex="2" ng-class="{'btn-success': title.data.registerAsPayed, 'btn-default': !title.data.registerAsPayed}" ng-model="title.data.registerAsPayed" uib-btn-checkbox uib-btn-checkbox-true="true" uib-btn-checkbox-false="false">
+<span ng-if="title.data.registerAsPayed" gumga-translate-tag="title.ativo"></span>
+<span ng-if="!title.data.registerAsPayed" gumga-translate-tag="title.desativo"></span>
+</button>
+</div>-->
