@@ -16,30 +16,37 @@ function TitleListEmbeddedController(
         $scope.titleType = $scope.$ctrl.titleType;
 
         $scope.title.on('deleteSuccess', function () {
-            $scope.title.methods.get(0);
+            $scope.title.methods.get(1);
         });
 
-        $scope.toPage = function (page) {
+        $scope.title.methods.get = function (page) {
             $scope.currentPage = page;
             TitleService.findTitleWithParticipations($scope.titleType.toUpperCase(), page).then(function (response) {
                 $scope.title.data = response.data.values;
                 $scope.title.count = response.data.count;
-            })
+                $scope.title.pageSize = response.data.pageSize;
+            });
         };
 
         $scope.simpleSearch = function (field, param) {
+            if (param === ""){
+                $scope.title.methods.get(1);
+                return;
+            }
+
             var aq = "obj." + field + " like '" + param + "'";
             TitleService.findTitleWithParticipations($scope.titleType.toUpperCase(), 1, aq).then(function (data) {
-                $scope.title.data = data.values;
-                $scope.title.count = data.count
+                $scope.title.data = data.data.values;
+                $scope.title.count = data.data.count;
+                $scope.title.pageSize = data.data.pageSize;
             })
         };
 
-        $scope.toPage($scope.currentPage);
+        $scope.title.methods.get($scope.currentPage);
 
         $scope.buscaParticipations = function (participation) {
             if (participation === "") {
-                $scope.toPage($scope.currentPage)
+                $scope.title.methods.get($scope.currentPage)
             }
             $scope.title.data = $scope.title.data.filter(function (data) {
                 return data.participationsFormatted.indexOf(participation) > -1
@@ -81,7 +88,6 @@ function TitleListEmbeddedController(
         $scope.tableConf = {
             columns: 'titleType, issuedAt,documentNumber, participationsFormatted, postedAt, docname, value, btns',
             materialTheme: true,
-            itemsPerPage: [5, 10, 25, 50, 100],
             title: $scope.titleType === "pay" ? 'Listagem de Contas a Pagar' : 'Listagem de Contas a Receber',
             columnsConfig: [
                 {

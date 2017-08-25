@@ -140,6 +140,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <label gumga-translate-tag="title.documenttype"></label>
+                                <!--async="false"-->
                                 <gumga-many-to-one
                                         display-info="false"
                                         value="title.data.documentType"
@@ -148,7 +149,6 @@
                                         search-method="documentType.methods.asyncSearch('name',param)"
                                         field="name"
                                         tab-seq="5"
-                                        async="false"
                                         post-method="postDocType(value)"
                                         authorize-add="true"
                                         display-info="false"

@@ -39,6 +39,9 @@ function TitleFormEmbeddedController(
     $scope.individual.methods.search('name', '');
     $scope.ratioPlan.methods.search('label', '');
 
+    console.log($scope);
+
+
     $scope.titleType = $scope.$ctrl.typeTitle; //Tipo de lançamento podendo vir: pay para pagamento ou receive para receber.
     $scope.editParcels = false;
     $scope.selectArrays = [];
