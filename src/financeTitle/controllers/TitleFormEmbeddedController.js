@@ -1,3 +1,5 @@
+let template = require('./../views/modalLaunchPaid.html');
+
 TitleFormEmbeddedController.$inject = [
     'TitleService',
     '$uibModal',
@@ -38,9 +40,6 @@ function TitleFormEmbeddedController(
     $scope.financeunit.methods.search('name', '');
     $scope.individual.methods.search('name', '');
     $scope.ratioPlan.methods.search('label', '');
-
-    console.log($scope);
-
 
     $scope.titleType = $scope.$ctrl.typeTitle; //Tipo de lançamento podendo vir: pay para pagamento ou receive para receber.
     $scope.editParcels = false;
@@ -292,21 +291,21 @@ function TitleFormEmbeddedController(
 
     $scope.items = [];
     $scope.launchPaid = function () {
-        // var uibModalInstance = $uibModal.open({
-        //     templateUrl: 'modules/title/views/ModalLaunchPaidController.html',
-        //     controller: 'ModalLaunchPaidController',
-        //     size: "lg",
-        //     resolve: {
-        //         items: function () {
-        //             return $scope.items;
-        //         }
-        //     }
-        // });
-        // uibModalInstance.result.then(function (financeunitReturn) {
-        //     $scope.title.data.automaticFinanceUnit = financeunitReturn.automaticFinanceUnit;
-        //     $scope.title.data.registerAsPayed = financeunitReturn.registerAsPayed;
-        //     $scope.save($scope.title.data);
-        // });
+        var uibModalInstance = $uibModal.open({
+            templateUrl: template,
+            controller: 'ModalLaunchPaidController',
+            size: "lg",
+            resolve: {
+                items: function () {
+                    return $scope.items;
+                }
+            }
+        });
+        uibModalInstance.result.then(function (financeunitReturn) {
+            $scope.title.data.automaticFinanceUnit = financeunitReturn.automaticFinanceUnit;
+            $scope.title.data.registerAsPayed = financeunitReturn.registerAsPayed;
+            $scope.save($scope.title.data);
+        });
     };
 
     $scope.back = function (rote) {
