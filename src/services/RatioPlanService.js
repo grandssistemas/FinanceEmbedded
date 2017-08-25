@@ -1,4 +1,4 @@
-RatioPlanService.inject = ['GumgaRest', '$http', 'FinanceEmbeddedService']
+RatioPlanService.$inject = ['GumgaRest', '$http', 'FinanceEmbeddedService']
 
 function RatioPlanService(GumgaRest, $http, FinanceEmbeddedService) {
     var Service = new GumgaRest(FinanceEmbeddedService.getDefaultConfiguration().api + '/ratioplan');

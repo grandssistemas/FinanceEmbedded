@@ -1,4 +1,4 @@
-WalletService.inject = ['GumgaRest', 'FinanceEmbeddedService']
+WalletService.$inject = ['GumgaRest', 'FinanceEmbeddedService']
 
 function WalletService(GumgaRest, FinanceEmbeddedService) {
     var Service = new GumgaRest(FinanceEmbeddedService.getDefaultConfiguration().api + '/wallet');
