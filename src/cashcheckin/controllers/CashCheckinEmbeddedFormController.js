@@ -25,7 +25,6 @@ function CashCheckinEmbeddedFormController($scope,
     $scope.open = function (entity) {
         entity.status = 'NORMAL';
         CashCheckinService.update(entity).then(function () {
-            console.log('nakamura');
             $scope.$ctrl.onGoHome();
         })
     };
