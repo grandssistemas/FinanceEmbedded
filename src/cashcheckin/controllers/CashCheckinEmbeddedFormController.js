@@ -1,12 +1,12 @@
 CashCheckinEmbeddedFormController.$inject = ['$scope',
-    'CashCheckinService',
+    'CashCheckinEmbeddedService',
     'FinanceUnitGroupService',
     'FinanceUnitService',
     '$filter',
     '$timeout'];
 
 function CashCheckinEmbeddedFormController($scope,
-                                           CashCheckinService,
+                                           CashCheckinEmbeddedService,
                                            FinanceUnitGroupService,
                                            FinanceUnitService,
                                            $filter,
@@ -24,7 +24,7 @@ function CashCheckinEmbeddedFormController($scope,
 
     $scope.open = function (entity) {
         entity.status = 'NORMAL';
-        CashCheckinService.update(entity).then(function () {
+        CashCheckinEmbeddedService.update(entity).then(function () {
             $scope.$ctrl.onGoHome();
         })
     };

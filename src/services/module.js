@@ -8,6 +8,8 @@ module.exports = angular.module('finance.services', ['finance.providers'])
     .service('DocumentTypeService', require('./DocumentTypeService'))
     .service('PlanLeafService', require('./PlanLeafService'))
     .service('TitleService', require('./TitleService'))
-    .service('CashCheckinService', require('./CashCheckinService'));
+    .service('CashCheckinEmbeddedService', require('./CashCheckinEmbeddedService'))
+    .service('EmployeeService', require('./EmployeeService'))
+    .service('FinanceUnitGroupService', require('./FinanceUnitGroupService'));
 
 
