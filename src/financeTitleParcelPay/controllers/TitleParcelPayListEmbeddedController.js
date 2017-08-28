@@ -6,7 +6,7 @@ TitleParcelPayListEmbeddedController.$inject = [
     'TitleParcelPayService',
     'gumgaController',
     '$timeout',
-    'IndividualService'];
+    'IndividualEmbeddedService'];
 
 function TitleParcelPayListEmbeddedController(
     $uibModal,
@@ -14,13 +14,13 @@ function TitleParcelPayListEmbeddedController(
     TitleParcelPayService,
     gumgaController,
     $timeout,
-    IndividualService) {
+    IndividualEmbeddedService) {
 
     gumgaController.createRestMethods($scope, TitleParcelPayService, 'titleparcelPay');
-    gumgaController.createRestMethods($scope, IndividualService, 'individual');
+    gumgaController.createRestMethods($scope, IndividualEmbeddedService, 'individual');
 
     TitleParcelPayService.resetDefaultState();
-    IndividualService.resetDefaultState();
+    IndividualEmbeddedService.resetDefaultState();
 
     $scope.endDate = null;
     $scope.paidOut = false;
