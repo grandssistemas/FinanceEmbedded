@@ -1,4 +1,4 @@
-let receiptPrint = require('./../views/receiptPrint.html');
+let receiptPrint = require('./../views/paymentPrint.html');
 
 TitleParcelPayListEmbeddedController.$inject = [
     '$uibModal',

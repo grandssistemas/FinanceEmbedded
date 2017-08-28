@@ -1,6 +1,7 @@
 import Style from './style/index.css'
 require('./financeTitle/module');
 require('./financeTitleParcelPay/module');
+require('./financeTitleParcelReceive/module');
 require('./services/module');
 require('./providers/module');
 
@@ -18,7 +19,8 @@ const finance = angular.module('finance.embedded', [
     'finance.providers',
     'finance.services',
     'finance.title',
-    'finance.titleparcel'])
+    'finance.titleparcel',
+    'finance.titleparcelreceive'])
 
 finance.directive('ngDynamicController', ngDynamicController)
 finance.directive('bindHtmlCompile', bindHtmlCompile)

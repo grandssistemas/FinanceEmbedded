@@ -16,6 +16,8 @@ module.exports = angular.module('finance.services', ['finance.providers'])
     .service('ChequePortfolioService', require('./ChequePortfolioService'))
     .service('IndividualCreditService', require('./IndividualCreditService'))
     .service('CreditCardAccountService', require('./CreditCardAccountService'))
+    .service('DocTedService', require('./DocTedService'))
+    .service('BankService', require('./BankService'))
     .service('TitleService', require('./TitleService'));
 
 

@@ -18,3 +18,4 @@ function ReceivePrintEmbeddedController($scope, $uibModalInstance, items) {
 }
 
 module.exports = ReceivePrintEmbeddedController;
+
