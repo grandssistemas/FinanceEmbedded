@@ -4,7 +4,6 @@ module.exports = {
     templateUrl: template,
     controller: 'PayReceiveEmbeddedController',
     bindings:{
-        onMakePayment: '&',
-        onPost: '&'
+        onMakePayment: '&'
     }
 };

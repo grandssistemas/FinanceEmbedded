@@ -32,9 +32,9 @@ function TitleParcelPayListEmbeddedController(
         TitleParcelPayService.findOpenByMaxDate(date, 'PAY', page, $scope.individualSearch, $scope.paidOut, $scope.aqFilterSelected)
             .then(function (data) {
                 $scope.selectedValues = [];
-                $scope.titleparcelPay.data = data.values;
-                $scope.titleparcelPay.pageSize = data.pageSize;
-                $scope.titleparcelPay.count = data.count;
+                $scope.titleparcelPay.data = data.data.values;
+                $scope.titleparcelPay.pageSize = data.data.pageSize;
+                $scope.titleparcelPay.count = data.data.count;
             });
 
     };
@@ -78,9 +78,9 @@ function TitleParcelPayListEmbeddedController(
         }
 
         if ($scope.paidOut) {
-            aq = aq.concat("AND obj.title.titleType='PAY' AND obj.fullPaid = true");
+            aq = aq.concat(" AND obj.title.titleType='PAY' AND obj.fullPaid = true");
         } else {
-            aq = aq.concat("AND obj.title.titleType='PAY' AND (obj.fullPaid = false OR obj.fullPaid is null)");
+            aq = aq.concat(" AND obj.title.titleType='PAY' AND (obj.fullPaid = false OR obj.fullPaid is null)");
         }
         $scope.aqFilterSelected = aq;
 
@@ -95,9 +95,9 @@ function TitleParcelPayListEmbeddedController(
         TitleParcelPayService.findOpenByMaxDate(null, 'PAY', page, $scope.individualSearch, $scope.paidOut, $scope.aqFilterSelected)
             .then(function (data) {
                 $scope.selectedValues = [];
-                $scope.titleparcelPay.data = data.values;
-                $scope.titleparcelPay.pageSize = data.pageSize;
-                $scope.titleparcelPay.count = data.count;
+                $scope.titleparcelPay.data = data.data.values;
+                $scope.titleparcelPay.pageSize = data.data.pageSize;
+                $scope.titleparcelPay.count = data.data.count;
             });
     };
 
@@ -109,9 +109,9 @@ function TitleParcelPayListEmbeddedController(
         TitleParcelPayService.findOpenByMaxDate(null, 'PAY', page, $scope.individualSearch, $scope.paidOut, $scope.aqFilterSelected)
             .then(function (data) {
                 $scope.selectedValues = [];
-                $scope.titleparcelPay.data = data.values;
-                $scope.titleparcelPay.pageSize = data.pageSize;
-                $scope.titleparcelPay.count = data.count;
+                $scope.titleparcelPay.data = data.data.values;
+                $scope.titleparcelPay.pageSize = data.data.pageSize;
+                $scope.titleparcelPay.count = data.data.count;
             });
     };
 
