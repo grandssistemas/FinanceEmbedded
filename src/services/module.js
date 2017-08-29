@@ -10,7 +10,7 @@ module.exports = angular.module('finance.services', ['finance.providers'])
     .service('TitleService', require('./TitleService'))
     .service('CashCheckinEmbeddedService', require('./CashCheckinEmbeddedService'))
     .service('EmployeeService', require('./EmployeeService'))
-    .service('FinanceUnitGroupService', require('./FinanceUnitGroupService'));
+    .service('FinanceUnitGroupService', require('./FinanceUnitGroupService'))
     .service('TitleParcelPayService', require('./TitleParcelPayService'))
     .service('FinanceConfigurationService', require('./FinanceConfigurationService'))
     .service('CheckingAccountService', require('./CheckingAccountService'))
