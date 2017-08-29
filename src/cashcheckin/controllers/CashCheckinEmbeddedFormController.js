@@ -34,8 +34,8 @@ function CashCheckinEmbeddedFormController($scope,
     };
 
     $scope.onSelectGroup = onSelectGroup;
-    $scope.onDeselectGroup = function () {
-        onSelectGroup();
+    $scope.onDeselectGroup = function (value) {
+        onSelectGroup(value);
     };
 
     function onSelectGroup(value) {
