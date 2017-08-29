@@ -2,6 +2,8 @@ import Style from './style/index.css'
 require('./cashcheckin/module');
 require('./cashcheckout/module');
 require('./financeTitle/module');
+require('./financeTitleParcelPay/module');
+require('./financeTitleParcelReceive/module');
 require('./services/module');
 require('./providers/module');
 

@@ -1,0 +1,86 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-4">
+            <label>Pessoa:</label>
+            <form name="Form">
+                <gumga-many-to-one
+                        value="individualSearch"
+                        list="individual.data"
+                        search-method="individual.methods.asyncSearch('name',param)"
+                        add-method="individual.methods.asyncPost(value,'name')"
+                        field="name"
+                        authorize-add="false">
+                </gumga-many-to-one>
+            </form>
+        </div>
+        <div ng-class="{'col-md-8': hideOthers, 'col-md-4': !hideOthers}">
+            <div class="row">
+                <label>Filtros Rápidos:</label>
+            </div>
+            <div class="row">
+                <label class="btn btn-warning btn-sm gmd raised" ng-click="toReceive(1)">A Receber</label>
+                <label class="btn btn-warning btn-sm gmd raised" ng-click="receive(1)">Recebido</label>
+                <label class="btn btn-info btn-sm gmd raised" ng-model="filters" ng-show="hideOthers" uncheckable
+                       ng-click="filter('today')" uib-btn-radio="'today'">Hoje</label>
+                <label class="btn btn-info btn-sm gmd raised" ng-model="filters" ng-show="hideOthers" uncheckable
+                       ng-click="filter('thisWeek')" uib-btn-radio="'thisWeek'">Esta semana</label>
+                <label class="btn btn-info btn-sm gmd raised" ng-model="filters" ng-show="hideOthers" uncheckable
+                       ng-click="filter('thisMonth')" uib-btn-radio="'thisMonth'">Este Mês</label>
+                <label class="btn btn-info btn-sm gmd raised" ng-model="filters" ng-show="hideOthers" uncheckable
+                       ng-click="filter('thisYear')" uib-btn-radio="'Thisyear'">Este Ano</label>
+                <label class="btn btn-info btn-sm gmd raised" ng-model="filters" uncheckable uib-btn-radio="'custom'"
+                       ng-click="hideOthers = !hideOthers">Personalizado</label>
+            </div>
+        </div>
+        <div class="col-md-2 m-t-md" ng-if="filters == 'custom'">
+            <gmd-input>
+                <input type="text" name="expiration" class="form-control gmd" uib-datepicker-popup="dd/MM/yyyy"
+                       ng-model="endDate"/>
+                <span class="bar"></span>
+                <label>Data final</label>
+            </gmd-input>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12" style="margin-top:1%">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <button
+                            class="btn btn-primary gmd raised"
+                            ng-click="individualCheckAndPay(selectedValues, containsFullPaid)">
+                        <i ng-if="!containsFullPaid">Receber</i>
+                        <i ng-if="containsFullPaid">Imprimir Recibo</i>
+                    </button>
+                    <button
+                            class="btn btn-default gmd raised"
+                            ng-click="renegotiation(selectedValues)"
+                            ng-if="isRenegotiate"
+                            ng-disabled="selectedValues.length === 0 || containsReplaced || containsFullPaid">
+                        Renegociar
+                    </button>
+                </div>
+                <div class="col-md-3">
+                    <label ng-if="errorMessage" class="text-danger">{{errorMessage}}</label>
+                </div>
+                <div class="col-md-3 text-right">
+                    <h3 ng-if="total > 0" class="text-success">{{ total | currency: 'R$ ' }} à Receber</h3>
+                    <h3 ng-if="increase > 0" class="text-success">{{ increase | currency: 'R$ ' }} de Acréscimo</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <gumga-list class="table-striped"
+                sort="titleparcel.methods.sort(field, dir)"
+                data="titleparcel.data"
+                on-click="totalize()"
+                configuration="tableConfig"
+                page-size="titleparcel.pageSize"
+                count="titleparcel.count"
+                page-model="titleparcel.page"
+                max-height="400px"
+                on-page-change="titleparcel.methods.get(page, pageSize)">
+    </gumga-list>
+</div>
