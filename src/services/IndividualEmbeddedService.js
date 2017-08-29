@@ -1,6 +1,6 @@
-IndividualService.$inject = ['GumgaRest', '$http', 'FinanceEmbeddedService']
+IndividualEmbeddedService.$inject = ['GumgaRest', '$http', 'FinanceEmbeddedService']
 
-function IndividualService(GumgaRest, $http, FinanceEmbeddedService) {
+function IndividualEmbeddedService(GumgaRest, $http, FinanceEmbeddedService) {
     var Service = new GumgaRest(FinanceEmbeddedService.getDefaultConfiguration().api + '/individual');
 
     Service.getLabels = function () {
@@ -15,4 +15,4 @@ function IndividualService(GumgaRest, $http, FinanceEmbeddedService) {
     return Service;
 }
 
-module.exports = IndividualService;
+module.exports = IndividualEmbeddedService;

@@ -6,7 +6,7 @@ TitleFormEmbeddedController.$inject = [
     '$scope',
     'gumgaController',
     '$timeout',
-    'IndividualService',
+    'IndividualEmbeddedService',
     'DocumentTypeService',
     'RatioPlanService',
     'PlanLeafService',
@@ -19,7 +19,7 @@ function TitleFormEmbeddedController(
     $scope,
     gumgaController,
     $timeout,
-    IndividualService,
+    IndividualEmbeddedService,
     DocumentTypeService,
     RatioPlanService,
     PlanLeafService,
@@ -30,7 +30,7 @@ function TitleFormEmbeddedController(
 
     gumgaController.createRestMethods($scope, DocumentTypeService, 'documentType');
     gumgaController.createRestMethods($scope, FinanceUnitService, 'financeunit');
-    gumgaController.createRestMethods($scope, IndividualService, 'individual');
+    gumgaController.createRestMethods($scope, IndividualEmbeddedService, 'individual');
     gumgaController.createRestMethods($scope, RatioPlanService, 'ratioPlan');
     gumgaController.createRestMethods($scope, PlanLeafService, 'planLeaf');
     gumgaController.createRestMethods($scope, WalletService, 'wallet');

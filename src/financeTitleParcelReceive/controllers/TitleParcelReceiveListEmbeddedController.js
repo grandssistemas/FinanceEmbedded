@@ -8,7 +8,7 @@ TitleParcelReceiveListEmbeddedController.$inject = [
     'TitleParcelPayService',
     'gumgaController',
     '$timeout',
-    'IndividualService'];
+    'IndividualEmbeddedService'];
 
 function TitleParcelReceiveListEmbeddedController(
     TitleService,
@@ -18,10 +18,10 @@ function TitleParcelReceiveListEmbeddedController(
     TitleParcelPayService,
     gumgaController,
     $timeout,
-    IndividualService) {
+    IndividualEmbeddedService) {
 
     gumgaController.createRestMethods($scope, TitleParcelPayService, 'titleparcel');
-    gumgaController.createRestMethods($scope, IndividualService, 'individual');
+    gumgaController.createRestMethods($scope, IndividualEmbeddedService, 'individual');
     gumgaController.createRestMethods($scope, FinanceConfigurationService, 'financeConfiguration');
     gumgaController.createRestMethods($scope, TitleService, 'title');
 
@@ -30,7 +30,7 @@ function TitleParcelReceiveListEmbeddedController(
         $scope.isRenegotiate = data.values[0].isRenegotiate
     });
     TitleParcelPayService.resetDefaultState();
-    IndividualService.resetDefaultState();
+    IndividualEmbeddedService.resetDefaultState();
 
     $scope.endDate = null;
     $scope.containsReplaced = false;

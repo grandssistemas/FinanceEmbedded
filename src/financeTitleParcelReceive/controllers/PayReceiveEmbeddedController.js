@@ -6,7 +6,7 @@ PayReceiveEmbeddedController.$inject = [
     '$timeout',
     'IndividualCreditService',
     'TitleParcelPayService',
-    'IndividualService',
+    'IndividualEmbeddedService',
     'DocTedService',
     'BankService',
     'CheckingAccountService',
@@ -25,7 +25,7 @@ function PayReceiveEmbeddedController(
     $timeout,
     IndividualCreditService,
     TitleParcelPayService,
-    IndividualService,
+    IndividualEmbeddedService,
     DocTedService,
     BankService,
     CheckingAccountService,
@@ -45,7 +45,7 @@ function PayReceiveEmbeddedController(
     gumgaController.createRestMethods($scope, ThirdPartyChequeService, 'thirdpartycheque');
     gumgaController.createRestMethods($scope, DocTedService, 'docted');
     gumgaController.createRestMethods($scope, TitleParcelPayService, 'titleParcel');
-    gumgaController.createRestMethods($scope, IndividualService, 'individual');
+    gumgaController.createRestMethods($scope, IndividualEmbeddedService, 'individual');
     gumgaController.createRestMethods($scope, CreditCardAccountService, 'creditcardaccount');
     gumgaController.createRestMethods($scope, BankService, 'bank');
 
