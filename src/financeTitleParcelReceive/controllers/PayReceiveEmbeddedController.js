@@ -277,16 +277,6 @@ function PayReceiveEmbeddedController(
         }
     };
 
-    function post(data, isTed) {
-        data.momment = new Date(data.momment);
-        var save = DocTedService.save(data),
-            promise = isTed ? save.ted() : save.doc();
-
-        promise.then(function () {
-            $scope.$ctrl.onPost();
-        })
-    }
-
     $scope.totalReceive = function () {
         var total = 0;
         angular.forEach($scope.payment.methodReceive, function (list) {

@@ -45,9 +45,9 @@ function TitleParcelReceiveListEmbeddedController(
         TitleParcelPayService.findOpenByMaxDate(date, 'RECEIVE', page, $scope.individualSearch, $scope.paidOut, $scope.aqFilterSelected)
             .then(function (data) {
                 $scope.selectedValues = [];
-                $scope.titleparcel.data = data.values;
-                $scope.titleparcel.pageSize = data.pageSize;
-                $scope.titleparcel.count = data.count;
+                $scope.titleparcel.data = data.data.values;
+                $scope.titleparcel.pageSize = data.data.pageSize;
+                $scope.titleparcel.count = data.data.count;
             });
     };
 
@@ -83,12 +83,12 @@ function TitleParcelReceiveListEmbeddedController(
                 break;
             default:
             case 'today':
-                aq = aq.concat(" AND obj.expiration='" + moment().format('YYYY-MM-DD') + "'");
+                aq = aq.concat(" AND obj.expiration ='" + moment().format('YYYY-MM-DD') + "' ");
                 break
         }
 
         if ($scope.individualSearch && $scope.individualSearch.id) {
-            aq = aq.concat(" AND obj.individual.name='" + $scope.individualSearch.name + "'")
+            aq = aq.concat(" AND obj.individual.name='" + $scope.individualSearch.name + "' ")
         }
 
         if ($scope.paidOut) {
@@ -113,9 +113,9 @@ function TitleParcelReceiveListEmbeddedController(
         TitleParcelPayService.findOpenByMaxDate(null, 'RECEIVE', page, $scope.individualSearch, $scope.paidOut, $scope.aqFilterSelected)
             .then(function (data) {
                 $scope.selectedValues = [];
-                $scope.titleparcel.data = data.values;
-                $scope.titleparcel.pageSize = data.pageSize;
-                $scope.titleparcel.count = data.count;
+                $scope.titleparcel.data = data.data.values;
+                $scope.titleparcel.pageSize = data.data.pageSize;
+                $scope.titleparcel.count = data.data.count;
             });
     };
 
@@ -127,9 +127,9 @@ function TitleParcelReceiveListEmbeddedController(
         TitleParcelPayService.findOpenByMaxDate(null, 'RECEIVE', page, $scope.individualSearch, $scope.paidOut, $scope.aqFilterSelected)
             .then(function (data) {
                 $scope.selectedValues = [];
-                $scope.titleparcel.data = data.values;
-                $scope.titleparcel.pageSize = data.pageSize;
-                $scope.titleparcel.count = data.count;
+                $scope.titleparcel.data = data.data.values;
+                $scope.titleparcel.pageSize = data.data.pageSize;
+                $scope.titleparcel.count = data.data.count;
             });
     };
 
