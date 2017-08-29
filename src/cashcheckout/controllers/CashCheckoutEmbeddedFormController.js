@@ -1,11 +1,13 @@
 CashCheckoutEmbeddedFormController.$inject = ['$scope',
     'CashCheckinEmbeddedService',
+    'FinanceUnitService',
     'SweetAlert',
     '$filter',
 ];
 
 function CashCheckoutEmbeddedFormController($scope,
                                             CashCheckinEmbeddedService,
+                                            FinanceUnitService,
                                             SweetAlert,
                                             $filter){
     $scope.entity = angular.copy($scope.$ctrl.entity);
@@ -86,6 +88,27 @@ function CashCheckoutEmbeddedFormController($scope,
     $scope.formatDate = function (date) {
         return $filter('date')(new Date(date), 'dd/MM/yyyy HH:mm:ss');
     };
+
+    $scope.getDefaultTransfer = function (param) {
+        param = param || '';
+        var hql = "(SELECT count(gUnit) " +
+            "FROM FinanceUnitGroup groups inner join groups.financeUnits gUnit " +
+            "WHERE groups.id = "+$scope.entity.group.id+" AND gUnit = obj) = 0 AND " +
+            "lower(obj.name) like '%"+param+"%'";
+        return FinanceUnitService.getAdvancedSearch(hql).then(function (data) {
+            return data.data.values;
+        })
+    };
+
+    $scope.disabledCloseCash = function(){
+        return $scope.noCheckin || !transferAccountCorrect($scope.entity);
+    };
+
+    function transferAccountCorrect(entity){
+        return (entity.values && entity.values.reduce(function(a,b){
+                return a && (b.financeUnit.defaultTransfer || !b.movementedValue);
+            },true)) || !!$scope.defaultTransfer;
+    }
 }
 
 module.exports = CashCheckoutEmbeddedFormController;
