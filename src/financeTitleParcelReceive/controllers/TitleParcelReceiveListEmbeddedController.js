@@ -1,6 +1,8 @@
-let receiptPrint = require('./../views/paymentPrint.html');
+let template = require('./../views/receiptPrint.html');
 
-TitleParcelPayListEmbeddedController.$inject = [
+TitleParcelReceiveListEmbeddedController.$inject = [
+    'TitleService',
+    'FinanceConfigurationService',
     '$uibModal',
     '$scope',
     'TitleParcelPayService',
@@ -8,7 +10,9 @@ TitleParcelPayListEmbeddedController.$inject = [
     '$timeout',
     'IndividualService'];
 
-function TitleParcelPayListEmbeddedController(
+function TitleParcelReceiveListEmbeddedController(
+    TitleService,
+    FinanceConfigurationService,
     $uibModal,
     $scope,
     TitleParcelPayService,
@@ -16,27 +20,35 @@ function TitleParcelPayListEmbeddedController(
     $timeout,
     IndividualService) {
 
-    gumgaController.createRestMethods($scope, TitleParcelPayService, 'titleparcelPay');
+    gumgaController.createRestMethods($scope, TitleParcelPayService, 'titleparcel');
     gumgaController.createRestMethods($scope, IndividualService, 'individual');
+    gumgaController.createRestMethods($scope, FinanceConfigurationService, 'financeConfiguration');
+    gumgaController.createRestMethods($scope, TitleService, 'title');
 
+    $scope.isRenegotiate = false;
+    $scope.financeConfiguration.execute('get').on('getSuccess', function (data) {
+        $scope.isRenegotiate = data.values[0].isRenegotiate
+    });
     TitleParcelPayService.resetDefaultState();
     IndividualService.resetDefaultState();
 
     $scope.endDate = null;
-    $scope.paidOut = false;
+    $scope.containsReplaced = false;
     $scope.containsFullPaid = false;
+    $scope.paidOut = false;
     $scope.lastClicked = null;
     $scope.aqFilterSelected = null;
 
+    $scope.hideOthers = true;
+
     $scope.getParcels = function (date, page) {
-        TitleParcelPayService.findOpenByMaxDate(date, 'PAY', page, $scope.individualSearch, $scope.paidOut, $scope.aqFilterSelected)
+        TitleParcelPayService.findOpenByMaxDate(date, 'RECEIVE', page, $scope.individualSearch, $scope.paidOut, $scope.aqFilterSelected)
             .then(function (data) {
                 $scope.selectedValues = [];
-                $scope.titleparcelPay.data = data.values;
-                $scope.titleparcelPay.pageSize = data.pageSize;
-                $scope.titleparcelPay.count = data.count;
+                $scope.titleparcel.data = data.values;
+                $scope.titleparcel.pageSize = data.pageSize;
+                $scope.titleparcel.count = data.count;
             });
-
     };
 
     $scope.cleanFilter = function () {
@@ -44,19 +56,21 @@ function TitleParcelPayListEmbeddedController(
         $scope.aqFilterSelected = null;
         delete $scope.filters;
         delete $scope.individualSearch;
-        var aq = "obj.title.titleType='PAY' AND (obj.fullPaid = false OR obj.fullPaid is null)";
-        $scope.titleparcelPay.methods.advancedSearch(aq)
+        var aq = "obj.title.titleType='RECEIVE' AND (obj.fullPaid = false OR obj.fullPaid is null)";
+        $scope.titleparcel.methods.advancedSearch(aq)
     };
+
+    $scope.getParcels(null, 1);
 
     $scope.$watch('individualSearch', function (individual) {
         $scope.cleanFilter();
         $scope.individualSearch = individual;
-        $scope.getParcels(null, 1);
+        $scope.getParcels($scope.endDate, 1);
     });
 
     $scope.filter = function (whichFilter) {
         $scope.lastClicked = whichFilter;
-        var aq = "obj.title.titleType='PAY'";
+        var aq = "obj.title.titleType='RECEIVE'";
         switch (whichFilter) {
             case 'thisWeek':
                 aq = aq.concat(" AND obj.expiration >='" + moment().startOf('isoWeek').subtract(1, 'days').format('YYYY-MM-DD') + "' AND obj.expiration <='" + moment().endOf('isoWeek').subtract(1, 'days').format('YYYY-MM-DD') + "'");
@@ -78,40 +92,44 @@ function TitleParcelPayListEmbeddedController(
         }
 
         if ($scope.paidOut) {
-            aq = aq.concat("AND obj.title.titleType='PAY' AND obj.fullPaid = true");
+            aq = aq.concat("AND obj.title.titleType='RECEIVE' AND obj.fullPaid = true");
         } else {
-            aq = aq.concat("AND obj.title.titleType='PAY' AND (obj.fullPaid = false OR obj.fullPaid is null)");
+            aq = aq.concat("AND obj.title.titleType='RECEIVE' AND (obj.fullPaid = false OR obj.fullPaid is null)");
         }
         $scope.aqFilterSelected = aq;
 
-        $scope.titleparcelPay.methods.advancedSearch(aq)
+        $scope.titleparcel.methods.advancedSearch(aq)
     };
 
-    $scope.paid = function (page) {
+    $scope.searchByIndividual = function (individual) {
+        $scope.getParcels($scope.endDate, 1);
+    };
+
+    $scope.receive = function (page) {
         $scope.lastClicked = null;
         $scope.aqFilterSelected = null;
         $scope.paidOut = true;
 
-        TitleParcelPayService.findOpenByMaxDate(null, 'PAY', page, $scope.individualSearch, $scope.paidOut, $scope.aqFilterSelected)
+        TitleParcelPayService.findOpenByMaxDate(null, 'RECEIVE', page, $scope.individualSearch, $scope.paidOut, $scope.aqFilterSelected)
             .then(function (data) {
                 $scope.selectedValues = [];
-                $scope.titleparcelPay.data = data.values;
-                $scope.titleparcelPay.pageSize = data.pageSize;
-                $scope.titleparcelPay.count = data.count;
+                $scope.titleparcel.data = data.values;
+                $scope.titleparcel.pageSize = data.pageSize;
+                $scope.titleparcel.count = data.count;
             });
     };
 
-    $scope.pays = function (page) {
+    $scope.toReceive = function (page) {
         $scope.lastClicked = null;
         $scope.aqFilterSelected = null;
         $scope.paidOut = false;
 
-        TitleParcelPayService.findOpenByMaxDate(null, 'PAY', page, $scope.individualSearch, $scope.paidOut, $scope.aqFilterSelected)
+        TitleParcelPayService.findOpenByMaxDate(null, 'RECEIVE', page, $scope.individualSearch, $scope.paidOut, $scope.aqFilterSelected)
             .then(function (data) {
                 $scope.selectedValues = [];
-                $scope.titleparcelPay.data = data.values;
-                $scope.titleparcelPay.pageSize = data.pageSize;
-                $scope.titleparcelPay.count = data.count;
+                $scope.titleparcel.data = data.values;
+                $scope.titleparcel.pageSize = data.pageSize;
+                $scope.titleparcel.count = data.count;
             });
     };
 
@@ -119,32 +137,34 @@ function TitleParcelPayListEmbeddedController(
         $timeout(function () {
             var total = 0;
             var increase = 0;
-            $scope.containsFullPaid = false;
             angular.forEach($scope.selectedValues, function (o) {
                 total += o.remaining;
                 increase += o.calculedInterest + o.calculedPenalty;
-                if (o.fullPaid) {
-                    $scope.containsFullPaid = true;
+            });
+
+            var qtd = 0;
+            var qtdPaid = 0;
+            $scope.selectedValues.forEach(function (e) {
+                if (e.isReplaced) {
+                    qtd++
+                }
+                if (e.fullPaid) {
+                    qtdPaid++
                 }
             });
+
+            $scope.containsReplaced = qtd > 0;
+
+            $scope.containsFullPaid = qtdPaid > 0;
+
             $scope.increase = increase;
             $scope.total = total;
         });
     };
 
-    // Chamar o template para impressão do recibo
-    $scope.printReceipt = function () {
-        var value = $scope.totalPayment().toString();
-        value = value.replace('.', ',');
-        $scope.payment.numberInWords = $filter('gumgaNumberInWords')(value, true);
-        $scope.payment.value = $scope.totalPayment().toFixed(2);
-        $scope.printPaid($scope.payment);
-    };
-
     $scope.printPaid = function (items) {
-        console.log('printPaid');
         var uibModalInstance = $uibModal.open({
-            templateUrl: receiptPrint,
+            templateUrl: template,
             controller: 'ReceivePrintEmbeddedController',
             size: "lg",
             resolve: {
@@ -157,7 +177,6 @@ function TitleParcelPayListEmbeddedController(
 
         });
     };
-
 
     $scope.individualCheckAndPay = function (parcels, $containsFullPaid) {
         if ($containsFullPaid) {
@@ -190,18 +209,23 @@ function TitleParcelPayListEmbeddedController(
         }
     };
 
+    $scope.renegotiation = function (values) {
+        TitleService.setRenegociationParcels(values);
+        $scope.$ctrl.onRenegotiation();
+    };
+
     $scope.tableConfig = {
         columns: 'documentNumber, parcel, individual, expiration, amount, calculedInterest, calculedPenalty, valuePay, value, status',
         checkbox: true,
-        selection: 'multi',
         // sortDefault: 'expiration',
+        selection: 'multi',
         materialTheme: true,
         itemsPerPage: [5, 10, 25, 50, 100],
-        title:'Listagem de Pagar Títulos',
+        title:'Listagem de Receber Títulos',
         columnsConfig: [
             {
                 name: 'documentNumber',
-                title: '<span>Nº Doc</span>',
+                title: '<span>Nº Doc.</span>',
                 content: '{{$value.titleData.documentNumber}}',
                 sortField: 'number'
             },
@@ -225,7 +249,7 @@ function TitleParcelPayListEmbeddedController(
             },
             {
                 name: 'amount',
-                title: '<span>Valor</span>',
+                title: '<span>Valor Total</span>',
                 content: '{{$value.value | currency: "R$"}}',
                 sortField: 'value'
             },
@@ -233,36 +257,37 @@ function TitleParcelPayListEmbeddedController(
                 name: 'calculedPenalty',
                 title: '<span>Multa</span>',
                 content: '{{$value.calculedPenalty | currency: "R$ "}} ',
-                sortField: 'calculedPenalty'
+                sortField: 'value'
             },
             {
                 name: 'calculedInterest',
                 title: '<span>Juros</span>',
                 content: '{{$value.calculedInterest | currency: "R$ "}} ',
-                sortField: 'calculedInterest'
+                sortField: 'value'
             },
             {
                 name: 'valuePay',
-                title: '<span>Pago</span>',
-                content: '{{($value.totalpayed) | currency: "R$"}}',
+                title: '<span>R$ Recebido</span>',
+                content: '{{$value.totalpayed | currency: "R$"}}',
                 sortField: 'value'
             },
             {
                 name: 'value',
-                title: '<span>A pagar</span>',
+                title: '<span>R$ a receber</span>',
                 content: '{{$value.remaining | currency: "R$"}}',
                 sortField: 'value'
             },
             {
                 name: 'status',
                 title: '<span>Status</span>',
-                sortField: 'value',
-                content: '<span ng-if="$value.totalpayed == 0" class="label label-info">Aberta</span>' +
-                '<span ng-if="$value.fullPaid" class="label label-danger">Pago</span>' +
+                content: '<span ng-if="$value.totalpayed == 0 && !$value.isReplaced" class="label label-info">Aberta</span>' +
+                '<span ng-if="$value.fullPaid" class="label label-danger">Recebido</span>' +
+                '<span ng-if="$value.isReplaced" class="label label-warning">Renegociada</span>' +
                 '<span ng-if="($value.totalpayed > 0) && !$value.fullPaid" class="label label-warning">Amortizado</span>'
             }
         ]
     }
+
 }
 
-module.exports = TitleParcelPayListEmbeddedController;
+module.exports = TitleParcelReceiveListEmbeddedController;

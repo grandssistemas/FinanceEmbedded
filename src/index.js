@@ -3,6 +3,7 @@ require('./cashcheckin/module');
 require('./cashcheckout/module');
 require('./financeTitle/module');
 require('./financeTitleParcelPay/module');
+require('./financeTitleParcelReceive/module');
 require('./services/module');
 require('./providers/module');
 
@@ -21,6 +22,7 @@ const finance = angular.module('finance.embedded', [
     'finance.services',
     'finance.title',
     'finance.titleparcel',
+    'finance.titleparcelreceive',
     'finance.cashcheckinembedded',
     'finance.cashcheckoutembedded'])
 

@@ -1,0 +1,90 @@
+<div class="printable-area">
+    <div>
+        <div class="receipt-header-number">
+            <label style="margin: 0 5px 0 5px;">Número do Recibo</label><br/>
+            <label>{{numberReceipt}}</label>
+        </div>
+        <div class="receipt-header-name-receive" >
+            <h1>RECIBO</h1>
+        </div>
+        <div class="receipt-header-value">
+            <label class="padding">{{recibo.value| currency: 'R$ '}}</label><br/>
+        </div>
+    </div>
+    <hr class="line" />
+    <div style="margin: 5px;">
+        <label>Recebi de: {{recibo.parcels[0].individual.name}} a importancia de: ({{recibo.numberInWords}}) referente à:</label>
+    </div>
+    <div>
+        <div class="table-title">
+            <label>Titulos</label>
+        </div>
+        <div style="margin: 0px 10px 0px 10px;">
+            <table class="table table-condensed">
+                <tr>
+                    <td>Parcela</td>
+                    <td>Documento</td>
+                    <td>Vencimento</td>
+                    <td>Valor Doc</td>
+                    <td>Juros/Multa</td>
+                    <td>Amortização</td>
+                    <td>a Pagar</td>
+                </tr>
+                <tr ng-repeat="parcels in recibo.parcels">
+                    <td>{{parcels.number}}/{{parcels.titleData.parcelsCount}}</td>
+                    <td>12346</td>
+                    <td>{{parcels.expiration| date:"MM/dd/yyyy"}}</td>
+                    <td>{{parcels.titleData.totalValue| currency: "R$ "}}</td>
+                    <td>{{(parcels.calculedInterest + parcels.calculedPenalty) | currency: "R$ " }}</td>
+                    <td>{{(parcels.titleData.totalValue - parcels.remaining) | currency: "R$ "}}</td>
+                    <td>{{((parcels.remaining + (parcels.calculedInterest + parcels.calculedPenalty)) - parcels.discount.value) | currency: "R$ "}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="table-title">
+        <label>Método Recebimento</label>
+    </div>
+    <div style="margin: 0 10px 0 10px;">
+        <table class="table table-condensed">
+            <tr>
+                <td>Método</td>
+                <td>Nr. Cheque / Operação</td>
+                <td>Carteira / Conta</td>
+                <td>Vcto</td>
+                <td>Valor</td>
+            </tr>
+            <tr ng-repeat="receive in recibo.methodReceive">
+                <td ng-if="receive.method == 'money'">Dinheiro</td>
+                <td ng-if="receive.method == 'check'">Cheque</td>
+                <td ng-if="receive.method == 'bank'">Banco / {{receive.type}}</td>
+                <td ng-if="receive.method == 'card'">Cartão</td>
+
+                <td ng-if="receive.method == 'money'">-</td>
+                <td ng-if="receive.method == 'check'">{{receive.chequeNumber}}</td>
+                <td ng-if="receive.method == 'bank'">{{receive.operationNumber}}</td>
+                <td ng-if="receive.method == 'card'">-</td>
+
+                <td ng-if="receive.method == 'money'">{{receive.financeUnit.name}}</td>
+                <td ng-if="receive.method == 'check'">{{receive.financeUnit.name}}</td>
+                <td ng-if="receive.method == 'bank'">{{receive.financeUnit.name}}</td>
+                <td ng-if="receive.method == 'card'">{{receive.financeUnit.name}}</td>
+
+                <td ng-if="receive.method == 'money'">-</td>
+                <td ng-if="receive.method == 'check'">{{receive.availableIn| date: "dd/MM/yyyy"}}</td>
+                <td ng-if="receive.method == 'bank'">-</td>
+                <td ng-if="receive.method == 'card'">-</td>
+                <td>{{receive.value| currency: "R$ "}}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="signature">
+        <label>____________________________________________________</label><br/>
+        <label>{{user.organization}}</label>
+        <label class="pull-right">Maringá - {{recibo.momment| date: "dd/MM/yyyy"}}</label>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-success" type="button" ng-click="print()">Imprimir</button>
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancelar</button>
+</div>

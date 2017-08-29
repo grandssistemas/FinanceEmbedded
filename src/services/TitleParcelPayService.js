@@ -13,6 +13,15 @@ function TitleParcelPayService(GumgaRest, $http, FinanceEmbeddedService) {
         installmentsPayable = arr;
     };
 
+
+    Service.grouped = function (type) {
+        return $http.get(Service._url + '/grouped/' + type);
+    };
+
+    Service.individualSearch = function (idIndividual, type) {
+        return $http.get(Service._url + '/grouped/' + type + '/' + idIndividual)
+    };
+
     let format = function date2str(x, y) {
         var z = {
             M: x.getMonth() + 1,
