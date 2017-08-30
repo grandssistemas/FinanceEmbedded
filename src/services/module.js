@@ -7,6 +7,10 @@ module.exports = angular.module('finance.services', ['finance.providers'])
     .service('FinanceUnitService', require('./FinanceUnitService'))
     .service('DocumentTypeService', require('./DocumentTypeService'))
     .service('PlanLeafService', require('./PlanLeafService'))
+    .service('TitleService', require('./TitleService'))
+    .service('CashCheckinEmbeddedService', require('./CashCheckinEmbeddedService'))
+    .service('EmployeeService', require('./EmployeeService'))
+    .service('FinanceUnitGroupService', require('./FinanceUnitGroupService'))
     .service('TitleParcelPayService', require('./TitleParcelPayService'))
     .service('FinanceConfigurationService', require('./FinanceConfigurationService'))
     .service('CheckingAccountService', require('./CheckingAccountService'))
@@ -18,6 +22,8 @@ module.exports = angular.module('finance.services', ['finance.providers'])
     .service('CreditCardAccountService', require('./CreditCardAccountService'))
     .service('DocTedService', require('./DocTedService'))
     .service('BankService', require('./BankService'))
-    .service('TitleService', require('./TitleService'));
-
+    .service('TitleService', require('./TitleService'))
+    .service('CashCheckinEmbeddedService', require('./CashCheckinEmbeddedService'))
+    .service('EmployeeService', require('./EmployeeService'))
+    .service('FinanceUnitGroupService', require('./FinanceUnitGroupService'));
 

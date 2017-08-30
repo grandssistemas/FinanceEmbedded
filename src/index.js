@@ -1,4 +1,6 @@
 import Style from './style/index.css'
+require('./cashcheckin/module');
+require('./cashcheckout/module');
 require('./financeTitle/module');
 require('./financeTitleParcelPay/module');
 require('./financeTitleParcelReceive/module');
@@ -20,7 +22,9 @@ const finance = angular.module('finance.embedded', [
     'finance.services',
     'finance.title',
     'finance.titleparcel',
-    'finance.titleparcelreceive'])
+    'finance.titleparcelreceive',
+    'finance.cashcheckinembedded',
+    'finance.cashcheckoutembedded']);
 
 finance.directive('ngDynamicController', ngDynamicController)
 finance.directive('bindHtmlCompile', bindHtmlCompile)
