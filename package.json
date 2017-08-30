@@ -11,7 +11,7 @@
   },
   "scripts": {
     "prod": "webpack --config ./webpack.production.config.js",
-    "dev": "webpack-dev-server"
+    "dev": "webpack --config ./webpack.config.js"
   },
   "devDependencies": {
     "angular": "^1.6.5",
