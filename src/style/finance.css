@@ -1,0 +1,121 @@
+
+/*Recibo de pagamento*/
+
+.receipt-header {
+    border: 1px solid;
+    width: 1000px;
+}
+
+.receipt-header-number {
+    border: 1px solid;
+    margin: 10px 10px 0 10px;
+    display: inline-block;
+    text-align: center;
+}
+
+.receipt-header-name {
+    display: inline-block;
+    margin-left: 95px;
+}
+
+.padding {
+    padding-top: 10px;
+    margin-right: 54px;
+    margin-left: 5px;
+    font-size: 23px;
+}
+
+.line {
+    margin-bottom: 10px !important;
+    border-top: 1px solid #000;
+}
+
+.table-title {
+    text-align: center;
+    font-size: 24px;
+}
+
+.checks {
+    width: 340px;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.moneyCard {
+    width: 235px;
+    display: inline-block;
+    margin-left: 50px;
+}
+
+.bank {
+    display: inline-block;
+    margin-left: 50px;
+}
+
+.signature {
+    margin: 15px;
+}
+
+.tree-plan {
+    background: #fff;
+    border: none;
+    color: #000;
+    font-weight: 100;
+    padding: 10px 10px;
+    box-sizing: border-box;
+    min-height: 20px;
+    line-height: 20px;
+    border-bottom: 1px solid #000;
+}
+
+
+.agenda {
+    border: 1px solid #ddd;
+    padding: 0px 0px 0px 6px;
+    margin-top: 5px;
+}
+
+.lasted-collection {
+    border-bottom: 1px solid !important;
+    background-color: #fff !important;
+    border-top: 0 !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+}
+.tabs-content{
+    border-left: 1px solid #d6d6d6;
+    border-bottom: 1px solid #d6d6d6;
+    min-height: 460px;
+}
+.h2-margin{
+    margin-top:0;
+    display:inline
+}
+
+.voice{
+    color:red !important;
+}
+
+.receipt-header-name-receive {
+    display: inline-block;
+    margin-left: 20%;
+}
+
+.receipt-header-value {
+    border: 1px solid;
+    display: inline-block;
+    text-align: center;
+    margin-top: 10px;
+    margin-right: 10px;
+    float: right;
+
+}
+
+.receipt-header-value-receive {
+    border: 1px solid;
+    display: inline-block;
+    text-align: center;
+    margin-left: 65px;
+}
+
+

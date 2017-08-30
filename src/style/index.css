@@ -1,0 +1,9 @@
+@import url('./finance.css');
+
+
+.tab-content {
+    margin-top: 2%;
+}
+.bg-white {
+    background-color: #FFFFFF;
+}
