@@ -24,8 +24,8 @@ function CashCheckinEmbeddedFormController($scope,
 
     $scope.open = function (entity) {
         entity.status = 'NORMAL';
-        CashCheckinEmbeddedService.update(entity).then(function () {
-            $scope.$ctrl.onGoHome();
+        CashCheckinEmbeddedService.update(entity).then(function (data) {
+            $scope.$ctrl.onGoHome({data});
         })
     };
 
