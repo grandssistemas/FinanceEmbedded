@@ -56,8 +56,6 @@ function TitleParcelReceiveListEmbeddedController(
         $scope.aqFilterSelected = null;
         delete $scope.filters;
         delete $scope.individualSearch;
-        var aq = "obj.title.titleType='RECEIVE' AND (obj.fullPaid = false OR obj.fullPaid is null)";
-        $scope.titleparcel.methods.advancedSearch(aq)
     };
 
     $scope.getParcels(null, 1);
