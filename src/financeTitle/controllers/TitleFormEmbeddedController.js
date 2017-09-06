@@ -521,9 +521,8 @@ function TitleFormEmbeddedController(
         }, 0);
     };
 
-    $scope.changeValueParcel = function (value, index) {
-        $scope.elem = angular.copy($scope.title.data.parcel);
-        if (angular.equals($scope.elem[index].value, value)) {
+    $scope.changeValueParcel = function (value, index, oldValue) {
+        if (!angular.equals(oldValue, value) && $scope.title.data.parcel.length > 1) {
             swal({
                     title: "Valor",
                     text: "Deseja alterar o valor das demais parcelas?",
@@ -548,8 +547,8 @@ function TitleFormEmbeddedController(
         }
     };
 
-    $scope.changeDateParcel = function (value, index) {
-        if (!angular.equals($scope.title.data.parcel[index].expiration, new Date(value).getTime())) {
+    $scope.changeDateParcel = function (value, index, oldDate) {
+        if (!angular.equals(oldDate, value) && $scope.title.data.parcel.length > 1) {
             swal({
                     title: "Vencimento",
                     text: "Deseja alterar o vencimento das demais parcelas?",
