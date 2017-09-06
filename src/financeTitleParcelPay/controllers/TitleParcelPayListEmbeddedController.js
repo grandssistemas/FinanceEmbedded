@@ -44,8 +44,6 @@ function TitleParcelPayListEmbeddedController(
         $scope.aqFilterSelected = null;
         delete $scope.filters;
         delete $scope.individualSearch;
-        var aq = "obj.title.titleType='PAY' AND (obj.fullPaid = false OR obj.fullPaid is null)";
-        $scope.titleparcelPay.methods.advancedSearch(aq)
     };
 
     $scope.$watch('individualSearch', function (individual) {
