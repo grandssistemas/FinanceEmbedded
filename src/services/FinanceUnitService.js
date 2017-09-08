@@ -28,6 +28,14 @@ function FinanceUnitService(GumgaRest, $http, FinanceEmbeddedService) {
         return $http.get(apiExecutionQuery + '/entriesfromlastbalance/' + id)
     };
 
+    Service.getEntriesByFinanceUnitAndCheckin = (financeUnitId, checkinId) => {
+        return $http.get(`${apiExecutionQuery}/entriesbyfinanceunitandcheckin/${financeUnitId}/${checkinId}`)
+    }
+
+    Service.getEntriesByCheckin = (checkinId) => {
+        return $http.get(`${apiExecutionQuery}/entriesbycheckin/${checkinId}`)
+    }
+
     return Service;
 }
 
