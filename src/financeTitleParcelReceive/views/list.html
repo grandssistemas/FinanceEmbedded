@@ -9,6 +9,7 @@
                         search-method="individual.methods.asyncSearch('name',param)"
                         add-method="individual.methods.asyncPost(value,'name')"
                         field="name"
+                        on-select="filter(lastClicked, value)"
                         authorize-add="false">
                 </gumga-many-to-one>
             </form>

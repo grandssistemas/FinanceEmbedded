@@ -60,33 +60,30 @@ function TitleParcelReceiveListEmbeddedController(
 
     $scope.getParcels(null, 1);
 
-    $scope.$watch('individualSearch', function (individual) {
-        $scope.cleanFilter();
-        $scope.individualSearch = individual;
-        $scope.getParcels($scope.endDate, 1);
-    });
-
-    $scope.filter = function (whichFilter) {
+    $scope.filter = function (whichFilter, individual) {
         $scope.lastClicked = whichFilter;
-        var aq = "obj.title.titleType='RECEIVE'";
-        switch (whichFilter) {
-            case 'thisWeek':
-                aq = aq.concat(" AND obj.expiration >='" + moment().startOf('isoWeek').subtract(1, 'days').format('YYYY-MM-DD') + "' AND obj.expiration <='" + moment().endOf('isoWeek').subtract(1, 'days').format('YYYY-MM-DD') + "'");
-                break;
-            case 'thisMonth':
-                aq = aq.concat(" AND obj.expiration >='" + moment().startOf('month').format('YYYY-MM-DD') + "' AND obj.expiration <='" + moment().endOf('month').format('YYYY-MM-DD') + "'");
-                break;
-            case 'thisYear':
-                aq = aq.concat(" AND obj.expiration >='" + moment().startOf('year').format('YYYY-MM-DD') + "' AND obj.expiration <='" + moment().endOf('year').format('YYYY-MM-DD') + "'");
-                break;
-            default:
-            case 'today':
-                aq = aq.concat(" AND obj.expiration ='" + moment().format('YYYY-MM-DD') + "' ");
-                break
+        if (individual) {
+	        $scope.individualSearch = individual;
         }
+        var aq = "obj.title.titleType='RECEIVE'";
+	    switch (whichFilter) {
+		    case 'thisWeek':
+			    aq = aq.concat(" AND obj.expiration >='" + moment().startOf('isoWeek').subtract(1, 'days').format('YYYY-MM-DD') + "' AND obj.expiration <='" + moment().endOf('isoWeek').subtract(1, 'days').format('YYYY-MM-DD') + "'");
+			    break;
+		    case 'thisMonth':
+			    aq = aq.concat(" AND obj.expiration >='" + moment().startOf('month').format('YYYY-MM-DD') + "' AND obj.expiration <='" + moment().endOf('month').format('YYYY-MM-DD') + "'");
+			    break;
+		    case 'thisYear':
+			    aq = aq.concat(" AND obj.expiration >='" + moment().startOf('year').format('YYYY-MM-DD') + "' AND obj.expiration <='" + moment().endOf('year').format('YYYY-MM-DD') + "'");
+			    break;
+		    case 'today':
+			    aq = aq.concat(" AND obj.expiration ='" + moment().format('YYYY-MM-DD') + "' ");
+			    break;
+		    default: break;
+	    }
 
-        if ($scope.individualSearch && $scope.individualSearch.id) {
-            aq = aq.concat(" AND obj.individual.name='" + $scope.individualSearch.name + "' ")
+	    if ($scope.individualSearch && $scope.individualSearch.id) {
+		    aq = aq.concat(" AND obj.individual.name='" + $scope.individualSearch.name + "' ")
         }
 
         if ($scope.paidOut) {
@@ -95,7 +92,6 @@ function TitleParcelReceiveListEmbeddedController(
             aq = aq.concat("AND obj.title.titleType='RECEIVE' AND (obj.fullPaid = false OR obj.fullPaid is null)");
         }
         $scope.aqFilterSelected = aq;
-
         $scope.titleparcel.methods.advancedSearch(aq)
     };
 

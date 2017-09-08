@@ -26,7 +26,7 @@ function CashCheckoutEmbeddedFormController($scope,
                 function (isConfirm) {
                     if (isConfirm) {
                         entity.cashCheckouts = entity.cashCheckouts || [];
-                        entity.cashCheckouts.push({date: new Date(), status: 'NORMAL', change: $scope.change});
+                        entity.cashCheckouts.push({date: new Date(), status: 'NORMAL', change: $scope.change, defaultTransfer: $scope.defaultTransfer});
                         CashCheckinEmbeddedService.update(entity).then(function () {
                             $scope.$ctrl.onGoHome();
                         })
