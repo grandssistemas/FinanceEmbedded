@@ -18,24 +18,27 @@
                 <label>Filtros Rápidos:</label>
             </div>
             <div class="row">
-                <label class="btn btn-warning btn-sm gmd raised" ng-click="toReceive(1)">A Receber</label>
-                <label class="btn btn-warning btn-sm gmd raised" ng-click="receive(1)">Recebido</label>
-                <label class="btn btn-info btn-sm gmd raised" ng-model="filters" ng-show="hideOthers" uncheckable
-                       ng-click="filter('today')" uib-btn-radio="'today'">Hoje</label>
-                <label class="btn btn-info btn-sm gmd raised" ng-model="filters" ng-show="hideOthers" uncheckable
-                       ng-click="filter('thisWeek')" uib-btn-radio="'thisWeek'">Esta semana</label>
-                <label class="btn btn-info btn-sm gmd raised" ng-model="filters" ng-show="hideOthers" uncheckable
-                       ng-click="filter('thisMonth')" uib-btn-radio="'thisMonth'">Este Mês</label>
-                <label class="btn btn-info btn-sm gmd raised" ng-model="filters" ng-show="hideOthers" uncheckable
-                       ng-click="filter('thisYear')" uib-btn-radio="'Thisyear'">Este Ano</label>
-                <label class="btn btn-info btn-sm gmd raised" ng-model="filters" uncheckable uib-btn-radio="'custom'"
-                       ng-click="hideOthers = !hideOthers">Personalizado</label>
+                <label id="toReceive" class="btn-sm gmd raised" ng-class="buttonTypeClass('TORECEIVE')" uib-btn-radio="'toReceive'" ng-model="filterReceive" uncheckable ng-click="toReceive(1)">A Receber</label>
+                <label class="btn-sm gmd raised" ng-class="buttonTypeClass('RECEIVE')" uib-btn-radio="'receive'" ng-model="filterReceive" uncheckable ng-click="receive(1)">Recebido</label>
+            </div>
+            <div class="row" style="margin-top: 10px">
+                <label class="btn-sm gmd raised" ng-model="filters" ng-show="hideOthers" uncheckable
+                       ng-click="filter('today')" uib-btn-radio="'today'" ng-class="buttonSubTypeClass('today')">Hoje</label>
+                <label class="btn-sm gmd raised" ng-model="filters" ng-show="hideOthers" uncheckable
+                       ng-click="filter('thisWeek')" uib-btn-radio="'thisWeek'" ng-class="buttonSubTypeClass('thisWeek')">Esta semana</label>
+                <label class="btn-sm gmd raised" ng-model="filters" ng-show="hideOthers" uncheckable
+                       ng-click="filter('thisMonth')" uib-btn-radio="'thisMonth'" ng-class="buttonSubTypeClass('thisMonth')">Este Mês</label>
+                <label class="btn-sm gmd raised" ng-model="filters" ng-show="hideOthers" uncheckable
+                       ng-click="filter('thisYear')" uib-btn-radio="'Thisyear'" ng-class="buttonSubTypeClass('thisYear')">Este Ano</label>
+                <label class="btn-sm gmd raised" ng-model="filters" uncheckable uib-btn-radio="'custom'"
+                       ng-click="hideOthers = !hideOthers; changeSubTypeButton('custom')" ng-class="buttonSubTypeClass('custom')">Personalizado</label>
             </div>
         </div>
-        <div class="col-md-2 m-t-md" ng-if="filters == 'custom'">
+        <div class="col-md-2 m-t-md" ng-show="filters == 'custom'">
+            <!--<gumga-date ng-model="$parent.$parent.endDate" name="expiration" ng-blur="filter('custom')"></gumga-date>-->
             <gmd-input>
                 <input type="text" name="expiration" class="form-control gmd" uib-datepicker-popup="dd/MM/yyyy"
-                       ng-model="endDate"/>
+                       ng-model="$parent.$parent.endDate" ng-blur="filter('custom')"/>
                 <span class="bar"></span>
                 <label>Data final</label>
             </gmd-input>

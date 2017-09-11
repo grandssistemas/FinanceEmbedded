@@ -261,7 +261,7 @@ function PayReceiveEmbeddedController(
     };
 
 
-    $scope.calcCheques = function () {
+    $scope.calcCheques = function (id) {
         if ($scope.payment.numberReceive >= 1) {
             $scope.payment.value = $scope.lastReceive
         } else {
@@ -275,6 +275,7 @@ function PayReceiveEmbeddedController(
                 $scope.payment.value = $scope.total;
             }
         }
+        document.getElementById(id).select();
     };
 
     $scope.totalReceive = function () {
@@ -314,7 +315,6 @@ function PayReceiveEmbeddedController(
         });
     };
 
-
     $scope.makePayment = function (payment) {
         $scope.post = payment;
         PaymentService.receive(payment)
@@ -322,6 +322,36 @@ function PayReceiveEmbeddedController(
                 $scope.$ctrl.onMakePayment();
             })
     }
+
+    $scope.setarfocusPayment = function(value) {
+        switch (value) {
+            case 'money':
+                angular.element(document.getElementById("paymentMoneyFinanceunit"))
+                    .find('input')[1].focus();
+                break
+            case 'check':
+                document.getElementById("paymentCheckFinanceunit").focus();
+                break
+            case 'bank':
+                angular.element(document.getElementById("paymentBankFinanceunit"))
+                    .find('input')[1].focus();
+                break
+            case 'card':
+                angular.element(document.getElementById("paymentCardFinanceunit"))
+                    .find('input')[1].focus();
+                break
+            case 'credit':
+                angular.element(document.getElementById("paymentCreditFinanceunit"))
+                    .find('input')[1].focus();
+                break
+        };
+    };
+
+    $scope.selectAllText = function(id){
+        document.getElementById(id).focus();
+        document.getElementById(id).select();
+    }
+
 }
 
 module.exports = PayReceiveEmbeddedController;

@@ -16,30 +16,30 @@
         <div ng-class="{'col-md-3 col-lg-3': filters == 'custom', 'col-md-8 col-lg-8': filters !== 'custom'}">
             <label>Filtros Rápidos:</label>
             <div class="row">
-                <div class="col-md-12">
-                    <label class="btn btn-warning btn-sm gmd raised" ng-click="pays(1)">A pagar</label>
-                    <label class="btn btn-warning btn-sm gmd raised" ng-click="paid(1)">Pagos</label>
-                    <label class="btn btn-info btn-sm gmd raised" ng-if="filters !== 'custom'" ng-model="filters"
-                           uncheckable
-                           ng-click="filter('today')" uib-btn-radio="'today'">Hoje</label>
-                    <label class="btn btn-info btn-sm gmd raised" ng-if="filters !== 'custom'" ng-model="filters"
-                           uncheckable
-                           ng-click="filter('thisWeek')" uib-btn-radio="'thisWeek'">Esta semana</label>
-                    <label class="btn btn-info btn-sm gmd raised" ng-if="filters !== 'custom'" ng-model="filters"
-                           uncheckable
-                           ng-click="filter('thisMonth')" uib-btn-radio="'thisMonth'">Este Mês</label>
-                    <label class="btn btn-info btn-sm gmd raised" ng-if="filters !== 'custom'" ng-model="filters"
-                           uncheckable
-                           ng-click="filter('thisYear')" uib-btn-radio="'Thisyear'">Este Ano</label>
-                    <label class="btn btn-info btn-sm gmd raised" ng-model="filters" uncheckable
-                           uib-btn-radio="'custom'">Personalizado</label>
-                </div>
+                <label class="btn-sm gmd raised" ng-class="buttonTypeClass('pays')" uib-btn-radio="'pays'" ng-model="filterPay" uncheckable ng-click="pays(1)">A pagar</label>
+                <label class="btn-sm gmd raised" ng-class="buttonTypeClass('paid')" uib-btn-radio="'paid'" ng-model="filterPay" uncheckable ng-click="paid(1)">Pagos</label>
+            </div>
+            <div class="row" style="margin-top: 10px">
+                <label class="btn-sm gmd raised" ng-if="filters !== 'custom'" ng-model="filters"
+                       uncheckable
+                       ng-click="filter('today')" ng-class="buttonSubTypeClass('today')" uib-btn-radio="'today'">Hoje</label>
+                <label class="btn-sm gmd raised" ng-if="filters !== 'custom'" ng-model="filters"
+                       uncheckable
+                       ng-click="filter('thisWeek')" ng-class="buttonSubTypeClass('thisWeek')" uib-btn-radio="'thisWeek'">Esta semana</label>
+                <label class="btn-sm gmd raised" ng-if="filters !== 'custom'" ng-model="filters"
+                       uncheckable
+                       ng-click="filter('thisMonth')" ng-class="buttonSubTypeClass('thisMonth')" uib-btn-radio="'thisMonth'">Este Mês</label>
+                <label class="btn-sm gmd raised" ng-if="filters !== 'custom'" ng-model="filters"
+                       uncheckable
+                       ng-click="filter('thisYear')" ng-class="buttonSubTypeClass('thisYear')" uib-btn-radio="'Thisyear'">Este Ano</label>
+                <label class="btn-sm gmd raised" ng-model="filters" uncheckable ng-class="buttonSubTypeClass('custom')"
+                       uib-btn-radio="'custom'" ng-click="changeSubTypeButton('custom')">Personalizado</label>
             </div>
         </div>
-        <div class="col-md-2 col-lg-2 m-t-md" ng-if="filters == 'custom'">
+        <div class="col-md-2 col-lg-2 m-t-md" ng-show="filters == 'custom'">
             <gmd-input>
                 <input type="text" name="expiration" class="form-control gmd" uib-datepicker-popup="dd/MM/yyyy"
-                       ng-model="endDate"/>
+                       ng-model="$parent.$parent.endDate" ng-blur="filter('custom')"/>
                 <span class="bar"></span>
                 <label>Data final</label>
             </gmd-input>

@@ -56,6 +56,7 @@ function TitleParcelReceiveListEmbeddedController(
         $scope.aqFilterSelected = null;
         delete $scope.filters;
         delete $scope.individualSearch;
+        $scope.selectedSubType = '';
     };
 
     $scope.getParcels(null, 1);
@@ -79,10 +80,12 @@ function TitleParcelReceiveListEmbeddedController(
             case 'thisYear':
                 aq = aq.concat(" AND obj.expiration >='" + moment().startOf('year').format('YYYY-MM-DD') + "' AND obj.expiration <='" + moment().endOf('year').format('YYYY-MM-DD') + "'");
                 break;
-            default:
             case 'today':
-                aq = aq.concat(" AND obj.expiration ='" + moment().format('YYYY-MM-DD') + "' ");
-                break
+                aq = aq.concat(" AND obj.expiration >='" + moment().format('YYYY-MM-DD') + " 00:00:00" + "' AND obj.expiration <='" + moment().format('YYYY-MM-DD') + " 23:59:59" + "' " );
+                break;
+            case 'custom':
+                aq = aq.concat(" AND obj.expiration >='" + moment($scope.endDate).format('YYYY-MM-DD') + " 00:00:00" + "' AND obj.expiration <='" + moment($scope.endDate).format('YYYY-MM-DD') + " 23:59:59" + "' " );
+                break;
         }
 
         if ($scope.individualSearch && $scope.individualSearch.id) {
@@ -95,8 +98,8 @@ function TitleParcelReceiveListEmbeddedController(
             aq = aq.concat("AND obj.title.titleType='RECEIVE' AND (obj.fullPaid = false OR obj.fullPaid is null)");
         }
         $scope.aqFilterSelected = aq;
-
-        $scope.titleparcel.methods.advancedSearch(aq)
+        $scope.titleparcel.methods.advancedSearch(aq);
+        $scope.changeSubTypeButton(whichFilter);
     };
 
     $scope.searchByIndividual = function (individual) {
@@ -107,6 +110,8 @@ function TitleParcelReceiveListEmbeddedController(
         $scope.lastClicked = null;
         $scope.aqFilterSelected = null;
         $scope.paidOut = true;
+        $scope.selectedSubType = '';
+        delete $scope.filters;
 
         TitleParcelPayService.findOpenByMaxDate(null, 'RECEIVE', page, $scope.individualSearch, $scope.paidOut, $scope.aqFilterSelected)
             .then(function (data) {
@@ -114,6 +119,7 @@ function TitleParcelReceiveListEmbeddedController(
                 $scope.titleparcel.data = data.data.values;
                 $scope.titleparcel.pageSize = data.data.pageSize;
                 $scope.titleparcel.count = data.data.count;
+                $scope.changeTypeButton('RECEIVE');
             });
     };
 
@@ -121,6 +127,8 @@ function TitleParcelReceiveListEmbeddedController(
         $scope.lastClicked = null;
         $scope.aqFilterSelected = null;
         $scope.paidOut = false;
+        $scope.selectedSubType = '';
+        delete $scope.filters;
 
         TitleParcelPayService.findOpenByMaxDate(null, 'RECEIVE', page, $scope.individualSearch, $scope.paidOut, $scope.aqFilterSelected)
             .then(function (data) {
@@ -128,6 +136,7 @@ function TitleParcelReceiveListEmbeddedController(
                 $scope.titleparcel.data = data.data.values;
                 $scope.titleparcel.pageSize = data.data.pageSize;
                 $scope.titleparcel.count = data.data.count;
+                $scope.changeTypeButton('TORECEIVE');
             });
     };
 
@@ -286,6 +295,22 @@ function TitleParcelReceiveListEmbeddedController(
         ]
     }
 
+    $scope.selectedType = 'TORECEIVE';
+    $scope.buttonTypeClass = function (parameter) {
+        return $scope.selectedType === parameter ? 'btn btn-danger' : 'btn btn-primary';
+    };
+
+    $scope.buttonSubTypeClass = function (parameter) {
+        return $scope.selectedSubType === parameter ? 'btn btn-danger' : 'btn btn-info';
+    };
+
+    $scope.changeTypeButton = function (newType) {
+        $scope.selectedType = newType;
+    };
+
+    $scope.changeSubTypeButton = function (newType) {
+        $scope.selectedSubType = newType;
+    };
 }
 
 module.exports = TitleParcelReceiveListEmbeddedController;
