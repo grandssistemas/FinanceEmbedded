@@ -391,7 +391,7 @@ function PayEmbeddedController(
     };
 
     // Calcula os cheque selecionado
-    $scope.calcCheques = function () {
+    $scope.calcCheques = function (id) {
         if ($scope.payment.numberPayment >= 1) {
             $scope.payment.value = $scope.lastPayment
         } else {
@@ -405,6 +405,7 @@ function PayEmbeddedController(
                 $scope.payment.value = $scope.total;
             }
         }
+        document.getElementById(id).select();
     };
 
 
@@ -426,6 +427,39 @@ function PayEmbeddedController(
             })
         }
 
+    }
+
+    $scope.setarfocusPayment = function(value) {
+        switch (value) {
+            case 'money':
+                angular.element(document.getElementById("paymentMoneyFinanceunit"))
+                    .find('input')[1].focus();
+                break
+            case 'check':
+                angular.element(document.getElementById("paymentCheckFinanceunit"))
+                    .find('input')[1].focus();
+                break
+            case 'ted':
+                document.getElementById("paymentBankFinanceunit").focus();
+                break
+            case 'companyCheck':
+                angular.element(document.getElementById("paymentBank2Financeunit"))
+                    .find('input')[1].focus();
+                break
+            case 'card':
+                angular.element(document.getElementById("paymentCardFinanceunit"))
+                    .find('input')[1].focus();
+                break
+            case 'credit':
+                angular.element(document.getElementById("paymentCreditFinanceunit"))
+                    .find('input')[1].focus();
+                break
+        };
+    };
+
+    $scope.selectAllText = function(id){
+        document.getElementById(id).focus();
+        document.getElementById(id).select();
     }
 
 }

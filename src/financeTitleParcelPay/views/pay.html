@@ -27,17 +27,17 @@
                         <div class="col-md-12">
                             <label gumga-translate-tag="titleparcel.formPayment">formPayment</label><br/>
                             <label class="btn btn-info gmd raised" ng-model="payment.method" uib-btn-radio="'money'"
-                                   gumga-translate-tag="titleparcel.money">money</label>
+                                   gumga-translate-tag="titleparcel.money" ng-click="setarfocusPayment('money')">money</label>
                             <label class="btn btn-info gmd raised" ng-model="payment.method"
                                    uib-btn-radio="'thirdCheck'"
-                                   gumga-translate-tag="titleparcel.thirdCheck">thirdCheck</label>
+                                   gumga-translate-tag="titleparcel.thirdCheck" ng-click="setarfocusPayment('check')">thirdCheck</label>
                             <label class="btn btn-info gmd raised" ng-model="payment.method" uib-btn-radio="'bank'"
                                    gumga-translate-tag="titleparcel.bank">bank</label>
                             <label class="btn btn-info gmd raised" ng-model="payment.method" uib-btn-radio="'card'"
-                                   gumga-translate-tag="titleparcel.card">card</label>
+                                   gumga-translate-tag="titleparcel.card" ng-click="setarfocusPayment('card')">card</label>
                             <label class="btn btn-info gmd raised" ng-model="payment.method" uib-btn-radio="'credit'"
                                    gumga-translate-tag="titleparcel.credit"
-                                   ng-if="showMenuPersonalCredit">credit</label>
+                                   ng-if="showMenuPersonalCredit" ng-click="setarfocusPayment('credit')">credit</label>
                         </div>
                     </div>
                     <hr style="margin: 10px 0 10px 0;"/>
@@ -56,15 +56,16 @@
                                         on-new-value-added="checkType()"
                                         description="type"
                                         field="name"
-                                        authorize-add="false">
+                                        authorize-add="false"
+                                        id="paymentMoneyFinanceunit"                                >
                                 </gumga-many-to-one>
 
                             </div>
                         </div>
                         <div class="col-md-3 m-t-md">
                             <gmd-input>
-                                <input id="value" type="text" name="value" ng-model="payment.value"
-                                       ng-focus="calcCheques()" class="form-control text-right gmd" gumga-error
+                                <input id="valuemoney" type="text" name="value" ng-model="payment.value"
+                                       ng-focus="calcCheques('valuemoney')" ng-click="selectAllText('valuemoney')" class="form-control text-right gmd" gumga-error
                                        ui-money-mask="2" tabindex="2">
                                 <span class="bar"></span>
                                 <label gumga-translate-tag="titleparcel.value">value</label><br/>
@@ -94,14 +95,16 @@
                                         search-method="chequeportfolio.methods.asyncSearch('name',param)"
                                         add-method="checkingaccount.methods.asyncPost(value,'name')"
                                         field="name"
-                                        authorize-add="false">
+                                        authorize-add="false"
+                                        id="paymentCheckFinanceunit">
                                 </gumga-many-to-one>
                             </div>
                         </div>
                         <div class="col-md-3 col-md-offset-3 m-t-md">
                             <gmd-input>
-                                <input id="value" type="text" name="value" ng-model="payment.value"
-                                       ng-focus="calcCheques()"
+                                <input id="valuecheck" type="text" name="value" ng-model="payment.value"
+                                       ng-focus="calcCheques('valuecheck')"
+                                       ng-click="selectAllText('valuecheck')"
                                        class="form-control text-right gmd" disabled ui-money-mask="2" tabindex="2">
                                 <span class="bar"></span>
                                 <label gumga-translate-tag="titleparcel.value">value</label><br/>
@@ -153,18 +156,18 @@
                             <!--<input bs-switch ng-model="isTed" switch-on-text="{{'TED'}}" switch-off-text="{{'DOC'}}" type="checkbox" switch-off-color="{{'primary'}}">-->
                             <label class="btn btn-primary btn-outline gmd raised" ng-model="payment.type"
                                    uib-btn-radio="'TED'"
-                                   gumga-translate-tag="titleparcel.ted">ted</label>
+                                   gumga-translate-tag="titleparcel.ted" ng-click="setarfocusPayment('ted')">ted</label>
                             <label class="btn btn-primary btn-outline gmd raised" ng-model="payment.type"
                                    uib-btn-radio="'DOC'"
-                                   gumga-translate-tag="titleparcel.doc">doc</label>
+                                   gumga-translate-tag="titleparcel.doc" ng-click="setarfocusPayment('ted')">doc</label>
                             <label class="btn btn-primary btn-outline gmd raised" ng-model="payment.type"
-                                   uib-btn-radio="'companyCheck'" gumga-translate-tag="titleparcel.companyCheck">companyCheck</label>
+                                   uib-btn-radio="'companyCheck'" gumga-translate-tag="titleparcel.companyCheck" ng-click="setarfocusPayment('companyCheck')">companyCheck</label>
                         </div>
                         <div ng-if="payment.type == 'TED' || payment.type == 'DOC'">
                             <div class="col-md-3 m-t-md">
                                 <gmd-input>
                                     <input type="text" ng-model="payment.docTed.operation" name="operation"
-                                           class="form-control gmd" tabindex="1">
+                                           class="form-control gmd" tabindex="1" id="paymentBankFinanceunit">
                                     <span class="bar"></span>
                                     <label gumga-translate-tag="titleparcel.operationNumber">operationNumber</label>
                                 </gmd-input>
@@ -186,8 +189,8 @@
                             </div>
                             <div class="col-md-3 m-t-md">
                                 <gmd-input>
-                                    <input id="value" type="text" name="value" ng-model="payment.value"
-                                           ng-focus="calcCheques()" class="form-control text-right gmd" gumga-error
+                                    <input id="valuebank" type="text" name="value" ng-model="payment.value"
+                                           ng-focus="calcCheques('valuebank')" ng-click="selectAllText('valuebank')" class="form-control text-right gmd" gumga-error
                                            ui-money-mask="2" tabindex="3">
                                     <span class="bar"></span>
                                     <label gumga-translate-tag="titleparcel.value">value</label><br/>
@@ -214,7 +217,8 @@
                                                 field="name"
                                                 description="account"
                                                 authorize-add="false"
-                                                add-method="checkingaccount.methods.asyncPost(value,'name')">
+                                                add-method="checkingaccount.methods.asyncPost(value,'name')"
+                                                id="paymentBank2Financeunit">
                                         </gumga-many-to-one>
                                     </div>
                                 </div>
@@ -244,8 +248,8 @@
                             <div class="col-md-4 m-t-md">
                                 <div gumga-form-class="value">
                                     <gmd-input>
-                                        <input type="text" name="value" id="value" ng-model="payment.value"
-                                               ng-focus="calcCheques()" class="form-control text-right gmd" gumga-error
+                                        <input type="text" name="value" id="valuebank2" ng-model="payment.value"
+                                               ng-focus="calcCheques('valuebank2')" ng-click="selectAllText('valuebank2')" class="form-control text-right gmd" gumga-error
                                                ui-money-mask="2" tabindex="4">
                                         <span class="bar"></span>
                                         <label gumga-translate-tag="titleparcel.value">Valor</label><br/>
@@ -284,13 +288,14 @@
                                     field="name"
                                     tab-seq="1"
                                     search-method="creditcard.methods.asyncSearch('name',param)"
-                                    authorize-add="false">
+                                    authorize-add="false"
+                                    id="paymentCardFinanceunit">
                             </gumga-many-to-one>
                         </div>
                         <div class="col-md-3 col-md-offset-2 m-t-md">
                             <gmd-input>
-                                <input id="value" type="text" name="value" ng-model="payment.value"
-                                       ng-focus="calcCheques()"
+                                <input id="valuecard" type="text" name="value" ng-model="payment.value"
+                                       ng-focus="calcCheques('valuecard')" ng-click="selectAllText('valuecard')"
                                        class="form-control text-right gmd" gumga-error ui-money-mask="2" tabindex="2">
                                 <span class="bar"></span>
                                 <label gumga-translate-tag="titleparcel.value">value</label><br/>
@@ -320,14 +325,15 @@
                                         on-new-value-added="checkType()"
                                         description="type"
                                         field="name"
-                                        authorize-add="false">
+                                        authorize-add="false"
+                                        id="paymentCreditFinanceunit">
                                 </gumga-many-to-one>
                             </div>
                         </div>
                         <div class="col-md-3 m-t-md">
                             <gmd-input>
-                                <input id="value" type="text" name="value" ng-model="payment.value"
-                                       ng-focus="calcCheques()"
+                                <input id="valuecredit" type="text" name="value" ng-model="payment.value"
+                                       ng-focus="calcCheques('valuecredit')" ng-click="selectAllText('valuecredit')"
                                        class="form-control text-right gmd" gumga-error ui-money-mask="2" tabindex="2">
                                 <span class="bar"></span>
                                 <label gumga-translate-tag="titleparcel.value">value</label><br/>
