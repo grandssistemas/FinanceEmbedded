@@ -61,11 +61,15 @@ function TitleParcelReceiveListEmbeddedController(
 
     $scope.getParcels(null, 1);
 
-    $scope.filter = function (whichFilter, individual) {
+    $scope.$watch('individualSearch', function (individual) {
+        $scope.cleanFilter();
+        $scope.individualSearch = individual;
+        $scope.getParcels($scope.endDate, 1);
+    });
+
+    $scope.filter = function (whichFilter) {
         $scope.lastClicked = whichFilter;
-        if (individual) {
-	        $scope.individualSearch = individual;
-        }
+
         var aq = "obj.title.titleType='RECEIVE'";
         switch (whichFilter) {
             case 'thisWeek':
