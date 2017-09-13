@@ -2,6 +2,7 @@ CashCheckoutEmbeddedFormController.$inject = ['$scope',
     'CashCheckinEmbeddedService',
     'FinanceUnitService',
     'SweetAlert',
+    'MoneyUtilsService',
     '$filter',
     '$uibModal'
 ];
@@ -10,6 +11,7 @@ function CashCheckoutEmbeddedFormController($scope,
                                             CashCheckinEmbeddedService,
                                             FinanceUnitService,
                                             SweetAlert,
+                                            MoneyUtilsService,
                                             $filter,
                                             $uibModal) {
     $scope.entity = angular.copy($scope.$ctrl.entity);
@@ -59,7 +61,7 @@ function CashCheckoutEmbeddedFormController($scope,
                         let movementedValue = data.data.filter(function (entry) {
                             return financeUnit.id === entry.financeUnit.id;
                         }).reduce(function (a, b) {
-                            return a + b.value;
+                            return MoneyUtilsService.sumMoney(a , b.value);
                         }, 0);
                         return {financeUnit: financeUnit, movementedValue: movementedValue, informedValue: 0}
                     });
@@ -76,6 +78,7 @@ function CashCheckoutEmbeddedFormController($scope,
     function validateDiference(entity) {
         for (let i = 0; i < entity.values.length; i++) {
             if (!isComparationCorrect(entity.values[i], entity.destinyChange)) {
+                console.log(entity.values[i], entity.destinyChange)
                 SweetAlert.swal("Diferença de Valores!", "A conta " + entity.values[i].financeUnit.name +
                     " esta com diferença de valores, realize movimentações de caixa para corrigir antes de fechar.", "error");
                 return false;
@@ -89,7 +92,7 @@ function CashCheckoutEmbeddedFormController($scope,
         if (destiny && destiny.id === value.financeUnit.id) {
             change = $scope.change || 0;
         }
-        return value.movementedValue === (value.informedValue + change);
+        return value.movementedValue === MoneyUtilsService.sumMoney(value.informedValue , change);
     }
 
     $scope.formatDate = function (date) {
