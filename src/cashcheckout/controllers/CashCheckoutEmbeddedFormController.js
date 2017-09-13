@@ -3,13 +3,15 @@ CashCheckoutEmbeddedFormController.$inject = ['$scope',
     'FinanceUnitService',
     'SweetAlert',
     '$filter',
+    '$uibModal'
 ];
 
 function CashCheckoutEmbeddedFormController($scope,
                                             CashCheckinEmbeddedService,
                                             FinanceUnitService,
                                             SweetAlert,
-                                            $filter){
+                                            $filter,
+                                            $uibModal) {
     $scope.entity = angular.copy($scope.$ctrl.entity);
     $scope.noCheckin = !$scope.entity;
     $scope.close = function (entity) {
@@ -26,7 +28,12 @@ function CashCheckoutEmbeddedFormController($scope,
                 function (isConfirm) {
                     if (isConfirm) {
                         entity.cashCheckouts = entity.cashCheckouts || [];
-                        entity.cashCheckouts.push({date: new Date(), status: 'NORMAL', change: $scope.change});
+                        entity.cashCheckouts.push({
+                            date: new Date(),
+                            status: 'NORMAL',
+                            change: $scope.change,
+                            defaultTransfer: $scope.defaultTransfer
+                        });
                         CashCheckinEmbeddedService.update(entity).then(function () {
                             $scope.$ctrl.onGoHome();
                         })
@@ -93,21 +100,62 @@ function CashCheckoutEmbeddedFormController($scope,
         param = param || '';
         var hql = "(SELECT count(gUnit) " +
             "FROM FinanceUnitGroup groups inner join groups.financeUnits gUnit " +
-            "WHERE groups.id = "+$scope.entity.group.id+" AND gUnit = obj) = 0 AND " +
-            "lower(obj.name) like '%"+param+"%'";
+            "WHERE groups.id = " + $scope.entity.group.id + " AND gUnit = obj) = 0 AND " +
+            "lower(obj.name) like '%" + param + "%'";
         return FinanceUnitService.getAdvancedSearch(hql).then(function (data) {
             return data.data.values;
         })
     };
 
-    $scope.disabledCloseCash = function(){
+    $scope.disabledCloseCash = function () {
         return $scope.noCheckin || !transferAccountCorrect($scope.entity);
     };
 
-    function transferAccountCorrect(entity){
-        return (entity.values && entity.values.reduce(function(a,b){
-                return a && (b.financeUnit.defaultTransfer || !b.movementedValue);
-            },true)) || !!$scope.defaultTransfer;
+    function transferAccountCorrect(entity) {
+        return (entity.values && entity.values.reduce(function (a, b) {
+            return a && (b.financeUnit.defaultTransfer || !b.movementedValue);
+        }, true)) || !!$scope.defaultTransfer;
+    }
+
+    $scope.showMovements = (financeUnit) => {
+        $uibModal.open({
+            animation: true,
+            templateUrl: '/cashcheckout/views/BalanceModal.html',
+            controller: 'BalanceModalController',
+            backdrop: 'static',
+            size: 'larger',
+            resolve: {
+                entries: function () {
+                    return FinanceUnitService.getEntriesByFinanceUnitAndCheckin(financeUnit.id, $scope.entity.id);
+                },
+                config: function () {
+                    return {
+                        title: `Listagem de movimentações da conta ${financeUnit.name}`,
+                        type: 'FINANCEUNIT'
+                    }
+                },
+            }
+        });
+    }
+
+    $scope.showAllMovements = () => {
+        $uibModal.open({
+            animation: true,
+            templateUrl: '/cashcheckout/views/BalanceModal.html',
+            controller: 'BalanceModalController',
+            backdrop: 'static',
+            size: 'larger',
+            resolve: {
+                entries: function () {
+                    return FinanceUnitService.getEntriesByCheckin($scope.entity.id);
+                }, config: function () {
+                    return {
+                        title: `Listagem de movimentações nesta abertura`,
+                        type: 'ALL'
+                    }
+                },
+            }
+        });
     }
 }
 

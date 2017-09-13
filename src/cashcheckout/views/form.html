@@ -45,7 +45,10 @@
                                                                         </span>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-md-offset-4 col-md-4">
+                                                                <div class="col-md-4">
+                                                                    <button type="btn" class="btn gmd raised btn-primary" ng-click="showAllMovements()">Movimentações</button>
+                                                                </div>
+                                                                <div class="col-md-4">
                                                                     <label gumga-translate-tag="cashcheckin.defaulttransfer">Init
                                                                         Change</label>
                                                                     <gumga-many-to-one
@@ -77,10 +80,13 @@
                                                                            ng-model="value.movementedValue" disabled
                                                                            ui-money-mask>
                                                                 </div>
-                                                                <div class="col-md-4">
+                                                                <div class="col-md-3">
                                                                     <label gumga-translate-tag="cashcheckin.difference"></label><br>
                                                                     <label class="form-control">{{value.informedValue -
                                                                         value.movementedValue|currency:'R$'}}</label>
+                                                                </div>
+                                                                <div class="col-md-1 m-t-lg">
+                                                                    <button type="button" class="inline-block btn-link btn-xs text-primary" ng-click="showMovements(value.financeUnit)"><i class="material-icons">search</i></button>
                                                                 </div>
                                                             </div>
                                                         </div>

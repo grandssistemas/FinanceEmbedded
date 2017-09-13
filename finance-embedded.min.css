@@ -118,7 +118,20 @@
     margin-left: 65px;
 }
 
+.table-ellipsis {
+    width: 120%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
 
+.modal-larger {
+    width: 90%;
+}
+
+.color-red {
+    color: red;
+}
 .tab-content {
     margin-top: 2%;
 }
