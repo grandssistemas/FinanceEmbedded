@@ -20,6 +20,7 @@ export default angular.module('group.dependencies', [
     'gumga.genericfilter',
     'gumga.list',
     'gumga.date',
+    'gumga.numberinwords',
     'ui.utils.masks',
     'gumga.layout',
     'ui.select'
