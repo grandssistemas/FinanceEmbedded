@@ -35,7 +35,6 @@
             </div>
         </div>
         <div class="col-md-2 m-t-md" ng-show="filters == 'custom'">
-            <!--<gumga-date ng-model="$parent.$parent.endDate" name="expiration" ng-blur="filter('custom')"></gumga-date>-->
             <gmd-input>
                 <input type="text" name="expiration" class="form-control gmd" uib-datepicker-popup="dd/MM/yyyy"
                        ng-model="$parent.$parent.endDate" ng-blur="filter('custom')"/>

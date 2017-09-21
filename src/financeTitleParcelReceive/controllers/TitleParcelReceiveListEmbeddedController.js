@@ -54,6 +54,7 @@ function TitleParcelReceiveListEmbeddedController(
     $scope.cleanFilter = function () {
         $scope.lastClicked = null;
         $scope.aqFilterSelected = null;
+        $scope.hideOthers = true;
         delete $scope.filters;
         delete $scope.individualSearch;
         $scope.selectedSubType = '';
@@ -64,12 +65,11 @@ function TitleParcelReceiveListEmbeddedController(
     $scope.$watch('individualSearch', function (individual) {
         $scope.cleanFilter();
         $scope.individualSearch = individual;
-        $scope.getParcels($scope.endDate, 1);
+        $scope.getParcels(null, 1);
     });
 
     $scope.filter = function (whichFilter) {
         $scope.lastClicked = whichFilter;
-
         var aq = "obj.title.titleType='RECEIVE'";
         switch (whichFilter) {
             case 'thisWeek':
@@ -113,6 +113,7 @@ function TitleParcelReceiveListEmbeddedController(
         $scope.paidOut = true;
         $scope.selectedSubType = '';
         delete $scope.filters;
+        $scope.hideOthers = true;
 
         TitleParcelPayService.findOpenByMaxDate(null, 'RECEIVE', page, $scope.individualSearch, $scope.paidOut, $scope.aqFilterSelected)
             .then(function (data) {
@@ -130,6 +131,7 @@ function TitleParcelReceiveListEmbeddedController(
         $scope.paidOut = false;
         $scope.selectedSubType = '';
         delete $scope.filters;
+        $scope.hideOthers = true;
 
         TitleParcelPayService.findOpenByMaxDate(null, 'RECEIVE', page, $scope.individualSearch, $scope.paidOut, $scope.aqFilterSelected)
             .then(function (data) {
