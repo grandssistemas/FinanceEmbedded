@@ -86,7 +86,7 @@ function TitleListEmbeddedController(
         };
 
         $scope.tableConf = {
-            columns: 'titleType, issuedAt,documentNumber, participationsFormatted, postedAt, docname, value, btns',
+            columns: 'titleType, issuedAt,documentNumber, participationsFormatted, expiration, docname, value, btns',
             materialTheme: true,
             title: $scope.titleType === "pay" ? 'Listagem de Contas a Pagar' : 'Listagem de Contas a Receber',
             columnsConfig: [
@@ -114,9 +114,9 @@ function TitleListEmbeddedController(
                     '&nbsp;<span ng-if="$value.participations.length == 1">{{$value.participationsFormatted}}</span></div>'
 
                 }, {
-                    name: 'postedAt',
-                    title: '<span gumga-translate-tag="title.postedAt"></span>',
-                    content: '<span>{{$value.postedAt | date: \'dd/MM/yyyy\'}}</span>'
+                    name: 'expiration',
+                    title: '<span gumga-translate-tag="title.expiration"></span>',
+                    content: '<span>{{$parent.$parent.getNextParcelExpiration($value.parcel) | date: \'dd/MM/yyyy\'}}</span>'
 
                 }, {
                     name: 'docname',
@@ -181,6 +181,36 @@ function TitleListEmbeddedController(
         function translateTitleType(title) {
             return (title === "PAY") ? "A pagar" : "A receber";
         }
+
+        $scope.getNextParcelExpiration = function(parcels){
+            let result;
+            parcels.forEach(function (parcel) {
+                if(!result && !parcel.fullPaid){
+                    result = parcel;
+                }else if(!parcel.fullPaid){
+                    let dateIndex = new Date(parcel);
+                    let dateResult = new Date(result);
+                    if(dateResult > dateIndex){
+                        result = dateIndex;
+                    }
+                }
+            });
+
+            if(!result)
+                parcels.forEach(function (parcel) {
+                    if(!result){
+                        result = parcel;
+                    }else{
+                        let dateIndex = new Date(parcel);
+                        let dateResult = new Date(result);
+                        if(dateResult > dateIndex){
+                            result = dateIndex;
+                        }
+                    }
+                });
+
+            return result.expiration;
+        };
     };
 
 module.exports =  TitleListEmbeddedController;
