@@ -272,6 +272,13 @@ function TitleFormEmbeddedController(
     }
 
     $scope.save = function (entity) {
+        entity.expiration = moment(entity.expiration).tz('America/Sao_Paulo').format('YYYY-MM-DDTHH:mm:ss')+'Z';
+        entity.parcel = entity.parcel.map(function(data){
+            if(data.expiration){
+                data.expiration = moment(data.expiration).tz('America/Sao_Paulo').format('YYYY-MM-DDTHH:mm:ss')+'Z';
+            }
+            return data;
+        });
         if ($scope.$ctrl.operation === "REPLEACEMENT") {
             $scope.replecement.replacedBy = entity;
             TitleService.saveReplecement(entity)

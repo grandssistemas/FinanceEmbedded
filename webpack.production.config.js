@@ -38,8 +38,8 @@ module.exports = {
             jQuery: "jquery",
             jquery: "jquery",
             "window.jQuery": "jquery",
-            "window.moment": "moment",
-            moment: "moment"
+            "window.moment": "moment-timezone",
+            moment: "moment-timezone"
         }),
         new webpack.LoaderOptionsPlugin({
             options: {
