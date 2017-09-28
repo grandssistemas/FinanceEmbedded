@@ -20,11 +20,9 @@
             <gumga-query search="simpleSearch(field,param)" advanced-search="title.methods.advancedSearch(param)"
                          saved-filters="title.methods.getQuery(page)" save-query="title.methods.postQuery(query, name)">
                 <search-field label="N° Documento" field="documentNumber"></search-field>
-                <search-field label="Valor Total" field="value"></search-field>
-                <search-field label="Participações" field="participation"></search-field>
                 <advanced-search-field type="string" label="Número do documento"
                                        field="documentNumber"></advanced-search-field>
-                <advanced-search-field type="string" label="Valor Total" field="value"></advanced-search-field>
+                <advanced-search-field type="number" label="Valor Total" field="value"></advanced-search-field>
                 <advanced-search-field type="date" label="Data de Emissão" field="emissionDate"></advanced-search-field>
             </gumga-query>
         </div>

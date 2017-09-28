@@ -48,7 +48,7 @@ function CashCheckinEmbeddedFormController($scope,
         }
         $scope.entity.change = 0;
         $scope.entity.originChange = null;
-        $scope.entity.destinyChange = null;
+        $scope.entity.destinyChange = undefined;
     }
 
     $scope.getChangeOrigin = function (param) {

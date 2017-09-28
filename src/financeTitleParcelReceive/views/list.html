@@ -18,8 +18,8 @@
                 <label>Filtros Rápidos:</label>
             </div>
             <div class="row">
-                <label id="toReceive" class="btn-sm gmd raised" ng-class="buttonTypeClass('TORECEIVE')" uib-btn-radio="'toReceive'" ng-model="filterReceive" uncheckable ng-click="toReceive(1)">A Receber</label>
-                <label class="btn-sm gmd raised" ng-class="buttonTypeClass('RECEIVE')" uib-btn-radio="'receive'" ng-model="filterReceive" uncheckable ng-click="receive(1)">Recebido</label>
+                <label id="toReceive" class="btn-sm gmd raised" ng-class="buttonTypeClass('TORECEIVE')" uib-btn-radio="'toReceive'" ng-model="filterReceive" uncheckable ng-click="receive('TORECEIVE')">A Receber</label>
+                <label class="btn-sm gmd raised" ng-class="buttonTypeClass('RECEIVE')" uib-btn-radio="'receive'" ng-model="filterReceive" uncheckable ng-click="receive('RECEIVE')">Recebido</label>
             </div>
             <div class="row" style="margin-top: 10px">
                 <label class="btn-sm gmd raised" ng-model="filters" ng-show="hideOthers" uncheckable
@@ -75,7 +75,7 @@
         </div>
     </div>
     <gumga-list class="table-striped"
-                sort="titleparcel.methods.sort(field, dir)"
+                sort="sort(field, dir)"
                 data="titleparcel.data"
                 on-click="totalize()"
                 configuration="tableConfig"

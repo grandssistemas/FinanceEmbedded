@@ -35,7 +35,8 @@
     "gumga-list-ng": "^1.6.0",
     "angular-input-masks": "~1.4.2",
     "gumga-number-in-words-ng": "~1.0.0",
-    "angular-ui-select": "^0.19.8"
+    "angular-ui-select": "^0.19.8",
+    "gumga-gquery-ng": "^1.0.0"
   },
   "private": true,
   "appPath": "src",

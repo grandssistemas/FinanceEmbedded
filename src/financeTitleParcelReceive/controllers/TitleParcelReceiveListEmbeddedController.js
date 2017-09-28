@@ -10,15 +10,17 @@ TitleParcelReceiveListEmbeddedController.$inject = [
     '$timeout',
     'IndividualEmbeddedService'];
 
-function TitleParcelReceiveListEmbeddedController(
-    TitleService,
-    FinanceConfigurationService,
-    $uibModal,
-    $scope,
-    TitleParcelPayService,
-    gumgaController,
-    $timeout,
-    IndividualEmbeddedService) {
+function TitleParcelReceiveListEmbeddedController(TitleService,
+                                                  FinanceConfigurationService,
+                                                  $uibModal,
+                                                  $scope,
+                                                  TitleParcelPayService,
+                                                  gumgaController,
+                                                  $timeout,
+                                                  IndividualEmbeddedService) {
+
+    let dateStart = null;
+    let dateEnd = null;
 
     gumgaController.createRestMethods($scope, TitleParcelPayService, 'titleparcel');
     gumgaController.createRestMethods($scope, IndividualEmbeddedService, 'individual');
@@ -41,88 +43,105 @@ function TitleParcelReceiveListEmbeddedController(
 
     $scope.hideOthers = true;
 
-    $scope.getParcels = function (date, page) {
-        TitleParcelPayService.findOpenByMaxDate(date, 'RECEIVE', page, $scope.individualSearch, $scope.paidOut, $scope.aqFilterSelected)
-            .then(function (data) {
-                $scope.selectedValues = [];
-                $scope.titleparcel.data = data.data.values;
-                $scope.titleparcel.pageSize = data.data.pageSize;
-                $scope.titleparcel.count = data.data.count;
-            });
+    $scope.sort = function(field, dir){
+        TitleParcelPayService.sort(field,dir).then(function (data) {
+            $scope.selectedValues = [];
+            $scope.titleparcel.data = data.data.values;
+            $scope.titleparcel.pageSize = data.data.pageSize;
+            $scope.titleparcel.count = data.data.count;
+        });
     };
 
-    $scope.cleanFilter = function () {
+    $scope.getParcels = function () {
+        let hql = "obj.title.titleType = 'RECEIVE' AND (obj.fullPaid = " + $scope.paidOut + " OR obj.fullPaid is null)";
+
+        if (dateStart) {
+            hql += " AND obj.expiration >= '" + moment(dateStart).format('YYYY-MM-DD') + " 00:00:00'";
+        }
+        if (dateEnd) {
+            hql += " AND obj.expiration <= '" + moment(dateEnd).format('YYYY-MM-DD') + " 23:59:59'";
+        }
+        if ($scope.individualSearch) {
+            hql += " AND obj.individual.id = " + $scope.individualSearch.id;
+        }
+
+        TitleParcelPayService.getAdvancedSearch(hql).then(function (data) {
+            $scope.selectedValues = [];
+            $scope.titleparcel.data = data.data.values;
+            $scope.titleparcel.pageSize = data.data.pageSize;
+            $scope.titleparcel.count = data.data.count;
+        });
+    };
+
+
+    function cleanFilter() {
         $scope.lastClicked = null;
         $scope.aqFilterSelected = null;
         $scope.hideOthers = true;
+        dateEnd = null;
+        dateStart = null;
         delete $scope.filters;
         delete $scope.individualSearch;
         $scope.selectedSubType = '';
-    };
+    }
 
     $scope.getParcels(null, 1);
 
     $scope.$watch('individualSearch', function (individual) {
-        $scope.cleanFilter();
+        cleanFilter();
         $scope.individualSearch = individual;
         $scope.getParcels(null, 1);
     });
 
     $scope.filter = function (whichFilter) {
         $scope.lastClicked = whichFilter;
-        var aq = "obj.title.titleType='RECEIVE'";
+        let startDate;
+        let endDate;
         switch (whichFilter) {
             case 'thisWeek':
-                aq = aq.concat(" AND obj.expiration >='" + moment().startOf('isoWeek').subtract(1, 'days').format('YYYY-MM-DD') + "' AND obj.expiration <='" + moment().endOf('isoWeek').subtract(1, 'days').format('YYYY-MM-DD') + "'");
+                startDate = moment().startOf('isoWeek').subtract(1, 'days');
+                endDate = moment().endOf('isoWeek').subtract(1, 'days');
                 break;
             case 'thisMonth':
-                aq = aq.concat(" AND obj.expiration >='" + moment().startOf('month').format('YYYY-MM-DD') + "' AND obj.expiration <='" + moment().endOf('month').format('YYYY-MM-DD') + "'");
+                startDate = moment().startOf('month');
+                endDate = moment().endOf('month');
                 break;
             case 'thisYear':
-                aq = aq.concat(" AND obj.expiration >='" + moment().startOf('year').format('YYYY-MM-DD') + "' AND obj.expiration <='" + moment().endOf('year').format('YYYY-MM-DD') + "'");
+                startDate = moment().startOf('year');
+                endDate = moment().endOf('year');
                 break;
             case 'today':
-                aq = aq.concat(" AND obj.expiration >='" + moment().format('YYYY-MM-DD') + " 00:00:00" + "' AND obj.expiration <='" + moment().format('YYYY-MM-DD') + " 23:59:59" + "' " );
+                startDate = moment();
+                endDate = moment();
                 break;
             case 'custom':
-                aq = aq.concat(" AND obj.expiration >='" + moment($scope.endDate).format('YYYY-MM-DD') + " 00:00:00" + "' AND obj.expiration <='" + moment($scope.endDate).format('YYYY-MM-DD') + " 23:59:59" + "' " );
+                endDate = moment($scope.endDate);
                 break;
         }
-
-	    if ($scope.individualSearch && $scope.individualSearch.id) {
-		    aq = aq.concat(" AND obj.individual.name='" + $scope.individualSearch.name + "' ")
-        }
-
-        if ($scope.paidOut) {
-            aq = aq.concat("AND obj.title.titleType='RECEIVE' AND obj.fullPaid = true");
-        } else {
-            aq = aq.concat("AND obj.title.titleType='RECEIVE' AND (obj.fullPaid = false OR obj.fullPaid is null)");
-        }
-        $scope.aqFilterSelected = aq;
-        $scope.titleparcel.methods.advancedSearch(aq);
         $scope.changeSubTypeButton(whichFilter);
+        dateStart = startDate?startDate._d:null;
+        dateEnd = endDate?endDate._d:null;
+
+        $scope.getParcels();
+
+
     };
 
     $scope.searchByIndividual = function (individual) {
         $scope.getParcels($scope.endDate, 1);
     };
 
-    $scope.receive = function (page) {
+    $scope.receive = function (label) {
+        cleanFilter();
         $scope.lastClicked = null;
         $scope.aqFilterSelected = null;
-        $scope.paidOut = true;
+        $scope.paidOut = label === 'RECEIVE';
         $scope.selectedSubType = '';
         delete $scope.filters;
         $scope.hideOthers = true;
+        $scope.changeTypeButton(label);
 
-        TitleParcelPayService.findOpenByMaxDate(null, 'RECEIVE', page, $scope.individualSearch, $scope.paidOut, $scope.aqFilterSelected)
-            .then(function (data) {
-                $scope.selectedValues = [];
-                $scope.titleparcel.data = data.data.values;
-                $scope.titleparcel.pageSize = data.data.pageSize;
-                $scope.titleparcel.count = data.data.count;
-                $scope.changeTypeButton('RECEIVE');
-            });
+        $scope.getParcels();
     };
 
     $scope.toReceive = function (page) {
@@ -227,23 +246,21 @@ function TitleParcelReceiveListEmbeddedController(
     $scope.tableConfig = {
         columns: 'documentNumber, parcel, individual, expiration, amount, calculedInterest, calculedPenalty, valuePay, value, status',
         checkbox: true,
-        // sortDefault: 'expiration',
         selection: 'multi',
         materialTheme: true,
         itemsPerPage: [5, 10, 25, 50, 100],
-        title:'Listagem de Receber Títulos',
+        title: 'Listagem de Receber Títulos',
         columnsConfig: [
             {
                 name: 'documentNumber',
                 title: '<span>Nº Doc.</span>',
                 content: '{{$value.titleData.documentNumber}}',
-                sortField: 'number'
+                sortField:'titleData.documentNumber'
             },
             {
                 name: 'parcel',
                 title: '<span>Parcelas</span>',
-                content: '{{$value.number}} / {{$value.titleData.parcelsCount}}',
-                sortField: 'number'
+                content: '{{$value.number}} / {{$value.titleData.parcelsCount}}'
             },
             {
                 name: 'individual',
@@ -267,25 +284,25 @@ function TitleParcelReceiveListEmbeddedController(
                 name: 'calculedPenalty',
                 title: '<span>Multa</span>',
                 content: '{{$value.calculedPenalty | currency: "R$ "}} ',
-                sortField: 'value'
+                sortField: 'calculedPenalty'
             },
             {
                 name: 'calculedInterest',
                 title: '<span>Juros</span>',
                 content: '{{$value.calculedInterest | currency: "R$ "}} ',
-                sortField: 'value'
+                sortField: 'calculedInterest'
             },
             {
                 name: 'valuePay',
                 title: '<span>R$ Recebido</span>',
                 content: '{{$value.totalpayed | currency: "R$"}}',
-                sortField: 'value'
+                sortField: 'totalpayed'
             },
             {
                 name: 'value',
                 title: '<span>R$ a receber</span>',
                 content: '{{$value.remaining | currency: "R$"}}',
-                sortField: 'value'
+                sortField: 'remaining'
             },
             {
                 name: 'status',
@@ -296,9 +313,10 @@ function TitleParcelReceiveListEmbeddedController(
                 '<span ng-if="($value.totalpayed > 0) && !$value.fullPaid" class="label label-warning">Amortizado</span>'
             }
         ]
-    }
+    };
 
     $scope.selectedType = 'TORECEIVE';
+
     $scope.buttonTypeClass = function (parameter) {
         return $scope.selectedType === parameter ? 'btn btn-danger' : 'btn btn-primary';
     };
