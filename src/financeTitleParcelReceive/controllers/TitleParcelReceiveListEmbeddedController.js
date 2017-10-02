@@ -254,8 +254,7 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
             {
                 name: 'documentNumber',
                 title: '<span>Nº Doc.</span>',
-                content: '{{$value.titleData.documentNumber}}',
-                sortField:'titleData.documentNumber'
+                content: '{{$value.titleData.documentNumber}}'
             },
             {
                 name: 'parcel',
@@ -283,26 +282,22 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
             {
                 name: 'calculedPenalty',
                 title: '<span>Multa</span>',
-                content: '{{$value.calculedPenalty | currency: "R$ "}} ',
-                sortField: 'calculedPenalty'
+                content: '{{$value.calculedPenalty | currency: "R$ "}} '
             },
             {
                 name: 'calculedInterest',
                 title: '<span>Juros</span>',
-                content: '{{$value.calculedInterest | currency: "R$ "}} ',
-                sortField: 'calculedInterest'
+                content: '{{$value.calculedInterest | currency: "R$ "}} '
             },
             {
                 name: 'valuePay',
                 title: '<span>R$ Recebido</span>',
-                content: '{{$value.totalpayed | currency: "R$"}}',
-                sortField: 'totalpayed'
+                content: '{{$value.totalpayed | currency: "R$"}}'
             },
             {
                 name: 'value',
                 title: '<span>R$ a receber</span>',
-                content: '{{$value.remaining | currency: "R$"}}',
-                sortField: 'remaining'
+                content: '{{$value.remaining | currency: "R$"}}'
             },
             {
                 name: 'status',
