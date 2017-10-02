@@ -1,9 +1,5 @@
 <div class="printable-area">
     <div>
-        <div class="receipt-header-number">
-            <label style="margin: 0 5px 0 5px;">Número do Recibo</label><br/>
-            <label>{{numberReceipt}}</label>
-        </div>
         <div class="receipt-header-name-receive" >
             <h1>RECIBO</h1>
         </div>
@@ -13,7 +9,7 @@
     </div>
     <hr class="line" />
     <div style="margin: 5px;">
-        <label>Recebi de: {{recibo.parcels[0].individual.name}} a importancia de: ({{recibo.numberInWords}}) referente à:</label>
+        <label>Recebi de: {{recibo.parcels[0].individual.name}} a importancia de: ({{receiptValue}}) referente à:</label>
     </div>
     <div>
         <div class="table-title">
