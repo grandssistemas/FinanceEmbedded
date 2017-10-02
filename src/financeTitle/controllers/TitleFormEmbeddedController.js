@@ -26,7 +26,7 @@ function TitleFormEmbeddedController(
     WalletService,
     FinanceUnitService) {
 
-    $scope.entity = $scope.$ctrl.entity;
+    $scope.entity = angular.copy($scope.$ctrl.entity);
 
     gumgaController.createRestMethods($scope, DocumentTypeService, 'documentType');
     gumgaController.createRestMethods($scope, FinanceUnitService, 'financeunit');
@@ -187,7 +187,7 @@ function TitleFormEmbeddedController(
     }
 
     $scope.title.data.billetCollection = $scope.title.data.billetCollection || 0;
-    $scope.title.data.memo = $scope.$ctrl.voice || "";   // Colocando o parametro da voz no campo de historico //
+    $scope.title.data.memo = $scope.title.data.memo || $scope.$ctrl.voice || "";   // Colocando o parametro da voz no campo de historico //
     $scope.title.data.parcelpenalty = $scope.title.data.parcelpenalty || 0;
     $scope.title.data.parcelinterest = $scope.title.data.parcelinterest || 0;
     $scope.title.data.expiration = $scope.title.data.expiration ? new Date($scope.title.data.expiration) : new Date();
