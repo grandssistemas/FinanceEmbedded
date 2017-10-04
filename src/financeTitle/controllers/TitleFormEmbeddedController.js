@@ -28,6 +28,10 @@ function TitleFormEmbeddedController(
 
     $scope.entity = angular.copy($scope.$ctrl.entity);
 
+    $scope.entity.data.parcel.sort((a,b) => {
+        return a.number - b.number;
+    });
+
     gumgaController.createRestMethods($scope, DocumentTypeService, 'documentType');
     gumgaController.createRestMethods($scope, FinanceUnitService, 'financeunit');
     gumgaController.createRestMethods($scope, IndividualEmbeddedService, 'individual');
