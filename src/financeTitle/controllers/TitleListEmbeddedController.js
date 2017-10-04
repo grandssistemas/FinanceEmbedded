@@ -54,6 +54,7 @@ function TitleListEmbeddedController(
 
         };
 
+        $scope.selected = {};
         $scope.labels = [];
         TitleService.getLabels()
             .then(function (response) {
@@ -63,6 +64,7 @@ function TitleListEmbeddedController(
             });
 
         $scope.buscaTag = function (param) {
+
             var search = "searchFields=value&q=" + param;
             return TitleService.searchLabels(search).then(function (response) {
                 $scope.labels = response.data.values
@@ -70,13 +72,18 @@ function TitleListEmbeddedController(
         };
 
         $scope.selectLabel = function (label) {
+            // $scope.selected = angular.copy(label);
+            console.log($scope.selected);
+            $scope.selected.labels.clear();
+            $scope.selected.labels[0] = label;
+
             TitleService.searchTags(label.value, $scope.titleType.toUpperCase()).then(function (response) {
                 $scope.title.data = response.data.values
             })
         };
 
         $scope.reset = function () {
-            $scope.listPage(1)
+            $scope.title.methods.get(1);
         };
 
         $scope.titleList = [];

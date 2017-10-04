@@ -149,7 +149,6 @@ function TitleParcelPayListEmbeddedController(
     };
 
     $scope.printPaid = function (items) {
-        console.log('printPaid');
         var uibModalInstance = $uibModal.open({
             templateUrl: receiptPrint,
             controller: 'ReceivePrintEmbeddedController',
@@ -239,31 +238,26 @@ function TitleParcelPayListEmbeddedController(
             {
                 name: 'calculedPenalty',
                 title: '<span>Multa</span>',
-                content: '{{$value.calculedPenalty | currency: "R$ "}} ',
-                sortField: 'calculedPenalty'
+                content: '{{$value.calculedPenalty | currency: "R$ "}} '
             },
             {
                 name: 'calculedInterest',
                 title: '<span>Juros</span>',
-                content: '{{$value.calculedInterest | currency: "R$ "}} ',
-                sortField: 'calculedInterest'
+                content: '{{$value.calculedInterest | currency: "R$ "}} '
             },
             {
                 name: 'valuePay',
                 title: '<span>Pago</span>',
-                content: '{{($value.totalpayed) | currency: "R$"}}',
-                sortField: 'value'
+                content: '{{($value.totalpayed) | currency: "R$"}}'
             },
             {
                 name: 'value',
                 title: '<span>A pagar</span>',
-                content: '{{$value.remaining | currency: "R$"}}',
-                sortField: 'value'
+                content: '{{$value.remaining | currency: "R$"}}'
             },
             {
                 name: 'status',
                 title: '<span>Status</span>',
-                sortField: 'value',
                 content: '<span ng-if="$value.totalpayed == 0" class="label label-info">Aberta</span>' +
                 '<span ng-if="$value.fullPaid" class="label label-danger">Pago</span>' +
                 '<span ng-if="($value.totalpayed > 0) && !$value.fullPaid" class="label label-warning">Amortizado</span>'
