@@ -20,7 +20,7 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
                                                   IndividualEmbeddedService) {
 
     let dateStart = null;
-    let dateEnd = null;
+    let dateEnd = new Date();
 
     gumgaController.createRestMethods($scope, TitleParcelPayService, 'titleparcel');
     gumgaController.createRestMethods($scope, IndividualEmbeddedService, 'individual');
@@ -115,6 +115,7 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
                 endDate = moment();
                 break;
             case 'custom':
+                startDate = moment($scope.endDate);
                 endDate = moment($scope.endDate);
                 break;
         }
@@ -327,6 +328,13 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
     $scope.changeSubTypeButton = function (newType) {
         $scope.selectedSubType = newType;
     };
+
+    $scope.configData = {
+        change : function (data) {
+            $scope.filter('custom');
+        }
+    }
+
 }
 
 module.exports = TitleParcelReceiveListEmbeddedController;

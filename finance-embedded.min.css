@@ -132,7 +132,13 @@
 .color-red {
     color: red;
 }
-.tab-content {
+
+
+.grid-parcels .gumga-date-input {
+    padding: 0;
+    border-bottom: 1px solid #333 !important;
+    text-align: center;
+}.tab-content {
     margin-top: 2%;
 }
 .bg-white {

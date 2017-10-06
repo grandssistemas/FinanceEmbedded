@@ -35,7 +35,6 @@
                             <label gumga-translate-tag="titleparcelreceive.date">date</label><br/>
                             <gumga-date ng-model="payment.momment" id="insertMoment" name="insertMoment"
                                         configuration="{showCalendar: false}"></gumga-date>
-                            <!--<input type="text" name="insertMoment" class="form-control" uib-datepicker-popup="dd/MM/yyyy" ng-model="payment.momment" is-open="isDatePickerOpen" ng-click="isDatePickerOpen = !isDatePickerOpen" close-text="Close"/>-->
                         </div>
                     </div>
 
@@ -154,15 +153,10 @@
                                 </gumga-many-to-one>
                             </div>
                         </div>
-                        <div class="col-md-4 m-t-md">
+                        <div class="col-md-4">
                             <div gumga-form-class="validUntil">
-                                <gmd-input>
-                                    <input type="text" name="validUntil" class="form-control gmd"
-                                           uib-datepicker-popup="dd/MM/yyyy" ng-model="payment.check.validUntil"
-                                           tabindex="8"/>
-                                    <span class="bar"></span>
-                                    <label gumga-translate-tag="thirdpartycheque.validUntil">validUntil</label>
-                                </gmd-input>
+                                <label style="margin-bottom: 0" gumga-translate-tag="thirdpartycheque.validUntil">validUntil</label>
+                                <gumga-date name="validUntil" ng-model="payment.check.validUntil"></gumga-date>
                             </div>
                         </div>
                         <div class="col-md-3 m-t-md">

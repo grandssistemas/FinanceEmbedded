@@ -132,3 +132,10 @@
 .color-red {
     color: red;
 }
+
+
+.grid-parcels .gumga-date-input {
+    padding: 0;
+    border-bottom: 1px solid #333 !important;
+    text-align: center;
+}
