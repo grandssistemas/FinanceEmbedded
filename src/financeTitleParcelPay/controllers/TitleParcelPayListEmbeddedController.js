@@ -22,7 +22,7 @@ function TitleParcelPayListEmbeddedController(
     TitleParcelPayService.resetDefaultState();
     IndividualEmbeddedService.resetDefaultState();
 
-    $scope.endDate = null;
+    $scope.endDate = new Date();
     $scope.paidOut = false;
     $scope.containsFullPaid = false;
     $scope.lastClicked = null;
@@ -281,6 +281,12 @@ function TitleParcelPayListEmbeddedController(
     $scope.changeSubTypeButton = function (newType) {
         $scope.selectedSubType = newType;
     };
+
+    $scope.configData = {
+        change : function (data) {
+            $scope.filter('custom');
+        }
+    }
 
 }
 

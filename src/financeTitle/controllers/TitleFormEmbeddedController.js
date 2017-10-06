@@ -287,6 +287,7 @@ function TitleFormEmbeddedController(
             }
             return data;
         });
+        console.log(angular.copy(entity));
         if ($scope.$ctrl.operation === "REPLEACEMENT") {
             $scope.replecement.replacedBy = entity;
             TitleService.saveReplecement(entity)
@@ -396,12 +397,14 @@ function TitleFormEmbeddedController(
 
     // Calcula parcelas
     var setExpiration = function (parcel, expiration) {
-        return (parcel === 0) ? expiration.setMonth(expiration.getMonth()) : expiration.setMonth(expiration.getMonth() + 1);
+        let dateNew = (parcel === 0) ? expiration.setMonth(expiration.getMonth()) : expiration.setMonth(expiration.getMonth() + 1);
+        return new Date(dateNew);
     };
     $scope.calculateParcels = function () {
         var valueParcel = $scope.title.data.value;
         var numberParcel = $scope.title.data.numberParcel;
         $scope.title.data.parcel = [];
+
         var expiration = new Date($scope.title.data.expiration);
         for (var i = 0; i < $scope.title.data.numberParcel; i++) {
             if ($scope.titleType === "pay" || $scope.titleType === "editpay") {
@@ -602,6 +605,12 @@ function TitleFormEmbeddedController(
                 $scope.title.data.expiration = new Date(params.expiration) || new Date();
             }
         });
+    }
+
+    $scope.configData = {
+        // change: function(data){
+        //     $scope.changeDateParcel(data, $index, oldDateParcel);
+        // }
     }
 }
 
