@@ -51,7 +51,6 @@ function TitleListEmbeddedController(
             $scope.title.data = $scope.title.data.filter(function (data) {
                 return data.participationsFormatted.indexOf(participation) > -1
             })
-
         };
 
         $scope.selected = {};

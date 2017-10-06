@@ -125,7 +125,7 @@ function TitleFormEmbeddedController(
     };
 
     $scope.disableParcel = function (entity) {
-        return entity.parcelPayments.length > 0;
+        return entity.parcelPayments && entity.parcelPayments.length > 0;
     };
 
     //Função de busca do rateio.
@@ -287,7 +287,6 @@ function TitleFormEmbeddedController(
             }
             return data;
         });
-        console.log(angular.copy(entity));
         if ($scope.$ctrl.operation === "REPLEACEMENT") {
             $scope.replecement.replacedBy = entity;
             TitleService.saveReplecement(entity)
