@@ -124,6 +124,10 @@ function TitleFormEmbeddedController(
         }
     };
 
+    $scope.disableParcel = function (entity) {
+        return entity.parcelPayments.length > 0;
+    };
+
     //Função de busca do rateio.
     $scope.buscaLeafs = function (plan, query) {
         if (!plan.subPlanLeafs) {

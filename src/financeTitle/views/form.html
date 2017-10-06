@@ -343,7 +343,8 @@
                                                            name="expirationParcel" ng-model="parcel.expiration"
                                                            uib-datepicker-popup="dd/MM/yyyy"
                                                            ng-focus="oldDateParcel = parcel.expiration"
-                                                           ng-blur="changeDateParcel(parcel.expiration, $index, oldDateParcel)"/>
+                                                           ng-blur="changeDateParcel(parcel.expiration, $index, oldDateParcel)"
+                                                           ng-disabled="disableParcel(parcel)"/>
                                                     <span class="bar"></span>
                                                 </gmd-input>
                                             </div>
@@ -354,7 +355,8 @@
                                                            ng-model="parcel.value" gumga-error ui-money-mask="2"
                                                            ng-focus="oldValueParcel = parcel.value"
                                                            ng-blur="changeValueParcel(parcel.value, $index, oldValueParcel)"
-                                                           style="padding:0"/>
+                                                           style="padding:0"
+                                                           ng-disabled="disableParcel(parcel)"/>
                                                     <span class="bar"></span>
                                                 </gmd-input>
                                             </div>
