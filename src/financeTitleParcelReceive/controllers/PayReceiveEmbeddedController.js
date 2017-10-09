@@ -17,7 +17,8 @@ PayReceiveEmbeddedController.$inject = [
     'PaymentService',
     '$filter',
     '$uibModal',
-    'CreditCardAccountService'];
+    'CreditCardAccountService',
+    'FinanceUnitService'];
 
 function PayReceiveEmbeddedController(
     FinanceConfigurationService,
@@ -36,7 +37,8 @@ function PayReceiveEmbeddedController(
     PaymentService,
     $filter,
     $uibModal,
-    CreditCardAccountService) {
+    CreditCardAccountService,
+    FinanceUnitService) {
 
     gumgaController.createRestMethods($scope, FinanceConfigurationService, 'financeConfiguration');
     gumgaController.createRestMethods($scope, CheckingAccountService, 'checkingaccount');
@@ -350,8 +352,18 @@ function PayReceiveEmbeddedController(
     $scope.selectAllText = function(id){
         document.getElementById(id).focus();
         document.getElementById(id).select();
-    }
+    };
 
+    $scope.balanceFinanceUnit = 0;
+    $scope.onSelectPaymentCredit = function(financeUnit){
+        FinanceUnitService.getFinanceUnitBalance(financeUnit.id).then(function (data) {
+            $scope.balanceFinanceUnit = data.data > 0 ? 0 : data.data;
+        });
+    };
+
+    $scope.onDeselectPaymentCredit = function(financeUnit){
+        $scope.balanceFinanceUnit = 0;
+    };
 }
 
 module.exports = PayReceiveEmbeddedController;
