@@ -260,12 +260,14 @@
 
                     <!-- <editor-fold desc="CRÉDITO"> -->
                     <div class="row" ng-show="payment.method == 'credit' && showMenuPersonalCredit === true">
-                        <div class="col-md-8">
+                        <div class="col-md-6">
                             <div>
                                 <label gumga-translate-tag="titleparcel.financeUnit">financeUnit</label><br/>
                                 <gumga-many-to-one
                                         tab-seq="1"
                                         value="payment.credit.financeUnit"
+                                        on-select="onSelectPaymentCredit(value)"
+                                        on-deselect="onDeselectPaymentCredit(value)"
                                         list="financeunit.data"
                                         search-method="getPersonalCredits(params)"
                                         add-method="individual.methods.asyncPost(value,'name')"
@@ -277,12 +279,20 @@
                                 </gumga-many-to-one>
                             </div>
                         </div>
+                        <div class="col-md-2 m-t-md">
+                            <gmd-input>
+                                <input id="balanceFinanceUnit" type="text" name="balanceFinanceUnit" ng-model="balanceFinanceUnit"
+                                       class="form-control text-right gmd" gumga-error ui-money-mask="2" tabindex="2" ng-disabled="true">
+                                <span class="bar"></span>
+                                <label gumga-translate-tag="titleparcelreceive.credit">credit</label>
+                            </gmd-input>
+                        </div>
                         <div class="col-md-3 m-t-md">
                             <gmd-input>
                                 <input id="valuecredit" type="text" name="value" ng-model="payment.value"
                                        ng-focus="calcCheques('valuecredit')"
                                        ng-click="selectAllText('valuecredit')"
-                                       class="form-control text-right gmd" gumga-error ui-money-mask="2" tabindex="2">
+                                       class="form-control text-right gmd" gumga-error ui-money-mask="2" tabindex="3">
                                 <span class="bar"></span>
                                 <label gumga-translate-tag="titleparcelreceive.value">value</label>
                             </gmd-input>

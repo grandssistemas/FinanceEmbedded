@@ -3,7 +3,7 @@ FinanceUnitService.$inject = ['GumgaRest', '$http', 'FinanceEmbeddedService']
 function FinanceUnitService(GumgaRest, $http, FinanceEmbeddedService) {
     var Service = new GumgaRest(FinanceEmbeddedService.getDefaultConfiguration().api + '/financeunit');
     var apiExecutionQuery = FinanceEmbeddedService.getDefaultConfiguration().api + '/executionquerys';
-
+    
     Service.getEntriesFromFinanceUnit = function (id) {
         return $http.get(apiExecutionQuery + '/entriesfromlastbalance/' + id);
     };
@@ -25,16 +25,20 @@ function FinanceUnitService(GumgaRest, $http, FinanceEmbeddedService) {
     };
 
     Service.balance = function (id) {
-        return $http.get(apiExecutionQuery + '/entriesfromlastbalance/' + id)
+        return $http.get(apiExecutionQuery + '/entriesfromlastbalance/' + id);
     };
 
     Service.getEntriesByFinanceUnitAndCheckin = (financeUnitId, checkinId) => {
-        return $http.get(`${apiExecutionQuery}/entriesbyfinanceunitandcheckin/${financeUnitId}/${checkinId}`)
-    }
+        return $http.get(`${apiExecutionQuery}/entriesbyfinanceunitandcheckin/${financeUnitId}/${checkinId}`);
+    };
 
     Service.getEntriesByCheckin = (checkinId) => {
-        return $http.get(`${apiExecutionQuery}/entriesbycheckin/${checkinId}`)
-    }
+        return $http.get(`${apiExecutionQuery}/entriesbycheckin/${checkinId}`);
+    };
+
+    Service.getFinanceUnitBalance = (financeUnitId) => {
+        return $http.get(`${apiExecutionQuery}/financeUnitBalance?financeUnitId=${financeUnitId}`);
+    };
 
     return Service;
 }
