@@ -137,8 +137,8 @@ function TitleListEmbeddedController(
                 }, {
                     name: 'btns',
                     title: ' ',
-                    content: '{{$parent.$parent.renegotiate}}<div style=\'display:inline-block;width:80px\'><span><a uib-tooltip="{{$value.hasPayment || $value.fullPaid ? \'Visualizar\'  : \'Editar\'}}" ng-click="$parent.$parent.goEdit($value.titleType, $value.id, $value.hasPayment)" class="btn btn-primary btn-sm">' +
-                    '<i class="{{$value.hasPayment || $value.fullPaid ? \'glyphicon glyphicon-eye-open\' : \'glyphicon glyphicon-pencil\'}}"></i></a>' +
+                    content: '{{$parent.$parent.renegotiate}}<div style=\'display:inline-block;width:80px\'><span><a uib-tooltip="{{$value.hasPayment || $value.fullPaid || $value.isReversed ? \'Visualizar\'  : \'Editar\'}}" ng-click="$parent.$parent.goEdit($value.titleType, $value.id, $value.hasPayment)" class="btn btn-primary btn-sm">' +
+                    '<i class="{{$value.hasPayment || $value.fullPaid  || $value.isReversed ? \'glyphicon glyphicon-eye-open\' : \'glyphicon glyphicon-pencil\'}}"></i></a>' +
                     '&nbsp;&nbsp;' +
                     '<a uib-tooltip="Renegociar" ng-show="!$value.fullPaid && $value.isRenegotiate" class="btn btn-primary btn-sm" ng-disabled="$value.replacedBy || $value.fullPaid" ng-click="$parent.$parent.replacement($value, $value.fullPaid)">' +
                     '<i class="fa fa-share-square-o"></i>' +
