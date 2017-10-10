@@ -143,12 +143,13 @@ function TitleListEmbeddedController(
                     '<a uib-tooltip="Renegociar" ng-show="!$value.fullPaid && $value.isRenegotiate" class="btn btn-primary btn-sm" ng-disabled="$value.replacedBy || $value.fullPaid" ng-click="$parent.$parent.replacement($value, $value.fullPaid)">' +
                     '<i class="fa fa-share-square-o"></i>' +
                     '</a></span></div>' +
-                    '<span ng-if="$value.replacedBy" class="label label-warning">Renegociado</span>' +
-                    '<span ng-if="$value.hasPayment && !$value.fullPaid && $value.titleType == \'PAY\'" class="label label-info">Parcial</span>' +
-                    '<span ng-if="$value.hasPayment && !$value.fullPaid && $value.titleType == \'RECEIVE\'" class="label label-info">Parcial</span>' +
-                    '<span ng-if="$value.fullPaid && $value.titleType == \'RECEIVE\'" class="label label-success">Recebido</span>' +
-                    '<span ng-if="$value.fullPaid && $value.titleType == \'PAY\'" class="label label-success">Pago</span>' +
-                    '<span ng-if="!$value.hasRatio" class="glyphicon glyphicon-info-sign pull-right" uib-tooltip=\'Sem Rateio\' tooltip-placement=\'left\'></span>',
+                    '<span ng-if="!$value.isReversed && $value.replacedBy" class="label label-warning">Renegociado</span>' +
+                    '<span ng-if="$value.isReversed" class="label label-danger">Estornado</span>' +
+                    '<span ng-if="!$value.isReversed && $value.hasPayment && !$value.fullPaid && $value.titleType == \'PAY\'" class="label label-info">Parcial</span>' +
+                    '<span ng-if="!$value.isReversed && $value.hasPayment && !$value.fullPaid && $value.titleType == \'RECEIVE\'" class="label label-info">Parcial</span>' +
+                    '<span ng-if="!$value.isReversed && $value.fullPaid && $value.titleType == \'RECEIVE\'" class="label label-success">Recebido</span>' +
+                    '<span ng-if="!$value.isReversed && $value.fullPaid && $value.titleType == \'PAY\'" class="label label-success">Pago</span>' +
+                    '<span ng-if="!$value.isReversed && !$value.hasRatio" class="glyphicon glyphicon-info-sign pull-right" uib-tooltip=\'Sem Rateio\' tooltip-placement=\'left\'></span>',
                     size: 'col-md-3'
                 }]
         };

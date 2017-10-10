@@ -175,20 +175,20 @@ function TitleParcelPayListEmbeddedController(
             $scope.recibo.parcels = $scope.selectedValues;
             $scope.printPaid($scope.recibo);
         } else {
-            var len = parcels.length;
-            var individualDefault;
-            var sameIndividual = true;
-            for (var x = 0; x < len; x++) {
-                var parcel = parcels[x];
-                x === 0 ? individualDefault = parcel.individual.name :
-                    individualDefault !== parcel.individual.name
-                        ? sameIndividual = false : angular.noop;
-            }
-            if (sameIndividual) {
+            const individualDefault = parcels[0].individual.name;
+            let sameIndividual = true;
+            let hasReversed = false;
+            parcels.forEach((parcel) => {
+                sameIndividual = sameIndividual && (parcel.individual.name === individualDefault)
+                hasReversed = hasReversed || parcel.titleData.reversed;
+            });
+
+
+            if (sameIndividual && !hasReversed) {
                 TitleParcelPayService.setInstallmentsPayable(parcels);
                 $scope.$ctrl.onSameIndividual();
             } else {
-                $scope.errorMessage = 'Foram selecionadas parcelas de fornecedores diferentes, altere sua seleção.';
+                $scope.errorMessage = hasReversed ? 'Foram selecionados títulos já estornados. Não é possível fazer a movimentação desses títulos.': 'Foram selecionadas parcelas de fornecedores diferentes, altere sua seleção.';
                 $timeout(function () {
                     delete $scope.errorMessage;
                 }, 5000);
@@ -258,9 +258,10 @@ function TitleParcelPayListEmbeddedController(
             {
                 name: 'status',
                 title: '<span>Status</span>',
-                content: '<span ng-if="$value.totalpayed == 0" class="label label-info">Aberta</span>' +
-                '<span ng-if="$value.fullPaid" class="label label-danger">Pago</span>' +
-                '<span ng-if="($value.totalpayed > 0) && !$value.fullPaid" class="label label-warning">Amortizado</span>'
+                content: '<span ng-if="!$value.titleData.reversed && $value.totalpayed == 0" class="label label-info">Aberta</span>' +
+                '<span ng-if="!$value.titleData.reversed && $value.fullPaid" class="label label-danger">Pago</span>' +
+                '<span ng-if="$value.titleData.reversed" class="label label-danger">Estornado</span>' +
+                '<span ng-if="!$value.titleData.reversed && ($value.totalpayed > 0) && !$value.fullPaid" class="label label-warning">Amortizado</span>'
             }
         ]
     }
