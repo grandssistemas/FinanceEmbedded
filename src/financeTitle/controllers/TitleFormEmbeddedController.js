@@ -110,7 +110,8 @@ function TitleFormEmbeddedController(
     $scope.disable = false;
     $scope.changeStep = function (numStep) {
         if (numStep === 1) {
-            if ($scope.title.data.hasPayment || $scope.title.data.fullPaid || $scope.renegotiation) {
+            console.log($scope.title.data);
+            if ($scope.title.data.hasPayment || $scope.title.data.fullPaid || $scope.renegotiation || $scope.title.data.isReversed) {
                 $scope.disable = true;
                 $scope.step = numStep;
             } else {
@@ -125,7 +126,7 @@ function TitleFormEmbeddedController(
     };
 
     $scope.disableParcel = function (entity) {
-        return entity.parcelPayments && entity.parcelPayments.length > 0;
+        return $scope.title.data.isReversed || (entity.parcelPayments && entity.parcelPayments.length > 0);
     };
 
     //Função de busca do rateio.
@@ -214,7 +215,7 @@ function TitleFormEmbeddedController(
     }
 
 
-    if ($scope.title.data.hasPayment || $scope.title.data.fullPaid) {
+    if ($scope.title.data.hasPayment || $scope.title.data.fullPaid || $scope.title.data.isReversed) {
         $scope.disable = true;
     }
 
