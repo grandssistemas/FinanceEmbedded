@@ -605,12 +605,6 @@ function TitleFormEmbeddedController(
             }
         });
     }
-
-    $scope.configData = {
-        // change: function(data){
-        //     $scope.changeDateParcel(data, $index, oldDateParcel);
-        // }
-    }
 }
 
 module.exports = TitleFormEmbeddedController;
