@@ -604,13 +604,17 @@ function TitleFormEmbeddedController(
                 $scope.title.data.expiration = new Date(params.expiration) || new Date();
             }
         });
-    }
+    };
 
     $scope.configData = {
         // change: function(data){
         //     $scope.changeDateParcel(data, $index, oldDateParcel);
         // }
-    }
+    };
+
+    $scope.showBarCodeTitle = function(){
+        return ($scope.title.data.titleType == 'PAY');
+    };
 }
 
 module.exports = TitleFormEmbeddedController;
