@@ -27,7 +27,6 @@ function TitleFormEmbeddedController(
     FinanceUnitService) {
 
     $scope.entity = angular.copy($scope.$ctrl.entity);
-
     $scope.entity.data.parcel.sort((a,b) => {
         return a.number - b.number;
     });
@@ -110,7 +109,6 @@ function TitleFormEmbeddedController(
     $scope.disable = false;
     $scope.changeStep = function (numStep) {
         if (numStep === 1) {
-            console.log($scope.title.data);
             if ($scope.title.data.hasPayment || $scope.title.data.fullPaid || $scope.renegotiation || $scope.title.data.isReversed) {
                 $scope.disable = true;
                 $scope.step = numStep;
@@ -201,6 +199,9 @@ function TitleFormEmbeddedController(
     $scope.title.data.parcelinterest = $scope.title.data.parcelinterest || 0;
     $scope.title.data.expiration = $scope.title.data.expiration ? new Date($scope.title.data.expiration) : new Date();
 
+    if($scope.title.data.titleType === 'PAY')
+        $scope.title.data.value = $scope.title.data.parcel[0].value;
+
     $scope.calculatedInterest = function () {
         $scope.interestActive = !$scope.interestActive;
         if (!$scope.interestActive) {
@@ -282,12 +283,14 @@ function TitleFormEmbeddedController(
 
     $scope.save = function (entity) {
         entity.expiration = moment(entity.expiration).tz('America/Sao_Paulo').format('YYYY-MM-DDTHH:mm:ss')+'Z';
+
         entity.parcel = entity.parcel.map(function(data){
             if(data.expiration){
                 data.expiration = moment(data.expiration).tz('America/Sao_Paulo').format('YYYY-MM-DDTHH:mm:ss')+'Z';
             }
             return data;
         });
+
         if ($scope.$ctrl.operation === "REPLEACEMENT") {
             $scope.replecement.replacedBy = entity;
             TitleService.saveReplecement(entity)
@@ -400,15 +403,18 @@ function TitleFormEmbeddedController(
         let dateNew = (parcel === 0) ? expiration.setMonth(expiration.getMonth()) : expiration.setMonth(expiration.getMonth() + 1);
         return new Date(dateNew);
     };
+
     $scope.calculateParcels = function () {
         var valueParcel = $scope.title.data.value;
         var numberParcel = $scope.title.data.numberParcel;
+        var valueParcelReceive = parseFloat((valueParcel / numberParcel).toFixed(2));
+        var valueRemainingCalculateReceive = parseFloat((valueParcel - (valueParcelReceive * numberParcel)).toFixed(2));
         $scope.title.data.parcel = [];
 
         var expiration = new Date($scope.title.data.expiration);
         for (var i = 0; i < $scope.title.data.numberParcel; i++) {
-            if ($scope.titleType === "pay" || $scope.titleType === "editpay") {
 
+            if ($scope.titleType === "pay" || $scope.titleType === "editpay") {
                 var currentParcel = {
                     number: i + 1,
                     value: valueParcel,
@@ -416,26 +422,26 @@ function TitleFormEmbeddedController(
                 };
                 $scope.title.data.parcel.push(currentParcel);
             }
+
             if ($scope.titleType === "receive" || $scope.titleType === "editreceive") {
-                if (i === 0) {
-                    var conta = parseInt(valueParcel / numberParcel);
-                    var sobra = (valueParcel % numberParcel);
-                    var currentParcelReceive = {
-                        number: i + 1,
-                        value: conta + sobra,
-                        expiration: setExpiration(i, expiration)
-                    };
-                    $scope.title.data.parcel.push(currentParcelReceive);
-                } else {
+                if(i === 0){
                     var currentParcelInt = {
                         number: i + 1,
-                        value: parseInt(valueParcel / $scope.title.data.numberParcel),
+                        value: (valueParcelReceive + valueRemainingCalculateReceive),
+                        expiration: setExpiration(i, expiration)
+                    };
+                    $scope.title.data.parcel.push(currentParcelInt);
+                }else{
+                    var currentParcelInt = {
+                        number: i + 1,
+                        value: valueParcelReceive,
                         expiration: setExpiration(i, expiration)
                     };
                     $scope.title.data.parcel.push(currentParcelInt);
                 }
             }
         }
+
         $scope.elem = angular.copy($scope.title.data.parcel);
     };
 
