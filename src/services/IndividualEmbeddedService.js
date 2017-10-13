@@ -11,6 +11,14 @@ function IndividualEmbeddedService(GumgaRest, $http, FinanceEmbeddedService) {
         return $http.get(FinanceEmbeddedService.getDefaultConfiguration().api + '/individuallabel?' + param)
     };
 
+    Service.getLogged = function(){
+        return $http.get(FinanceEmbeddedService.getDefaultConfiguration().api + '/getlogged')
+    };
+
+    Service.getEmployees = function(){
+        return $http.get(FinanceEmbeddedService.getDefaultConfiguration().api + '/getemployess')
+    };
+
 
     return Service;
 }
