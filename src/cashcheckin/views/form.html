@@ -90,6 +90,7 @@
                                                             <div class="col-md-6">
                                                                 <label gumga-translate-tag="cashcheckin.changeorigin">Change
                                                                     origin</label><br/>
+                                                                <strong class="fa fa-question-circle ng-scope" style="cursor: pointer; position: absolute; top: 4px; left: 127px;" uib-popover={{changeOriginTooltip}}></strong>
                                                                 <gumga-many-to-one
                                                                         value="entity.originChange"
                                                                         search-method="getChangeOrigin(param)"
@@ -108,6 +109,7 @@
                                                             <div class="col-md-6">
                                                                 <label gumga-translate-tag="cashcheckin.changedestiny">Change
                                                                     destiny</label><br/>
+                                                                <strong class="fa fa-question-circle ng-scope" style="cursor: pointer; position: absolute; top: 4px; left: 129px;" uib-popover={{changeDestinyTooltip}}></strong>
                                                                 <gumga-many-to-one
                                                                         list="financeUnits"
                                                                         value="entity.destinyChange"
