@@ -1,0 +1,23 @@
+<form id="myForm">
+    <div class="row">
+        <div class="container-fluid">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Tipo do Relatório</label>
+                            <select name="row" id="row" ng-model="entity.type" class="form-control"
+                                    ng-options="obj.key as obj.label for obj in reportType"></select>
+                        </div>
+                    </div>
+                    <div class="row" style="padding-top: 20px">
+                        <button class="btn btn-info pull-right button-ok" ng-click="continue()" style="margin-right:10px">
+                            <span class="fa fa-plus"></span>
+                            <span class="ng-binding"> OK </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
