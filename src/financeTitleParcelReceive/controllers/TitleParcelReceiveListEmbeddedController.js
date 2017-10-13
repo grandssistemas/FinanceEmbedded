@@ -245,7 +245,7 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
     };
 
     $scope.tableConfig = {
-        columns: 'documentNumber, parcel, individual, expiration, amount, calculedInterest, calculedPenalty, valuePay, value, status',
+        columns: 'documentNumber, parcel, individual, expiration, amount, calculedInterest, calculedPenalty, value, status',
         checkbox: true,
         selection: 'multi',
         materialTheme: true,
@@ -289,11 +289,6 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
                 name: 'calculedInterest',
                 title: '<span>Juros</span>',
                 content: '{{$value.calculedInterest | currency: "R$ "}} '
-            },
-            {
-                name: 'valuePay',
-                title: '<span>R$ Recebido</span>',
-                content: '{{$value.totalpayed | currency: "R$"}}'
             },
             {
                 name: 'value',
