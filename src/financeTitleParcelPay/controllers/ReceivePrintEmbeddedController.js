@@ -7,7 +7,6 @@ function ReceivePrintEmbeddedController($scope, $uibModalInstance, items, $filte
 
     $scope.user = JSON.parse(window.sessionStorage.getItem('user'));
     $scope.recibo = items;
-    console.log($scope.recibo.value);
     $scope.receiptValue = $filter('gumgaNumberInWords')($scope.recibo.value.toString().replace('.', ','), true);
 
     $scope.print = function () {

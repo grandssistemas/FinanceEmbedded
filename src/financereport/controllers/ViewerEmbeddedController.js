@@ -68,19 +68,19 @@ function ViewerEmbeddedController($scope,
                     queryBegin = event.queryString.substring(0, index);
                 }
 
-                event.queryString = queryBegin + where + filtersVar + queryEnd;
+                event.queryString = ' ' + queryBegin + ' ' + where + ' ' + filtersVar + ' ' + queryEnd + ' ';
             }
             if (Array.isArray(filtersVar)) {
                 var query = angular.copy(event.queryString);
-                var queryMod = '';
+                var queryMod = ' ';
                 if (filtersVar.length) {
 
                     filtersVar.forEach(function (data) {
                         for (var i = 1; i <= data.count; i++) {
                             if (queryMod) {
-                                queryMod = queryMod + ' UNION ALL ' + query + ' WHERE obj.id = ' + data.id;
+                                queryMod = queryMod + ' UNION ALL ' + query + ' WHERE obj.id = ' + data.id + ' ';
                             } else {
-                                queryMod = query + ' WHERE obj.id = ' + data.id;
+                                queryMod = query + ' WHERE obj.id = ' + data.id + ' ';
                             }
                         }
                     });

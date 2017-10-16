@@ -1,16 +1,16 @@
 var modalTemplate = require('../views/viewermodal.html');
 
-FinanceReportService.$inject = ['GumgaRest', '$uibModal', 'apiLocation'];
+FinanceReportService.$inject = ['GumgaRest', '$uibModal', 'FinanceEmbeddedService'];
 
-function FinanceReportService(GumgaRest, $uibModal, apiLocation) {
-    var service = new GumgaRest(apiLocation + '/api/financereport');
+function FinanceReportService(GumgaRest, $uibModal,  FinanceEmbeddedService) {
+    var service = new GumgaRest(FinanceEmbeddedService.getDefaultConfiguration().api + '/financereport');
 
     service.getReportType = function () {
         return service.extend('get', '/getreporttype');
     };
 
     service.setConnectionLocal = function () {
-        service.connectionLocal = apiLocation + '/api/financereportconnect?gumgaToken=' + window.sessionStorage['token'];
+        service.connectionLocal = FinanceEmbeddedService.getDefaultConfiguration().api + '/financereportconnect?gumgaToken=' + window.sessionStorage['token'];
     };
 
     service.setConnectionLocal();

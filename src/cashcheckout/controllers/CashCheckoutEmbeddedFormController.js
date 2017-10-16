@@ -78,7 +78,6 @@ function CashCheckoutEmbeddedFormController($scope,
     function validateDiference(entity) {
         for (let i = 0; i < entity.values.length; i++) {
             if (!isComparationCorrect(entity.values[i], entity.destinyChange)) {
-                console.log(entity.values[i], entity.destinyChange)
                 SweetAlert.swal("Diferença de Valores!", "A conta " + entity.values[i].financeUnit.name +
                     " esta com diferença de valores, realize movimentações de caixa para corrigir antes de fechar.", "error");
                 return false;

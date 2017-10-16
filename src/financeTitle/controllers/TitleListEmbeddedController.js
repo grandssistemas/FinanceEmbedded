@@ -81,7 +81,6 @@ function TitleListEmbeddedController(
 
         $scope.selectLabel = function (label) {
             // $scope.selected = angular.copy(label);
-            console.log($scope.selected);
             $scope.selected.labels.clear();
             $scope.selected.labels[0] = label;
 
