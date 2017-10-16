@@ -56,6 +56,7 @@ function DesignerEmbeddedController($scope,
             }
         });
         modal.result.then(function (result) {
+            result.isDefault = result.isDefault || false;
             FinanceReportService.update(result).then(function (data) {
                 $scope.entity = data.data.data;
             });
