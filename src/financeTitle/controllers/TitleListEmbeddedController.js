@@ -1,10 +1,18 @@
+// var modalTemplate = require('../views/viewermodal.html');
+
 TitleListEmbeddedController.$inject = [
     '$scope',
     'TitleService',
+    'FinanceReportService',
+    'SweetAlert',
+    '$uibModal',
     'gumgaController'];
 function TitleListEmbeddedController(
     $scope,
     TitleService,
+    FinanceReportService,
+    SweetAlert,
+    $uibModal,
     gumgaController) {
 
         TitleService.resetDefaultState();
@@ -72,7 +80,6 @@ function TitleListEmbeddedController(
 
         $scope.selectLabel = function (label) {
             // $scope.selected = angular.copy(label);
-            console.log($scope.selected);
             $scope.selected.labels.clear();
             $scope.selected.labels[0] = label;
 
@@ -218,6 +225,14 @@ function TitleListEmbeddedController(
 
             return result.expiration;
         };
+
+        $scope.print = function(type){
+            // console.log(type);
+            var typePrint = type === 'receive'? 'RECEIVE_BILL':null;
+            FinanceReportService.openModalViewer(typePrint,'',[],()=>{
+                SweetAlert.swal("Falta de Relatorio de contas a receber", "Você esta sem o relátorio de contas a receber contate o suporte.", "warning");
+            })
+        }
     };
 
 module.exports =  TitleListEmbeddedController;
