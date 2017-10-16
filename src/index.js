@@ -1,4 +1,6 @@
-import Style from './style/index.css'
+require('./style/index.css');
+
+require('./financereport/module');
 require('./cashcheckin/module');
 require('./cashcheckout/module');
 require('./financeTitle/module');
@@ -9,7 +11,7 @@ require('./providers/module');
 
 
 // DEPENDENCIAS
-import GroupDependencies from './Utils/GroupDependencies'
+require('./Utils/GroupDependencies');
 
 // UTILS
 import ngDynamicController from './Utils/DynamicController'
@@ -23,17 +25,19 @@ const finance = angular.module('finance.embedded', [
     'finance.title',
     'finance.titleparcel',
     'finance.titleparcelreceive',
+    'finance.stimulsoftembedded',
     'finance.cashcheckinembedded',
-    'finance.cashcheckoutembedded']);
+    'finance.cashcheckoutembedded',
+    'gumga.date']);
 
-finance.directive('ngDynamicController', ngDynamicController)
-finance.directive('bindHtmlCompile', bindHtmlCompile)
+finance.directive('ngDynamicController', ngDynamicController);
+finance.directive('bindHtmlCompile', bindHtmlCompile);
 
 finance.config(['GumgaDateServiceProvider', (GumgaDateServiceProvider) => {
     GumgaDateServiceProvider.setDefaultConfiguration({
         minYear: 1500,
         closeOnChange: true
     });
-}])
+}]);
 
 export default finance.name

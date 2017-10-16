@@ -1,0 +1,78 @@
+<form name="form">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="cold-md-6">
+                            <div class="col-md-6">
+                                <div class="panel gmd">
+                                    <div class="panel-heading cl-light-primary">
+                                        Tipo de Relatório
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <select name="row" id="row" ng-model="type" class="form-control"
+                                                        ng-options="obj.key as obj.label for obj in reportType"
+                                                        ng-change="changeReports()"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--<div class="panel gmd">-->
+                                    <!--<div class="panel-heading cl-light-primary">-->
+                                        <!--Filtros-->
+                                    <!--</div>-->
+                                    <!--<div class="panel-body">-->
+                                        <!--<div class="row">-->
+                                            <!--<div class="col-md-12" ng-if="type === 'PERSON'">-->
+                                                <!--<div ng-include="'/modules/reportpersonfilter/views/personfilters.html'"-->
+                                                     <!--ng-controller="PersonFilterController"></div>-->
+                                            <!--</div>-->
+                                            <!--<div class="col-md-12" ng-if="type === 'SALE'">-->
+                                                <!--<div ng-include="'/modules/reportmovfilter/views/salefilters.html'"-->
+                                                     <!--ng-controller="SaleFilterController"></div>-->
+                                            <!--</div>-->
+                                            <!--<div class="col-md-12" ng-if="type === 'PRODUCT'">-->
+                                                <!--<div ng-include="'/modules/reportproductfilter/views/productfilters.html'"-->
+                                                     <!--ng-controller="ProductFilterController"></div>-->
+                                            <!--</div>-->
+                                            <!--<div class="col-md-12" ng-if="type === 'TAG'">-->
+                                                <!--<div ng-include="'/modules/reportproductfilter/views/tagfilters.html'"-->
+                                                     <!--ng-controller="TagFilterController"></div>-->
+                                            <!--</div>-->
+                                            <!--<div class="col-md-12" ng-if="type === 'CASHCHECKOUT'">-->
+                                                <!--<div ng-include="'/modules/reportpdvfilter/views/cashcheckoutfilters.html'"-->
+                                                     <!--ng-controller="CashCheckoutFilterController"></div>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            </div>
+                        </div>
+                        <div class="cold-md-6">
+                            <div class="col-md-6">
+                                <button type="button" ng-click="insertReport()" class="btn btn-primary raised gmd">Novo</button>
+                                <button type="button" ng-click="delete(selectedValues[0])"
+                                        class="btn btn-danger raised gmd"
+                                        ng-disabled="selectedValues.length == 0">DELETAR</button>
+                            </div>
+                            <div class="col-md-6" style="margin-top:1%">
+                                <gumga-list data="financeReport.data"
+                                            configuration="conf"
+                                            class="table-striped"
+                                            sort="financeReport.methods.sort(field, dir)"
+                                            page-size="financeReport.pageSize"
+                                            count="financeReport.count"
+                                            page-model="financeReport.page"
+                                            max-height="400px"
+                                            on-page-change="financeReport.methods.get(page, pageSize)"></gumga-list>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

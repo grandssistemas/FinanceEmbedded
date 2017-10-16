@@ -462,6 +462,10 @@ function PayEmbeddedController(
         document.getElementById(id).select();
     }
 
+    $scope.back = function(){
+        $scope.$ctrl.onBackClick();
+    };
+
 }
 
 module.exports = PayEmbeddedController;

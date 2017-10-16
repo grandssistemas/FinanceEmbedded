@@ -364,6 +364,11 @@ function PayReceiveEmbeddedController(
     $scope.onDeselectPaymentCredit = function(financeUnit){
         $scope.balanceFinanceUnit = 0;
     };
+
+    $scope.back = function(){
+        $scope.$ctrl.onMakePayment();
+    };
+
 }
 
 module.exports = PayReceiveEmbeddedController;

@@ -218,20 +218,20 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
             $scope.recibo.parcels = $scope.selectedValues;
             $scope.printPaid($scope.recibo);
         } else {
-            var len = parcels.length;
-            var individualDefault;
-            var sameIndividual = true;
-            for (var x = 0; x < len; x++) {
-                var parcel = parcels[x];
-                x === 0 ? individualDefault = parcel.individual.name :
-                    individualDefault !== parcel.individual.name
-                        ? sameIndividual = false : angular.noop;
-            }
-            if (sameIndividual) {
+            const individualDefault = parcels[0].individual.name;
+            let sameIndividual = true;
+            let hasReversed = false;
+            parcels.forEach((parcel) => {
+                sameIndividual = sameIndividual && (parcel.individual.name === individualDefault)
+                hasReversed = hasReversed || parcel.titleData.reversed;
+            });
+
+
+            if (sameIndividual && !hasReversed) {
                 TitleParcelPayService.setInstallmentsPayable(parcels);
                 $scope.$ctrl.onSameIndividual();
             } else {
-                $scope.errorMessage = 'Foram selecionadas parcelas de fornecedores diferentes, altere sua seleção.';
+                $scope.errorMessage = hasReversed ? 'Foram selecionados títulos já estornados. Não é possível fazer a movimentação desses títulos.': 'Foram selecionadas parcelas de fornecedores diferentes, altere sua seleção.';
                 $timeout(function () {
                     delete $scope.errorMessage;
                 }, 5000);
@@ -245,7 +245,7 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
     };
 
     $scope.tableConfig = {
-        columns: 'documentNumber, parcel, individual, expiration, amount, calculedInterest, calculedPenalty, valuePay, value, status',
+        columns: 'documentNumber, parcel, individual, expiration, amount, calculedInterest, calculedPenalty, value, status',
         checkbox: true,
         selection: 'multi',
         materialTheme: true,
@@ -291,11 +291,6 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
                 content: '{{$value.calculedInterest | currency: "R$ "}} '
             },
             {
-                name: 'valuePay',
-                title: '<span>R$ Recebido</span>',
-                content: '{{$value.totalpayed | currency: "R$"}}'
-            },
-            {
                 name: 'value',
                 title: '<span>R$ a receber</span>',
                 content: '{{$value.remaining | currency: "R$"}}'
@@ -303,10 +298,11 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
             {
                 name: 'status',
                 title: '<span>Status</span>',
-                content: '<span ng-if="$value.totalpayed == 0 && !$value.isReplaced" class="label label-info">Aberta</span>' +
-                '<span ng-if="$value.fullPaid" class="label label-danger">Recebido</span>' +
-                '<span ng-if="$value.isReplaced" class="label label-warning">Renegociada</span>' +
-                '<span ng-if="($value.totalpayed > 0) && !$value.fullPaid" class="label label-warning">Amortizado</span>'
+                content: '<span ng-if="!$value.titleData.reversed && $value.totalpayed == 0 && !$value.isReplaced" class="label label-info">Aberta</span>' +
+                '<span ng-if="!$value.titleData.reversed && $value.fullPaid" class="label label-danger">Recebido</span>' +
+                '<span ng-if="$value.titleData.reversed" class="label label-danger">Estornado</span>' +
+                '<span ng-if="!$value.titleData.reversed && $value.isReplaced" class="label label-warning">Renegociada</span>' +
+                '<span ng-if="!$value.titleData.reversed && ($value.totalpayed > 0) && !$value.fullPaid" class="label label-warning">Amortizado</span>'
             }
         ]
     };

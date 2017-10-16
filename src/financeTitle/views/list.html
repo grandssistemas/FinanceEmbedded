@@ -5,6 +5,10 @@
                 <i class="fa fa-plus"></i>
                 <span gumga-translate-tag="formbuttons.new{{titleType}}"> New </span>
             </a>
+            <a ng-click="print(titleType)" class="btn btn-default" ng-show="titleType == 'receive'">
+                <i class="fa fa-printer"></i>
+                <span gumga-translate-tag="formbuttons.printreport"> Print Report</span>
+            </a>
         </div>
         <div class="col-md-3">
             <ui-select multiple ng-model="selected.labels" theme="bootstrap" name="labels" on-select="selectLabel($item)"
