@@ -20,25 +20,24 @@ PayReceiveEmbeddedController.$inject = [
     'CreditCardAccountService',
     'FinanceUnitService'];
 
-function PayReceiveEmbeddedController(
-    FinanceConfigurationService,
-    $scope,
-    $timeout,
-    IndividualCreditService,
-    TitleParcelPayService,
-    IndividualEmbeddedService,
-    DocTedService,
-    BankService,
-    CheckingAccountService,
-    LocalCashService,
-    ChequePortfolioService,
-    ThirdPartyChequeService,
-    gumgaController,
-    PaymentService,
-    $filter,
-    $uibModal,
-    CreditCardAccountService,
-    FinanceUnitService) {
+function PayReceiveEmbeddedController(FinanceConfigurationService,
+                                      $scope,
+                                      $timeout,
+                                      IndividualCreditService,
+                                      TitleParcelPayService,
+                                      IndividualEmbeddedService,
+                                      DocTedService,
+                                      BankService,
+                                      CheckingAccountService,
+                                      LocalCashService,
+                                      ChequePortfolioService,
+                                      ThirdPartyChequeService,
+                                      gumgaController,
+                                      PaymentService,
+                                      $filter,
+                                      $uibModal,
+                                      CreditCardAccountService,
+                                      FinanceUnitService) {
 
     gumgaController.createRestMethods($scope, FinanceConfigurationService, 'financeConfiguration');
     gumgaController.createRestMethods($scope, CheckingAccountService, 'checkingaccount');
@@ -115,20 +114,21 @@ function PayReceiveEmbeddedController(
     };
 
     $scope.totalize = function () {
-        var total = 0;
-        for (var i = 0; i < $scope.payment.parcels.length; i++) {
-            total += $scope.payment.parcels[i].value;
-        }
-        return total;
+        return $scope.payment.parcels.reduce((sum, current) => {
+            return sum + current.value;
+        }, 0);
     };
 
+    $scope.getRemainingValue = (row) => {
+        return row.remaining + row.interest.value + row.penalty.value - row.discount.value
+    }
+
     $scope.totalizeRemaining = function () {
-        var total = 0;
-        for (var i = 0; i < $scope.parcels.length; i++) {
-            total += $scope.parcels[i].remaining;
-        }
-        return total;
+        return $scope.payment.parcels.reduce((sum, current) => {
+            return sum + $scope.getRemainingValue(current);
+        }, 0);
     };
+
     $scope.total = $scope.totalizeRemaining();
 
     $scope.makePayment = function (payment) {
@@ -142,21 +142,54 @@ function PayReceiveEmbeddedController(
         $scope.openedInsertMoment = !$scope.openedInsertMoment;
     };
 
+    $scope.rowEdit = (row) => {
+        const fields = ['interest', 'penalty', 'discount'];
+        fields.forEach(field => {
+            if (typeof row[field] === 'string') {
+                const newObj = {
+                    valueModifierOperation: (field === 'discount' ? 'DECREASE' : 'INCREASE'),
+                    valueModifierType: 'ABSOLUTE',
+                    value: parseFloat(row[field])
+                }
+
+                row[field] = newObj;
+            }
+
+        })
+
+
+    }
+
     $scope.tableConfig = {
-        columns: 'expiration, value,remaining, individual',
+        columns: 'expiration, value,remaining,interest, penalty, discount, individual',
         materialTheme: true,
         columnsConfig: [{
             name: 'expiration',
-            title: '<span>Expiração</span>',
+            title: '<span>Vencimento</span>',
             content: '{{$value.expiration | date: "dd/MM/yyyy"}}'
         }, {
             name: 'value',
             title: '<span>Valor</span>',
             content: '{{$value.value | currency: "R$"}}'
         }, {
+            name: 'interest',
+            editable: true,
+            title: '<span>Juros</span>',
+            content: '<input type="text" ui-money-mask ng-change="$parent.$parent.updateTotal()" ng-model="$value.interest.value">'
+        }, {
+            name: 'penalty',
+            editable: true,
+            title: '<span>Multa</span>',
+            content: '<input type="text" ui-money-mask ng-change="$parent.$parent.updateTotal()" ng-model="$value.penalty.value">'
+        }, {
+            name: 'discount',
+            editable: true,
+            title: '<span>Desconto</span>',
+            content: '<input type="text" ui-money-mask ng-change="$parent.$parent.updateTotal()" ng-model="$value.discount.value">'
+        }, {
             name: 'remaining',
             title: '<span>Saldo</span>',
-            content: '{{$value.remaining | currency: "R$"}}'
+            content: '{{$parent.$parent.getRemainingValue($value) | currency: "R$"}}'
         }, {
             name: 'individual',
             title: '<span>Pessoa</span>',
@@ -164,6 +197,15 @@ function PayReceiveEmbeddedController(
         }
         ]
     };
+
+
+    $scope.updateTotal = () =>{
+        console.log('total');
+        $scope.total = $scope.totalizeRemaining();
+        $scope.lastReceive = ($scope.totalizeRemaining() - $scope.totalReceive());
+        $scope.totalize();
+    }
+
 
     $scope.tableConfigCard = {
         columns: 'name',
@@ -281,11 +323,9 @@ function PayReceiveEmbeddedController(
     };
 
     $scope.totalReceive = function () {
-        var total = 0;
-        angular.forEach($scope.payment.methodReceive, function (list) {
-            total += list.value
-        });
-        return total
+        return $scope.payment.methodReceive.reduce((sum, current) => {
+            return sum + current.value;
+        }, 0);
     };
 
     $scope.removeLeaf = function (method, index) {
@@ -325,7 +365,7 @@ function PayReceiveEmbeddedController(
             })
     }
 
-    $scope.setarfocusPayment = function(value) {
+    $scope.setarfocusPayment = function (value) {
         switch (value) {
             case 'money':
                 angular.element(document.getElementById("paymentMoneyFinanceunit"))
@@ -346,26 +386,27 @@ function PayReceiveEmbeddedController(
                 angular.element(document.getElementById("paymentCreditFinanceunit"))
                     .find('input')[1].focus();
                 break
-        };
+        }
+        ;
     };
 
-    $scope.selectAllText = function(id){
+    $scope.selectAllText = function (id) {
         document.getElementById(id).focus();
         document.getElementById(id).select();
     };
 
     $scope.balanceFinanceUnit = 0;
-    $scope.onSelectPaymentCredit = function(financeUnit){
+    $scope.onSelectPaymentCredit = function (financeUnit) {
         FinanceUnitService.getFinanceUnitBalance(financeUnit.id).then(function (data) {
             $scope.balanceFinanceUnit = data.data > 0 ? 0 : data.data;
         });
     };
 
-    $scope.onDeselectPaymentCredit = function(financeUnit){
+    $scope.onDeselectPaymentCredit = function (financeUnit) {
         $scope.balanceFinanceUnit = 0;
     };
 
-    $scope.back = function(){
+    $scope.back = function () {
         $scope.$ctrl.onMakePayment();
     };
 

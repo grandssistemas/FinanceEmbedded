@@ -1,357 +1,358 @@
-<div class="col-md-12" ng-show="parcels.length > 0">
+<div class="col-md-12" ng-show="!parcels.length">
+    <label class="text-danger">Nenhuma parcela selecionada para Receber.</label>
+</div>
+<div class="col-md-12" ng-show="parcels.length">
+    <h2 style="margin-top:0"> &nbsp; Recebimento de titulo</h2>
     <div class="panel panel-default">
-        <div class="panel-heading">RECEBER DE {{parcels[0].individual.name}}
-            <h3 style="float: right;font-size: 16px !important;">Total a receber {{total | currency: "R$"}}</h3></div>
+        <div class="panel-heading" style="padding-bottom: 30px">
+            <h3 style="float: right;font-size: 16px;">Total a receber {{total | currency: "R$"}}</h3></div>
         <div class="panel-body">
             <form name="PaymentForm">
-                <!--<editor-fold desc="Lado Esquerdo"-->
-                <div class="col-md-6">
-                    <div class="row">
+                <div class="row">
+                    <div class="col-sm-12">
                         <gumga-list class="table-striped table-condensed" data="parcels"
+                                    on-row-change="rowEdit(row)"
                                     configuration="tableConfig"></gumga-list>
                     </div>
                 </div>
-                <!--</editor-fold>-->
-                <!--<editor-fold des="Lado Direito">-->
-                <div class="col-md-6">
-                    <h2 style="margin-top:0"> &nbsp; Recebimento de titulo</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-9">
+                                <label gumga-translate-tag="titleparcelreceive.receipt">receipt</label><br/>
+                                <label gumga-translate-tag="titleparcelreceive.money" class="btn btn-primary gmd raised"
+                                       ng-model="payment.method" uib-btn-radio="'money'" ng-click="setarfocusPayment('money')">money</label>
+                                <label gumga-translate-tag="titleparcelreceive.check" class="btn btn-primary gmd raised"
+                                       ng-model="payment.method" uib-btn-radio="'thirdCheck'" ng-click="setarfocusPayment('check')">check</label>
+                                <label gumga-translate-tag="titleparcelreceive.bank" class="btn btn-primary gmd raised"
+                                       ng-model="payment.method" uib-btn-radio="'tedDoc'" ng-click="setarfocusPayment('bank')">bank</label>
+                                <label gumga-translate-tag="titleparcelreceive.card" class="btn btn-primary gmd raised"
+                                       ng-model="payment.method" uib-btn-radio="'card'" ng-click="setarfocusPayment('card')">card</label>
+                                <label class="btn btn-primary gmd raised" ng-model="payment.method" uib-btn-radio="'credit'"
+                                       gumga-translate-tag="titleparcel.credit"
+                                       ng-if="showMenuPersonalCredit" ng-click="setarfocusPayment('credit')">credit</label>
+                            </div>
+                            <div class="col-md-3">
+                                <label gumga-translate-tag="titleparcelreceive.date">date</label><br/>
+                                <gumga-date ng-model="payment.momment" id="insertMoment" name="insertMoment"
+                                            configuration="{showCalendar: false}"></gumga-date>
+                            </div>
+                        </div>
 
-                    <div class="row">
-                        <div class="col-md-9">
-                            <label gumga-translate-tag="titleparcelreceive.receipt">receipt</label><br/>
-                            <label gumga-translate-tag="titleparcelreceive.money" class="btn btn-primary gmd raised"
-                                   ng-model="payment.method" uib-btn-radio="'money'" ng-click="setarfocusPayment('money')">money</label>
-                            <label gumga-translate-tag="titleparcelreceive.check" class="btn btn-primary gmd raised"
-                                   ng-model="payment.method" uib-btn-radio="'thirdCheck'" ng-click="setarfocusPayment('check')">check</label>
-                            <label gumga-translate-tag="titleparcelreceive.bank" class="btn btn-primary gmd raised"
-                                   ng-model="payment.method" uib-btn-radio="'tedDoc'" ng-click="setarfocusPayment('bank')">bank</label>
-                            <label gumga-translate-tag="titleparcelreceive.card" class="btn btn-primary gmd raised"
-                                   ng-model="payment.method" uib-btn-radio="'card'" ng-click="setarfocusPayment('card')">card</label>
-                            <label class="btn btn-primary gmd raised" ng-model="payment.method" uib-btn-radio="'credit'"
-                                   gumga-translate-tag="titleparcel.credit"
-                                   ng-if="showMenuPersonalCredit" ng-click="setarfocusPayment('credit')">credit</label>
+                        <!--<editor-fold desc="DINHEIRO">-->
+                        <div class="row" ng-show="payment.method == 'money'">
+                            <div class="col-md-8">
+                                <div>
+                                    <label gumga-translate-tag="titleparcelreceive.financeunit">financeunit</label><br/>
+                                    <gumga-many-to-one
+                                            value="payment.money.financeUnit"
+                                            search-method="localcash.methods.asyncSearch('name', param)"
+                                            field="name"
+                                            authorize-add="false"
+                                            id="paymentMoneyFinanceunit">
+                                    </gumga-many-to-one>
+                                </div>
+                            </div>
+                            <div class="col-md-3 m-t-md">
+                                <gmd-input>
+                                    <input id="valuemoney" type="text" name="value" ng-model="payment.value"
+                                           ng-focus="calcCheques('valuemoney');"
+                                           ng-click="selectAllText('valuemoney')"
+                                           class="form-control text-right gmd" gumga-error ui-money-mask="2">
+                                    <span class="bar"></span>
+                                    <label gumga-translate-tag="titleparcelreceive.value">value </label>
+                                </gmd-input>
+                            </div>
+                            <div class="col-md-1 m-t-md">
+                                <label style="height: 0;">&nbsp;</label>
+                                <button class="btn gmd fab btn-success btn-sm" ng-click="addReceiveMoney(payment)">
+                                    <i class="material-icons">add</i>
+                                </button>
+                            </div>
                         </div>
-                        <div class="col-md-3">
-                            <label gumga-translate-tag="titleparcelreceive.date">date</label><br/>
-                            <gumga-date ng-model="payment.momment" id="insertMoment" name="insertMoment"
-                                        configuration="{showCalendar: false}"></gumga-date>
-                        </div>
-                    </div>
+                        <!--</editor-fold>-->
 
-                    <!--<editor-fold desc="DINHEIRO">-->
-                    <div class="row" ng-show="payment.method == 'money'">
-                        <div class="col-md-8">
-                            <div>
-                                <label gumga-translate-tag="titleparcelreceive.financeunit">financeunit</label><br/>
-                                <gumga-many-to-one
-                                        value="payment.money.financeUnit"
-                                        search-method="localcash.methods.asyncSearch('name', param)"
-                                        field="name"
-                                        authorize-add="false"
-                                        id="paymentMoneyFinanceunit">
-                                </gumga-many-to-one>
+                        <!--<editor-fold desc="CHEQUE TERCEIRO">-->
+                        <div class="row" ng-show="payment.method == 'thirdCheck'">
+                            <div class="col-md-2 m-t-md">
+                                <div gumga-form-class="bank">
+                                    <gmd-input>
+                                        <input gumga-error type="text" name="bank" ng-model="payment.check.bank"
+                                               maxlength="3"
+                                               class="form-control gmd" tabindex="1" id="paymentCheckFinanceunit"/>
+                                        <span class="bar"></span>
+                                        <label gumga-translate-tag="titleparcelreceive.bank">bank</label>
+                                    </gmd-input>
+                                </div>
+                            </div>
+                            <div class="col-md-2 m-t-md">
+                                <div gumga-form-class="branch">
+                                    <gmd-input>
+                                        <input gumga-error type="text" name="branch" ng-model="payment.check.branch"
+                                               class="form-control gmd" tabindex="2"/>
+                                        <span class="bar"></span>
+                                        <label gumga-translate-tag="thirdpartycheque.branch">branch</label>
+                                    </gmd-input>
+                                </div>
+                            </div>
+                            <div class="col-md-4 m-t-md">
+                                <div gumga-form-class="account">
+                                    <gmd-input>
+                                        <input gumga-error type="text" name="account" ng-model="payment.check.account"
+                                               class="form-control gmd" tabindex="3"/>
+                                        <span class="bar"></span>
+                                        <label gumga-translate-tag="thirdpartycheque.account">account</label>
+                                    </gmd-input>
+                                </div>
+                            </div>
+                            <div class="col-md-4 m-t-md">
+                                <div gumga-form-class="chequeNumber">
+                                    <gmd-input>
+                                        <input gumga-error type="text" name="chequeNumber"
+                                               ng-model="payment.check.chequeNumber"
+                                               class="form-control gmd" tabindex="4"/>
+                                        <span class="bar"></span>
+                                        <label gumga-translate-tag="thirdpartycheque.chequeNumber">chequeNumber</label>
+                                    </gmd-input>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-3 m-t-md">
-                            <gmd-input>
-                                <input id="valuemoney" type="text" name="value" ng-model="payment.value"
-                                       ng-focus="calcCheques('valuemoney');"
-                                       ng-click="selectAllText('valuemoney')"
-                                       class="form-control text-right gmd" gumga-error ui-money-mask="2">
-                                <span class="bar"></span>
-                                <label gumga-translate-tag="titleparcelreceive.value">value </label>
-                            </gmd-input>
+                        <div class="row" ng-show="payment.method == 'thirdCheck'">
+                            <div class="col-md-4 m-t-md">
+                                <div gumga-form-class="issuer">
+                                    <gmd-input>
+                                        <input gumga-error type="text" name="issuer"
+                                               ng-model="payment.check.issuer.document"
+                                               class="form-control gmd" ui-br-cpfcnpj-mask tabindex="5"/>
+                                        <span class="bar"></span>
+                                        <label gumga-translate-tag="thirdpartycheque.issuerdocument">issuer document</label>
+                                    </gmd-input>
+                                </div>
+                            </div>
+                            <div class="col-md-8 m-t-md">
+                                <div gumga-form-class="issuer">
+                                    <gmd-input>
+                                        <input gumga-error type="text" name="issuer" ng-model="payment.check.issuer.name"
+                                               class="form-control gmd" tabindex="6"/>
+                                        <span class="bar"></span>
+                                        <label gumga-translate-tag="thirdpartycheque.issuername">issuer name</label>
+                                    </gmd-input>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-1 m-t-md">
-                            <label style="height: 0;">&nbsp;</label>
-                            <button class="btn gmd fab btn-success btn-sm" ng-click="addReceiveMoney(payment)">
-                                <i class="material-icons">add</i>
-                            </button>
+                        <div class="row" ng-show="payment.method == 'thirdCheck'">
+                            <div class="col-md-4">
+                                <div gumga-form-class="portfolio">
+                                    <label gumga-translate-tag="thirdpartycheque.portfolio">portfolio</label>
+                                    <gumga-many-to-one
+                                            name="portfolio"
+                                            value="payment.check.portfolio"
+                                            search-method="chequeportfolio.methods.asyncSearch('name',param)"
+                                            field="name"
+                                            tab-seq="7"
+                                            authorize-add="false">
+                                    </gumga-many-to-one>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div gumga-form-class="validUntil">
+                                    <label style="margin-bottom: 0" gumga-translate-tag="thirdpartycheque.validUntil">validUntil</label>
+                                    <gumga-date name="validUntil" ng-model="payment.check.validUntil"></gumga-date>
+                                </div>
+                            </div>
+                            <div class="col-md-3 m-t-md">
+                                <gmd-input>
+                                    <input id="valuecheck" type="text" name="value" ng-model="payment.value"
+                                           ng-focus="calcCheques('valuecheck')"
+                                           ng-click="selectAllText('valuecheck')"
+                                           class="form-control text-right gmd" gumga-error ui-money-mask="2" tabindex="9">
+                                    <span class="bar"></span>
+                                    <label gumga-translate-tag="titleparcelreceive.value">value</label>
+                                </gmd-input>
+                            </div>
+                            <div class="col-md-1 m-t-md">
+                                <label style="height: 0;">&nbsp;</label>
+                                <button class="btn gmd fab btn-success btn-sm" ng-click="addReceiveCheck(payment)">
+                                    <i class="material-icons">add</i>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <!--</editor-fold>-->
+                        <!--</editor-fold>-->
 
-                    <!--<editor-fold desc="CHEQUE TERCEIRO">-->
-                    <div class="row" ng-show="payment.method == 'thirdCheck'">
-                        <div class="col-md-2 m-t-md">
-                            <div gumga-form-class="bank">
+                        <!--<editor-fold desc="TOC TED">-->
+                        <div class="row" ng-show="payment.method == 'tedDoc'">
+                            <div class="col-md-4">
+                                <label for="isTed" gumga-translate-tag="docted.docted"></label><br/>
+                                <switch id="isTed" name="enabled" ng-model="isTed" on="TED" off="DOC"
+                                        class="green wide gmd"></switch>
+                                <!--<input  bs-switch ng-model="isTed" switch-on-text="{{'TED'}}" switch-off-text="{{'DOC'}}" type="checkbox" switch-off-color="{{'primary'}}">-->
+                            </div>
+                            <div class="col-md-4">
+                                <div>
+                                    <label gumga-translate-tag="docted.source">source</label>
+                                    <gumga-many-to-one input-name="source"
+                                                       value="payment.docTed.financeUnit"
+                                                       field="name"
+                                                       list="sources"
+                                                       search-method="checkingaccount.methods.asyncSearch('name',param)"
+                                                       authorize-add="false"
+                                                       add-method="checkingaccount.methods.asyncPost(value,'name')"
+                                                       id="paymentBankFinanceunit">
+                                    </gumga-many-to-one>
+                                </div>
+                            </div>
+                            <div class="col-md-3 m-t-md">
                                 <gmd-input>
-                                    <input gumga-error type="text" name="bank" ng-model="payment.check.bank"
-                                           maxlength="3"
-                                           class="form-control gmd" tabindex="1" id="paymentCheckFinanceunit"/>
+                                    <input id="valuebank" type="text" name="value" ng-model="payment.value"
+                                           ng-focus="calcCheques('valuebank')"
+                                           ng-click="selectAllText('valuebank')"
+                                           class="form-control text-right gmd" gumga-error ui-money-mask="2">
                                     <span class="bar"></span>
-                                    <label gumga-translate-tag="titleparcelreceive.bank">bank</label>
+                                    <label gumga-translate-tag="titleparcelreceive.value">value </label>
                                 </gmd-input>
                             </div>
-                        </div>
-                        <div class="col-md-2 m-t-md">
-                            <div gumga-form-class="branch">
-                                <gmd-input>
-                                    <input gumga-error type="text" name="branch" ng-model="payment.check.branch"
-                                           class="form-control gmd" tabindex="2"/>
-                                    <span class="bar"></span>
-                                    <label gumga-translate-tag="thirdpartycheque.branch">branch</label>
-                                </gmd-input>
+                            <div class="col-md-1 m-t-md">
+                                <label style="height: 0;">&nbsp;</label>
+                                <button class="btn gmd fab btn-success btn-sm" ng-click="addReceiveBank(payment)">
+                                    <i class="material-icons">add</i>
+                                </button>
                             </div>
                         </div>
-                        <div class="col-md-4 m-t-md">
-                            <div gumga-form-class="account">
-                                <gmd-input>
-                                    <input gumga-error type="text" name="account" ng-model="payment.check.account"
-                                           class="form-control gmd" tabindex="3"/>
-                                    <span class="bar"></span>
-                                    <label gumga-translate-tag="thirdpartycheque.account">account</label>
-                                </gmd-input>
-                            </div>
-                        </div>
-                        <div class="col-md-4 m-t-md">
-                            <div gumga-form-class="chequeNumber">
-                                <gmd-input>
-                                    <input gumga-error type="text" name="chequeNumber"
-                                           ng-model="payment.check.chequeNumber"
-                                           class="form-control gmd" tabindex="4"/>
-                                    <span class="bar"></span>
-                                    <label gumga-translate-tag="thirdpartycheque.chequeNumber">chequeNumber</label>
-                                </gmd-input>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row" ng-show="payment.method == 'thirdCheck'">
-                        <div class="col-md-4 m-t-md">
-                            <div gumga-form-class="issuer">
-                                <gmd-input>
-                                    <input gumga-error type="text" name="issuer"
-                                           ng-model="payment.check.issuer.document"
-                                           class="form-control gmd" ui-br-cpfcnpj-mask tabindex="5"/>
-                                    <span class="bar"></span>
-                                    <label gumga-translate-tag="thirdpartycheque.issuerdocument">issuer document</label>
-                                </gmd-input>
-                            </div>
-                        </div>
-                        <div class="col-md-8 m-t-md">
-                            <div gumga-form-class="issuer">
-                                <gmd-input>
-                                    <input gumga-error type="text" name="issuer" ng-model="payment.check.issuer.name"
-                                           class="form-control gmd" tabindex="6"/>
-                                    <span class="bar"></span>
-                                    <label gumga-translate-tag="thirdpartycheque.issuername">issuer name</label>
-                                </gmd-input>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row" ng-show="payment.method == 'thirdCheck'">
-                        <div class="col-md-4">
-                            <div gumga-form-class="portfolio">
-                                <label gumga-translate-tag="thirdpartycheque.portfolio">portfolio</label>
-                                <gumga-many-to-one
-                                        name="portfolio"
-                                        value="payment.check.portfolio"
-                                        search-method="chequeportfolio.methods.asyncSearch('name',param)"
-                                        field="name"
-                                        tab-seq="7"
-                                        authorize-add="false">
-                                </gumga-many-to-one>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div gumga-form-class="validUntil">
-                                <label style="margin-bottom: 0" gumga-translate-tag="thirdpartycheque.validUntil">validUntil</label>
-                                <gumga-date name="validUntil" ng-model="payment.check.validUntil"></gumga-date>
-                            </div>
-                        </div>
-                        <div class="col-md-3 m-t-md">
-                            <gmd-input>
-                                <input id="valuecheck" type="text" name="value" ng-model="payment.value"
-                                       ng-focus="calcCheques('valuecheck')"
-                                       ng-click="selectAllText('valuecheck')"
-                                       class="form-control text-right gmd" gumga-error ui-money-mask="2" tabindex="9">
-                                <span class="bar"></span>
-                                <label gumga-translate-tag="titleparcelreceive.value">value</label>
-                            </gmd-input>
-                        </div>
-                        <div class="col-md-1 m-t-md">
-                            <label style="height: 0;">&nbsp;</label>
-                            <button class="btn gmd fab btn-success btn-sm" ng-click="addReceiveCheck(payment)">
-                                <i class="material-icons">add</i>
-                            </button>
-                        </div>
-                    </div>
-                    <!--</editor-fold>-->
+                        <!--</editor-fold>-->
 
-                    <!--<editor-fold desc="TOC TED">-->
-                    <div class="row" ng-show="payment.method == 'tedDoc'">
-                        <div class="col-md-4">
-                            <label for="isTed" gumga-translate-tag="docted.docted"></label><br/>
-                            <switch id="isTed" name="enabled" ng-model="isTed" on="TED" off="DOC"
-                                    class="green wide gmd"></switch>
-                            <!--<input  bs-switch ng-model="isTed" switch-on-text="{{'TED'}}" switch-off-text="{{'DOC'}}" type="checkbox" switch-off-color="{{'primary'}}">-->
-                        </div>
-                        <div class="col-md-4">
-                            <div>
-                                <label gumga-translate-tag="docted.source">source</label>
-                                <gumga-many-to-one input-name="source"
-                                                   value="payment.docTed.financeUnit"
+                        <!--<editor-fold desc="Card">-->
+                        <div class="row" ng-show="payment.method == 'card'">
+                            <div class="col-md-4">
+                                <label gumga-translate-tag="titleparcelreceive.currentaccount">currentaccount</label>
+                                <gumga-many-to-one name="card"
+                                                   value="payment.card.financeUnit"
                                                    field="name"
-                                                   list="sources"
-                                                   search-method="checkingaccount.methods.asyncSearch('name',param)"
+                                                   search-method="creditcardaccount.methods.asyncSearch('name',param)"
                                                    authorize-add="false"
-                                                   add-method="checkingaccount.methods.asyncPost(value,'name')"
-                                                   id="paymentBankFinanceunit">
+                                                   id="paymentCardFinanceunit">
                                 </gumga-many-to-one>
                             </div>
-                        </div>
-                        <div class="col-md-3 m-t-md">
-                            <gmd-input>
-                                <input id="valuebank" type="text" name="value" ng-model="payment.value"
-                                       ng-focus="calcCheques('valuebank')"
-                                       ng-click="selectAllText('valuebank')"
-                                       class="form-control text-right gmd" gumga-error ui-money-mask="2">
-                                <span class="bar"></span>
-                                <label gumga-translate-tag="titleparcelreceive.value">value </label>
-                            </gmd-input>
-                        </div>
-                        <div class="col-md-1 m-t-md">
-                            <label style="height: 0;">&nbsp;</label>
-                            <button class="btn gmd fab btn-success btn-sm" ng-click="addReceiveBank(payment)">
-                                <i class="material-icons">add</i>
-                            </button>
-                        </div>
-                    </div>
-                    <!--</editor-fold>-->
-
-                    <!--<editor-fold desc="Card">-->
-                    <div class="row" ng-show="payment.method == 'card'">
-                        <div class="col-md-4">
-                            <label gumga-translate-tag="titleparcelreceive.currentaccount">currentaccount</label>
-                            <gumga-many-to-one name="card"
-                                               value="payment.card.financeUnit"
-                                               field="name"
-                                               search-method="creditcardaccount.methods.asyncSearch('name',param)"
-                                               authorize-add="false"
-                                               id="paymentCardFinanceunit">
-                            </gumga-many-to-one>
-                        </div>
-                        <div class="col-md-3 m-t-md">
-                            <gmd-input>
-                                <input id="authorizationNumber" type="text" name="value"
-                                       ng-model="payment.authorizationNumber" class="form-control gmd">
-                                <span class="bar"></span>
-                                <label gumga-translate-tag="titleparcelreceive.authorizationNumber">authorizationNumber</label>
-                            </gmd-input>
-                        </div>
-                        <div class="col-md-3 col-md-offset-1 m-t-md">
-                            <gmd-input>
-                                <input id="valuecard" type="text" name="value" ng-model="payment.value"
-                                       ng-focus="calcCheques('valuecard')"
-                                       ng-click="selectAllText('valuecard')"
-                                       class="form-control text-right gmd" gumga-error ui-money-mask="2">
-                                <span class="bar"></span>
-                                <label gumga-translate-tag="titleparcelreceive.value">value</label>
-                            </gmd-input>
-                        </div>
-                        <div class="col-md-1 m-t-md">
-                            <label style="height: 0;">&nbsp;</label>
-                            <button class="btn gmd fab btn-success btn-sm" ng-click="addReceiveCard(payment)">
-                                <i class="material-icons">add</i>
-                            </button>
-                        </div>
-                    </div>
-                    <!--</editor-fold>-->
-
-                    <!-- <editor-fold desc="CRÉDITO"> -->
-                    <div class="row" ng-show="payment.method == 'credit' && showMenuPersonalCredit === true">
-                        <div class="col-md-6">
-                            <div>
-                                <label gumga-translate-tag="titleparcel.financeUnit">financeUnit</label><br/>
-                                <gumga-many-to-one
-                                        tab-seq="1"
-                                        value="payment.credit.financeUnit"
-                                        on-select="onSelectPaymentCredit(value)"
-                                        on-deselect="onDeselectPaymentCredit(value)"
-                                        list="financeunit.data"
-                                        search-method="getPersonalCredits(params)"
-                                        add-method="individual.methods.asyncPost(value,'name')"
-                                        on-new-value-added="checkType()"
-                                        description="type"
-                                        field="name"
-                                        authorize-add="false"
-                                        id="paymentCreditFinanceunit">
-                                </gumga-many-to-one>
+                            <div class="col-md-3 m-t-md">
+                                <gmd-input>
+                                    <input id="authorizationNumber" type="text" name="value"
+                                           ng-model="payment.authorizationNumber" class="form-control gmd">
+                                    <span class="bar"></span>
+                                    <label gumga-translate-tag="titleparcelreceive.authorizationNumber">authorizationNumber</label>
+                                </gmd-input>
+                            </div>
+                            <div class="col-md-3 col-md-offset-1 m-t-md">
+                                <gmd-input>
+                                    <input id="valuecard" type="text" name="value" ng-model="payment.value"
+                                           ng-focus="calcCheques('valuecard')"
+                                           ng-click="selectAllText('valuecard')"
+                                           class="form-control text-right gmd" gumga-error ui-money-mask="2">
+                                    <span class="bar"></span>
+                                    <label gumga-translate-tag="titleparcelreceive.value">value</label>
+                                </gmd-input>
+                            </div>
+                            <div class="col-md-1 m-t-md">
+                                <label style="height: 0;">&nbsp;</label>
+                                <button class="btn gmd fab btn-success btn-sm" ng-click="addReceiveCard(payment)">
+                                    <i class="material-icons">add</i>
+                                </button>
                             </div>
                         </div>
-                        <div class="col-md-2 m-t-md">
-                            <gmd-input>
-                                <input id="balanceFinanceUnit" type="text" name="balanceFinanceUnit" ng-model="balanceFinanceUnit"
-                                       class="form-control text-right gmd" gumga-error ui-money-mask="2" tabindex="2" ng-disabled="true">
-                                <span class="bar"></span>
-                                <label gumga-translate-tag="titleparcelreceive.credit">credit</label>
-                            </gmd-input>
+                        <!--</editor-fold>-->
+
+                        <!-- <editor-fold desc="CRÉDITO"> -->
+                        <div class="row" ng-show="payment.method == 'credit' && showMenuPersonalCredit === true">
+                            <div class="col-md-6">
+                                <div>
+                                    <label gumga-translate-tag="titleparcel.financeUnit">financeUnit</label><br/>
+                                    <gumga-many-to-one
+                                            tab-seq="1"
+                                            value="payment.credit.financeUnit"
+                                            on-select="onSelectPaymentCredit(value)"
+                                            on-deselect="onDeselectPaymentCredit(value)"
+                                            list="financeunit.data"
+                                            search-method="getPersonalCredits(params)"
+                                            add-method="individual.methods.asyncPost(value,'name')"
+                                            on-new-value-added="checkType()"
+                                            description="type"
+                                            field="name"
+                                            authorize-add="false"
+                                            id="paymentCreditFinanceunit">
+                                    </gumga-many-to-one>
+                                </div>
+                            </div>
+                            <div class="col-md-2 m-t-md">
+                                <gmd-input>
+                                    <input id="balanceFinanceUnit" type="text" name="balanceFinanceUnit" ng-model="balanceFinanceUnit"
+                                           class="form-control text-right gmd" gumga-error ui-money-mask="2" tabindex="2" ng-disabled="true">
+                                    <span class="bar"></span>
+                                    <label gumga-translate-tag="titleparcelreceive.credit">credit</label>
+                                </gmd-input>
+                            </div>
+                            <div class="col-md-3 m-t-md">
+                                <gmd-input>
+                                    <input id="valuecredit" type="text" name="value" ng-model="payment.value"
+                                           ng-focus="calcCheques('valuecredit')"
+                                           ng-click="selectAllText('valuecredit')"
+                                           class="form-control text-right gmd" gumga-error ui-money-mask="2" tabindex="3">
+                                    <span class="bar"></span>
+                                    <label gumga-translate-tag="titleparcelreceive.value">value</label>
+                                </gmd-input>
+                            </div>
+                            <div class="col-md-1 m-t-md">
+                                <label style="height: 0;">&nbsp;</label>
+                                <button class="btn gmd fab btn-success btn-sm" ng-click="addReceiveCredit(payment)">
+                                    <i class="material-icons">add</i>
+                                </button>
+                            </div>
                         </div>
-                        <div class="col-md-3 m-t-md">
-                            <gmd-input>
-                                <input id="valuecredit" type="text" name="value" ng-model="payment.value"
-                                       ng-focus="calcCheques('valuecredit')"
-                                       ng-click="selectAllText('valuecredit')"
-                                       class="form-control text-right gmd" gumga-error ui-money-mask="2" tabindex="3">
-                                <span class="bar"></span>
-                                <label gumga-translate-tag="titleparcelreceive.value">value</label>
-                            </gmd-input>
+                        <!--</editor-fold>-->
+
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row" ng-if="payment.methodReceive.length > 0 && payment.numberReceive">
+                            <div class="col-md-12">
+                                <label class="pull-left"><h3 gumga-translate-tag="titleparcelreceive.methodreceive"></h3>
+                                </label>
+                                <label class="pull-right" ng-show="lastReceive > 0">Falta a receber {{lastReceive | currency: 'R$ '}}<span> </span></label>
+                                <label class="pull-right" ng-show="lastReceive < 0">Crédito a ser gerado {{lastReceive * -1 | currency: 'R$ ' }}<span> </span></label>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label gumga-translate-tag="titleparcelreceive.method">method</label>
+                            </div>
+                            <div class="col-md-4">
+                                <label gumga-translate-tag="titleparcelreceive.account">account</label>
+                            </div>
+                            <div class="col-md-4">
+                                <label gumga-translate-tag="titleparcelreceive.value" class="pull-right">value</label>
+                            </div>
+                            <div class="col-md-1">
+                                &nbsp;
+                            </div>
                         </div>
-                        <div class="col-md-1 m-t-md">
-                            <label style="height: 0;">&nbsp;</label>
-                            <button class="btn gmd fab btn-success btn-sm" ng-click="addReceiveCredit(payment)">
-                                <i class="material-icons">add</i>
-                            </button>
+                        <div class="row" ng-repeat="method in payment.methodReceive"
+                             ng-if="payment.methodReceive.length > 0 && payment.numberReceive">
+                            <hr/>
+                            <div class="col-md-3">
+                                <span>{{method.historic}}</span>
+                            </div>
+                            <div class="col-md-6">
+                                <span>{{method.destination}}</span>
+                            </div>
+                            <div class="col-md-2">
+                                <span class="pull-right">{{method.value | currency: "R$ "}}</span>
+                            </div>
+                            <div class="col-md-1">
+                                <a type="button" class="text-danger pull-right" uib-tooltip="Excluir"
+                                   ng-click="removeLeaf(payment.methodReceive, $index)">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                </a>
+                            </div>
                         </div>
                     </div>
-                    <!--</editor-fold>-->
-
-                    <!-- <editor-fold desc="LISTAGEM DE RECEBIMENTOS">-->
-                    <div class="row" ng-if="payment.methodReceive.length > 0 && payment.numberReceive">
-                        <hr/>
-                        <div class="col-md-12">
-                            <label class="pull-left"><h3 gumga-translate-tag="titleparcelreceive.methodreceive"></h3>
-                            </label>
-                            <label class="pull-right">Falta a receber {{lastReceive | currency:
-                                "R$"}}<span> </span></label>
-                        </div>
-
-                        <div class="col-md-3">
-                            <label gumga-translate-tag="titleparcelreceive.method">method</label>
-                        </div>
-                        <div class="col-md-4">
-                            <label gumga-translate-tag="titleparcelreceive.account">account</label>
-                        </div>
-                        <div class="col-md-4">
-                            <label gumga-translate-tag="titleparcelreceive.value" class="pull-right">value</label>
-                        </div>
-                        <div class="col-md-1">
-                            &nbsp;
-                        </div>
-                    </div>
-                    <div class="row" ng-repeat="method in payment.methodReceive"
-                         ng-if="payment.methodReceive.length > 0 && payment.numberReceive">
-                        <hr/>
-                        <div class="col-md-3">
-                            <span>{{method.historic}}</span>
-                        </div>
-                        <div class="col-md-6">
-                            <span>{{method.destination}}</span>
-                        </div>
-                        <div class="col-md-2">
-                            <span class="pull-right">{{method.value | currency: "R$ "}}</span>
-                        </div>
-                        <div class="col-md-1">
-                            <a type="button" class="text-danger pull-right" uib-tooltip="Excluir"
-                               ng-click="removeLeaf(payment.methodReceive, $index)">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </a>
-                        </div>
-                    </div>
-                    <!--</editor-fold>-->
-
                 </div>
-                <!--</editor-fold>-->
+
+
 
                 <div class="row" ng-if="payment.methodReceive.length > 0 && payment.numberReceive ">
                     <div class="col-md-2 pull-right" style="padding-left:0;">
@@ -369,10 +370,7 @@
             </form>
         </div>
     </div>
-    <button type="button" ng-click="back()" class="btn btn-default pull-right gmd raised">
+    <button type="button" ng-click="back()" class="btn btn-warning pull-right gmd raised">
         Cancelar
     </button>
-</div>
-<div class="col-md-12" ng-show="parcels.length == 0">
-    <label class="text-danger">Nenhuma parcela selecionada para Receber.</label>
 </div>
