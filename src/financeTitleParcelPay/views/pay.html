@@ -20,7 +20,6 @@
                             <label gumga-translate-tag="titleparcel.date">date</label>
                             <gumga-date ng-model="payment.momment" id="insertMoment" name="insertMoment"
                                         configuration="{showCalendar: false}"></gumga-date>
-                            <!--<input type="text" name="insertMoment" class="form-control" uib-datepicker-popup="dd/MM/yyyy" ng-model="payment.momment"/>-->
                         </div>
                     </div>
                     <div class="row">
@@ -233,16 +232,10 @@
                                     </gmd-input>
                                 </div>
                             </div>
-                            <div class="col-md-4 m-t-md">
+                            <div class="col-md-4">
                                 <div gumga-form-class="availableIn">
-                                    <gmd-input>
-                                        <input type="text" name="availableIn" class="form-control gmd"
-                                               uib-datepicker-popup="dd/MM/yyyy"
-                                               ng-model="payment.companyCheck.availableIn"
-                                               is-open="openedAvailableIn" tabindex="3"/>
-                                        <span class="bar"></span>
-                                        <label gumga-translate-tag="titleparcel.availableIn">availableIn</label>
-                                    </gmd-input>
+                                    <label gumga-translate-tag="titleparcel.availableIn" style="margin-bottom: 0">availableIn</label>
+                                    <gumga-date ng-model="payment.companyCheck.availableIn" name="availableIn"></gumga-date>
                                 </div>
                             </div>
                             <div class="col-md-4 m-t-md">
@@ -440,8 +433,10 @@
                 </div>
             </form>
         </div>
-
     </div>
+    <button type="button" ng-click="back()" class="btn btn-default pull-right gmd raised">
+        Cancelar
+    </button>
 </div>
 <div class="col-md-12" ng-show="parcels.length == 0">
     <label class="text-danger" gumga-translate-tag="titleparcel.messageError">messageError</label>

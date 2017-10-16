@@ -20,7 +20,7 @@ function TitleEmbeddedService(
             if (aqParam) {
                 aq = aq + " AND " + aqParam;
             }
-            return $http.get(FinanceEmbeddedService.getDefaultConfiguration().api + "/title/joinparticipations?aq=" + aq + "&sortField=emissionDate&sortDir=desc&start=" + page);
+            return $http.get(FinanceEmbeddedService.getDefaultConfiguration().api + "/title/joinparticipations?aq=" + aq + "&sortField=id&sortDir=desc&start=" + page);
         };
 
         Service.getRenegociationParcels = function () {

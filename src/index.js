@@ -27,7 +27,8 @@ const finance = angular.module('finance.embedded', [
     'finance.titleparcelreceive',
     'finance.stimulsoftembedded',
     'finance.cashcheckinembedded',
-    'finance.cashcheckoutembedded']);
+    'finance.cashcheckoutembedded',
+    'gumga.date']);
 
 finance.directive('ngDynamicController', ngDynamicController);
 finance.directive('bindHtmlCompile', bindHtmlCompile);
