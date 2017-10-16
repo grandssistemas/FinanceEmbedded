@@ -32,10 +32,6 @@ function DesignerEmbeddedController($scope,
         if ($scope.entity.id) {
             report.load($scope.entity.report.definition);
         } else {
-            if (headerfooter && headerfooter.jsonReport) {
-                report.loadFromJsonInternal(headerfooter.jsonReport);
-                report.reportFile = '';
-            }
             report.dictionary.databases.clear();
             var connStr = "url = jdbc:postgresql://%address/%db?currentSchema=%schema; user = %user; password = %pass;";
             report.dictionary.databases.clear();
@@ -45,7 +41,6 @@ function DesignerEmbeddedController($scope,
 
         report.dictionary.variable = $scope.variable;
         changeSaveReport(designer);
-        changeOnCreate(designer);
         designer.report = report;
         designer.renderHtml('designer');
     };
@@ -71,18 +66,6 @@ function DesignerEmbeddedController($scope,
         StiOptions.WebServer.url = FinanceReportService.connectionLocal;
         StiOptions.Services._databases = [];
         StiOptions.Services._databases.add(new Stimulsoft.Report.Dictionary.StiPostgreSQLDatabase());
-    }
-
-    function changeOnCreate(designer) {
-        designer.onCreateReport = function (event) {
-            if (headerfooter && headerfooter.jsonReport) {
-                var report = new $window.Stimulsoft.Report.StiReport();
-                report.loadFromJsonInternal(headerfooter.jsonReport);
-                event.isWizardUsed = false;
-                event.report = report;
-                event.report.reportFile = '';
-            }
-        };
     }
 
     function changeSaveReport(designer) {
