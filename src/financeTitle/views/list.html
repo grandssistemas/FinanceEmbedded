@@ -13,7 +13,7 @@
         <div class="col-md-3">
             <ui-select multiple ng-model="selected.labels" theme="bootstrap" name="labels" on-select="selectLabel($item)"
                        on-remove="reset()">
-                <ui-select-match placeholder="Buscar Tag">{{$item.value}}</ui-select-match>
+                <ui-select-match placeholder="Buscar Marcador">{{$item.value}}</ui-select-match>
                 <ui-select-choices repeat="label in labels" refresh="buscaTag($select.search)">
                     <div ng-if="!label.isTag">{{label.value + label.isTag}}</div>
                 </ui-select-choices>
