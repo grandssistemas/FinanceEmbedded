@@ -1,5 +1,5 @@
 // var modalTemplate = require('../views/viewermodal.html');
-
+let modalTemplate = require('../views/receiveTitlePrintModal.html');
 TitleListEmbeddedController.$inject = [
     '$scope',
     'TitleService',
@@ -144,12 +144,15 @@ function TitleListEmbeddedController(
                 }, {
                     name: 'btns',
                     title: ' ',
-                    content: '{{$parent.$parent.renegotiate}}<div style=\'display:inline-block;width:80px\'><span><a uib-tooltip="{{$value.hasPayment || $value.fullPaid || $value.isReversed ? \'Visualizar\'  : \'Editar\'}}" ng-click="$parent.$parent.goEdit($value.titleType, $value.id, $value.hasPayment)" class="btn btn-primary btn-sm">' +
+                    content: '<div style=\'display:inline-block;width:100px\'><span><a uib-tooltip="{{$value.hasPayment || $value.fullPaid || $value.isReversed ? \'Visualizar\'  : \'Editar\'}}" ng-click="$parent.$parent.goEdit($value.titleType, $value.id, $value.hasPayment)" class="btn btn-primary btn-sm">' +
                     '<i class="{{$value.hasPayment || $value.fullPaid  || $value.isReversed ? \'glyphicon glyphicon-eye-open\' : \'glyphicon glyphicon-pencil\'}}"></i></a>' +
                     '&nbsp;&nbsp;' +
                     '<a uib-tooltip="Renegociar" ng-show="!$value.fullPaid && $value.isRenegotiate" class="btn btn-primary btn-sm" ng-disabled="$value.replacedBy || $value.fullPaid" ng-click="$parent.$parent.replacement($value, $value.fullPaid)">' +
                     '<i class="fa fa-share-square-o"></i>' +
-                    '</a></span></div>' +
+                    '</a></span>' +
+                    '<span><a uib-tooltip="Impressões" ng-click="$parent.$parent.openPrintings($value.id)" class="btn btn-default btn-sm">' +
+                    '<i class="fa fa-print"></i></a>' +
+                    '&nbsp;&nbsp;</span></div>' +
                     '<span ng-if="!$value.isReversed && $value.replacedBy" class="label label-warning">Renegociado</span>' +
                     '<span ng-if="$value.isReversed" class="label label-danger">Estornado</span>' +
                     '<span ng-if="!$value.isReversed && $value.hasPayment && !$value.fullPaid && $value.titleType == \'PAY\'" class="label label-info">Parcial</span>' +
@@ -160,6 +163,20 @@ function TitleListEmbeddedController(
                     size: 'col-md-3'
                 }]
         };
+
+        $scope.openPrintings = function(id){
+            $uibModal.open({
+                templateUrl: modalTemplate,
+                controller: 'ReceiveTitlePrintModalController',
+                backdrop: 'static',
+                size: 'sm',
+                resolve: {
+                    id: function () {
+                        return id;
+                    }
+                }
+            });
+        }
 
         $scope.goInsert = function () {
             $scope.$ctrl.onNewTitle({type: $scope.$ctrl.titleType});
