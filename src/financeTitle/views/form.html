@@ -242,12 +242,12 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div gumga-form-class="labels">
-                                    <label for="labels" gumga-translate-tag="title.labels">labels</label>
+                                    <label for="labels" gumga-translate-tag="title.labels">Marcadores</label>
                                     <ui-select multiple tagging="labelTransform" tagging-tokens=",|/" id="labels"
                                                ng-model="title.data.labels" theme="bootstrap" tabindex="13"
                                                name="labels"
-                                               title="Escolhe um label" ng-disabled="disable">
-                                        <ui-select-match placeholder="Selecione os labels...">{{$item.value}}
+                                               title="Escolhe um marcador" ng-disabled="disable">
+                                        <ui-select-match placeholder="Selecione os marcadores...">{{$item.value}}
                                         </ui-select-match>
                                         <ui-select-choices repeat="label in labels">
                                             <div ng-if="label.isTag">{{label.value +' (novo)'}}</div>
