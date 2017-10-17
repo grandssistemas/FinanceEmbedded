@@ -63,6 +63,21 @@ function FinanceReportService(GumgaRest, $uibModal,  FinanceEmbeddedService) {
         });
     };
 
+    service.mountVariable = (category, name, value) => {
+        var variable = new Stimulsoft.Report.Dictionary.StiVariable();
+        variable.category = category;
+        variable.name = name;
+        variable.alias = name;
+        variable.description = '';
+        variable.value = value;
+        variable.readOnly = true;
+        variable.typeT = String;
+        variable.requestFromUser = false;
+        variable.key = null;
+        variable.allowUseAsSqlParameter = false;
+        return variable;
+    };
+
     return service;
 }
 
