@@ -34,6 +34,21 @@ function FinanceReportService(GumgaRest, $uibModal,  FinanceEmbeddedService) {
         return service.extend('get', `/getdefault/${type}`)
     };
 
+    service.mountVariable = (category, name, value) => {
+        const variable = new Stimulsoft.Report.Dictionary.StiVariable();
+        variable.category = category;
+        variable.name = name;
+        variable.alias = name;
+        variable.description = '';
+        variable.value = value;
+        variable.readOnly = true;
+        variable.typeT = String;
+        variable.requestFromUser = false;
+        variable.key = null;
+        variable.allowUseAsSqlParameter = false;
+        return variable;
+    };
+
     service.openModalViewer = function (type,filters,variables,noReport) {
         service.getDefault(type).then((response) => {
             if (response.data) {
