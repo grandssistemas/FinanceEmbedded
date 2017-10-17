@@ -3,21 +3,19 @@ let template = require('./../views/receiptPrint.html');
 TitleParcelReceiveListEmbeddedController.$inject = [
     'TitleService',
     'FinanceConfigurationService',
-    '$uibModal',
     '$scope',
     'TitleParcelPayService',
     'gumgaController',
     '$timeout',
-    'IndividualEmbeddedService'];
+    'IndividualEmbeddedService','FinanceReportService'];
 
 function TitleParcelReceiveListEmbeddedController(TitleService,
                                                   FinanceConfigurationService,
-                                                  $uibModal,
                                                   $scope,
                                                   TitleParcelPayService,
                                                   gumgaController,
                                                   $timeout,
-                                                  IndividualEmbeddedService) {
+                                                  IndividualEmbeddedService,FinanceReportService) {
 
     let dateStart = null;
     let dateEnd = new Date();
@@ -193,19 +191,15 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
     };
 
     $scope.printPaid = function (items) {
-        var uibModalInstance = $uibModal.open({
-            templateUrl: template,
-            controller: 'ReceivePrintEmbeddedController',
-            size: "lg",
-            resolve: {
-                items: function () {
-                    return items;
-                }
-            }
-        });
-        uibModalInstance.result.then(function () {
-
-        });
+        const variables = [];
+        const sql = ' in ('.concat(items.parcels.reduce((final, current) => {
+            return `${final},${current.id}`
+        },'')).concat(')').replace('\(\,','\(');
+        variables.push(FinanceReportService.mountVariable('', 'parcelIds',sql));
+        variables.push(FinanceReportService.mountVariable('', 'orgName',JSON.parse(window.sessionStorage.getItem('user')).organization))
+        FinanceReportService.openModalViewer('RECEIPT','',variables,()=>{
+            SweetAlert.swal("Falta de Recibos", "Você esta sem o recibo configurado contate o suporte.", "warning");
+        })
     };
 
     $scope.individualCheckAndPay = function (parcels, $containsFullPaid) {

@@ -16,9 +16,8 @@ PayReceiveEmbeddedController.$inject = [
     'gumgaController',
     'PaymentService',
     '$filter',
-    '$uibModal',
     'CreditCardAccountService',
-    'FinanceUnitService'];
+    'FinanceUnitService', 'FinanceReportService'];
 
 function PayReceiveEmbeddedController(
     FinanceConfigurationService,
@@ -36,9 +35,8 @@ function PayReceiveEmbeddedController(
     gumgaController,
     PaymentService,
     $filter,
-    $uibModal,
     CreditCardAccountService,
-    FinanceUnitService) {
+    FinanceUnitService, FinanceReportService) {
 
     gumgaController.createRestMethods($scope, FinanceConfigurationService, 'financeConfiguration');
     gumgaController.createRestMethods($scope, CheckingAccountService, 'checkingaccount');
@@ -302,19 +300,12 @@ function PayReceiveEmbeddedController(
     };
 
     $scope.printPaid = function (items) {
-        var uibModalInstance = $uibModal.open({
-            templateUrl: template,
-            controller: 'ReceivePrintEmbeddedController',
-            size: "lg",
-            resolve: {
-                items: function () {
-                    return items;
-                }
-            }
-        });
-        uibModalInstance.result.then(function () {
-
-        });
+        const variables = [];
+        variables.push('', 'parcelIds',items.map(item => item.id));
+        variables.push('', 'orgName',JSON.parse(window.sessionStorage.getItem('user')).organization)
+        FinanceReportService.openModalViewer('RECEIPT','',variables,()=>{
+            SweetAlert.swal("Falta de Recibos", "Você esta sem o recibo configurado contate o suporte.", "warning");
+        })
     };
 
     $scope.makePayment = function (payment) {
