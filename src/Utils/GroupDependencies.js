@@ -1,4 +1,4 @@
-export default angular.module('group.dependencies', [
+module.exports = angular.module('group.dependencies', [
     'gumga.rest',
     'gumga.controller',
     'gumga.alert',
@@ -24,4 +24,4 @@ export default angular.module('group.dependencies', [
     'ui.utils.masks',
     'gumga.layout',
     'ui.select'
-])
+]);

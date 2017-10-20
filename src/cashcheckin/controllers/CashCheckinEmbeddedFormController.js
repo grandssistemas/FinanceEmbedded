@@ -11,6 +11,8 @@ function CashCheckinEmbeddedFormController($scope,
                                            FinanceUnitService,
                                            $filter,
                                            $timeout){
+    $scope.changeOriginTooltip = 'Informe a conta de onde o valor do troco será retirado.';
+    $scope.changeDestinyTooltip = 'Informe a conta onde o valor do troco será incluído.';
     $scope.entity = {};
     $scope.entity.employee = angular.copy($scope.$ctrl.employee);
     $scope.entity.date = new Date();

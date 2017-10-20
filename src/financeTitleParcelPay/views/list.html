@@ -36,13 +36,9 @@
                        uib-btn-radio="'custom'" ng-click="changeSubTypeButton('custom')">Personalizado</label>
             </div>
         </div>
-        <div class="col-md-2 col-lg-2 m-t-md" ng-show="filters == 'custom'">
-            <gmd-input>
-                <input type="text" name="expiration" class="form-control gmd" uib-datepicker-popup="dd/MM/yyyy"
-                       ng-model="$parent.$parent.endDate" ng-blur="filter('custom')"/>
-                <span class="bar"></span>
-                <label>Data final</label>
-            </gmd-input>
+        <div class="col-md-2 col-lg-2" ng-show="filters == 'custom'">
+            <label style="margin-bottom: 0">Data final</label>
+            <gumga-date name="expiration" configuration="configData" ng-model="endDate"></gumga-date>
         </div>
     </div>
 </div>

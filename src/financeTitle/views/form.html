@@ -66,7 +66,7 @@
                         </div>
                         <hr style="margin-top: 14px;">
                         <div class="row">
-                            <div class="col-md-8 m-t-md">
+                            <div class="col-md-8 m-t-md" ng-show="showBarCodeTitle()">
                                 <div gumga-form-class="barcode">
                                     <gmd-input>
                                         <input type="text" name="barcode" class="form-control gmd" id="barcode"
@@ -183,7 +183,7 @@
                                 </div>
                             </div>
                             <div class="col-md-4 m-t-md">
-                                <div gumga-form-class="parcelpenalty">
+                                <div gumga-form-class="parcelpenalty" style="margin-bottom: 0">
                                     <gmd-input>
                                         <input type="text" class="form-control text-right gmd" name="parcelpenalty"
                                                ng-model="title.data.parcelpenalty" gumga-error ui-percentage-mask
@@ -230,32 +230,24 @@
                                     </gmd-input>
                                 </div>
                             </div>
-                            <div class="col-lg-4 col-md-4 m-t-md">
-                                <div>
-                                    <gmd-input>
-                                        <input type="text" class="form-control gmd" name="expiration"
-                                               ng-model="title.data.expiration"
-                                               ng-blur="change()" required uib-datepicker-popup="dd/MM/yyyy"
-                                               tabindex="11"
-                                               ng-disabled="disable"/>
-                                        <span class="bar"></span>
-                                        <label ng-show="title.data.numberParcel <= 1 || title.data.numberParcel == undefined"
-                                               gumga-translate-tag="title.expiration">expiration</label>
-                                        <label ng-show="title.data.numberParcel > 1"
-                                               gumga-translate-tag="title.expirations">expiration</label>
-                                    </gmd-input>
-                                </div>
+                            <div class="col-lg-4 col-md-4">
+                                <label ng-show="title.data.numberParcel <= 1 || title.data.numberParcel == undefined" style="margin-bottom: 0;"
+                                       gumga-translate-tag="title.expiration">expiration</label>
+                                <label ng-show="title.data.numberParcel > 1" style="margin-bottom: 0;"
+                                       gumga-translate-tag="title.expirations">expiration</label>
+                                <gumga-date ng-model="title.data.expiration" tabindex="11" name="expiration" ng-blur="change()" required
+                                            ng-disabled="disable"></gumga-date>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div gumga-form-class="labels">
-                                    <label for="labels" gumga-translate-tag="title.labels">labels</label>
+                                    <label for="labels" gumga-translate-tag="title.labels">Marcadores</label>
                                     <ui-select multiple tagging="labelTransform" tagging-tokens=",|/" id="labels"
                                                ng-model="title.data.labels" theme="bootstrap" tabindex="13"
                                                name="labels"
-                                               title="Escolhe um label" ng-disabled="disable">
-                                        <ui-select-match placeholder="Selecione os labels...">{{$item.value}}
+                                               title="Escolhe um marcador" ng-disabled="disable">
+                                        <ui-select-match placeholder="Selecione os marcadores...">{{$item.value}}
                                         </ui-select-match>
                                         <ui-select-choices repeat="label in labels">
                                             <div ng-if="label.isTag">{{label.value +' (novo)'}}</div>
@@ -327,7 +319,7 @@
                                         </div>
                                     </div>
                                     <div class="scroll" id="scrollParcels">
-                                        <div class="row" ng-repeat="parcel in title.data.parcel">
+                                        <div class="row grid-parcels" ng-repeat="parcel in title.data.parcel">
                                             <div class="col-md-2" style="margin-left: 28px;margin-right: -30px;">
                                                 <gmd-input>
                                                     <input type="text" class="form-control number-parcel gmd"
@@ -337,15 +329,9 @@
                                                     <span class="bar"></span>
                                                 </gmd-input>
                                             </div>
-                                            <div class="col-md-3">
-                                                <gmd-input>
-                                                    <input type="text" class="form-control inputParcel text-center gmd"
-                                                           name="expirationParcel" ng-model="parcel.expiration"
-                                                           uib-datepicker-popup="dd/MM/yyyy"
-                                                           ng-focus="oldDateParcel = parcel.expiration"
-                                                           ng-blur="changeDateParcel(parcel.expiration, $index, oldDateParcel)"/>
-                                                    <span class="bar"></span>
-                                                </gmd-input>
+                                            <div class="col-md-3" >
+                                                <gumga-date ng-model="parcel.expiration" name="expirationParcel{{$index}}"
+                                                            ng-disabled="disableParcel(parcel)"></gumga-date>
                                             </div>
                                             <div class="col-md-4" style="margin-left: -30px;">
                                                 <gmd-input>
@@ -354,7 +340,8 @@
                                                            ng-model="parcel.value" gumga-error ui-money-mask="2"
                                                            ng-focus="oldValueParcel = parcel.value"
                                                            ng-blur="changeValueParcel(parcel.value, $index, oldValueParcel)"
-                                                           style="padding:0"/>
+                                                           style="padding:0"
+                                                           ng-disabled="disableParcel(parcel)"/>
                                                     <span class="bar"></span>
                                                 </gmd-input>
                                             </div>

@@ -1,10 +1,18 @@
+// var modalTemplate = require('../views/viewermodal.html');
+let modalTemplate = require('../views/receiveTitlePrintModal.html');
 TitleListEmbeddedController.$inject = [
     '$scope',
     'TitleService',
+    'FinanceReportService',
+    'SweetAlert',
+    '$uibModal',
     'gumgaController'];
 function TitleListEmbeddedController(
     $scope,
     TitleService,
+    FinanceReportService,
+    SweetAlert,
+    $uibModal,
     gumgaController) {
 
         TitleService.resetDefaultState();
@@ -51,7 +59,6 @@ function TitleListEmbeddedController(
             $scope.title.data = $scope.title.data.filter(function (data) {
                 return data.participationsFormatted.indexOf(participation) > -1
             })
-
         };
 
         $scope.selected = {};
@@ -73,7 +80,6 @@ function TitleListEmbeddedController(
 
         $scope.selectLabel = function (label) {
             // $scope.selected = angular.copy(label);
-            console.log($scope.selected);
             $scope.selected.labels.clear();
             $scope.selected.labels[0] = label;
 
@@ -138,21 +144,39 @@ function TitleListEmbeddedController(
                 }, {
                     name: 'btns',
                     title: ' ',
-                    content: '{{$parent.$parent.renegotiate}}<div style=\'display:inline-block;width:80px\'><span><a uib-tooltip="{{$value.hasPayment || $value.fullPaid ? \'Visualizar\'  : \'Editar\'}}" ng-click="$parent.$parent.goEdit($value.titleType, $value.id, $value.hasPayment)" class="btn btn-primary btn-sm">' +
-                    '<i class="{{$value.hasPayment || $value.fullPaid ? \'glyphicon glyphicon-eye-open\' : \'glyphicon glyphicon-pencil\'}}"></i></a>' +
+                    content: '<div style=\'display:inline-block;width:100px\'><span><a uib-tooltip="{{$value.hasPayment || $value.fullPaid || $value.isReversed ? \'Visualizar\'  : \'Editar\'}}" ng-click="$parent.$parent.goEdit($value.titleType, $value.id, $value.hasPayment)" class="btn btn-primary btn-sm">' +
+                    '<i class="{{$value.hasPayment || $value.fullPaid  || $value.isReversed ? \'glyphicon glyphicon-eye-open\' : \'glyphicon glyphicon-pencil\'}}"></i></a>' +
                     '&nbsp;&nbsp;' +
                     '<a uib-tooltip="Renegociar" ng-show="!$value.fullPaid && $value.isRenegotiate" class="btn btn-primary btn-sm" ng-disabled="$value.replacedBy || $value.fullPaid" ng-click="$parent.$parent.replacement($value, $value.fullPaid)">' +
                     '<i class="fa fa-share-square-o"></i>' +
-                    '</a></span></div>' +
-                    '<span ng-if="$value.replacedBy" class="label label-warning">Renegociado</span>' +
-                    '<span ng-if="$value.hasPayment && !$value.fullPaid && $value.titleType == \'PAY\'" class="label label-info">Parcial</span>' +
-                    '<span ng-if="$value.hasPayment && !$value.fullPaid && $value.titleType == \'RECEIVE\'" class="label label-info">Parcial</span>' +
-                    '<span ng-if="$value.fullPaid && $value.titleType == \'RECEIVE\'" class="label label-success">Recebido</span>' +
-                    '<span ng-if="$value.fullPaid && $value.titleType == \'PAY\'" class="label label-success">Pago</span>' +
-                    '<span ng-if="!$value.hasRatio" class="glyphicon glyphicon-info-sign pull-right" uib-tooltip=\'Sem Rateio\' tooltip-placement=\'left\'></span>',
+                    '</a></span>' +
+                    '<span><a uib-tooltip="Impressões" ng-click="$parent.$parent.openPrintings($value.id)" class="btn btn-default btn-sm">' +
+                    '<i class="fa fa-print"></i></a>' +
+                    '&nbsp;&nbsp;</span></div>' +
+                    '<span ng-if="!$value.isReversed && $value.replacedBy" class="label label-warning">Renegociado</span>' +
+                    '<span ng-if="$value.isReversed" class="label label-danger">Estornado</span>' +
+                    '<span ng-if="!$value.isReversed && $value.hasPayment && !$value.fullPaid && $value.titleType == \'PAY\'" class="label label-info">Parcial</span>' +
+                    '<span ng-if="!$value.isReversed && $value.hasPayment && !$value.fullPaid && $value.titleType == \'RECEIVE\'" class="label label-info">Parcial</span>' +
+                    '<span ng-if="!$value.isReversed && $value.fullPaid && $value.titleType == \'RECEIVE\'" class="label label-success">Recebido</span>' +
+                    '<span ng-if="!$value.isReversed && $value.fullPaid && $value.titleType == \'PAY\'" class="label label-success">Pago</span>' +
+                    '<span ng-if="!$value.isReversed && !$value.hasRatio" class="glyphicon glyphicon-info-sign pull-right" uib-tooltip=\'Sem Rateio\' tooltip-placement=\'left\'></span>',
                     size: 'col-md-3'
                 }]
         };
+
+        $scope.openPrintings = function(id){
+            $uibModal.open({
+                templateUrl: modalTemplate,
+                controller: 'ReceiveTitlePrintModalController',
+                backdrop: 'static',
+                size: 'sm',
+                resolve: {
+                    id: function () {
+                        return id;
+                    }
+                }
+            });
+        }
 
         $scope.goInsert = function () {
             $scope.$ctrl.onNewTitle({type: $scope.$ctrl.titleType});
@@ -218,6 +242,14 @@ function TitleListEmbeddedController(
 
             return result.expiration;
         };
+
+        $scope.print = function(type){
+            // console.log(type);
+            var typePrint = type === 'receive'? 'RECEIVE_BILL':null;
+            FinanceReportService.openModalViewer(typePrint,'',[],()=>{
+                SweetAlert.swal("Falta de Relatorio de contas a receber", "Você esta sem o relátorio de contas a receber contate o suporte.", "warning");
+            })
+        }
     };
 
 module.exports =  TitleListEmbeddedController;
