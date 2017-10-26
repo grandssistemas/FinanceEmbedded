@@ -4,11 +4,11 @@ function IndividualEmbeddedService(GumgaRest, $http, FinanceEmbeddedService) {
     var Service = new GumgaRest(FinanceEmbeddedService.getDefaultConfiguration().api + '/individual');
 
     Service.getLabels = function () {
-        return Service.extend('get', '/individuallabel');
+        return $http.get(FinanceEmbeddedService.getDefaultConfiguration().api + '/individuallabel');
     };
 
     Service.searchLabels = function (param) {
-        return Service.extend('get', '/individuallabel?' + param);
+        return $http.get(FinanceEmbeddedService.getDefaultConfiguration().api + '/individuallabel?' + param);
     };
 
     Service.getLogged = function(){
