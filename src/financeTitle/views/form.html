@@ -339,9 +339,9 @@
                                                            name="value"
                                                            ng-model="parcel.value" gumga-error ui-money-mask="2"
                                                            ng-focus="oldValueParcel = parcel.value"
-                                                           ng-blur="changeValueParcel(parcel.value, $index, oldValueParcel)"
+                                                           ng-blur="changeValueParcel(parcel, oldValueParcel)"
                                                            style="padding:0"
-                                                           ng-disabled="disableParcel(parcel)"/>
+                                                           ng-disabled="disableParcel(parcel) || $last"/>
                                                     <span class="bar"></span>
                                                 </gmd-input>
                                             </div>
