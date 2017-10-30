@@ -201,7 +201,7 @@ function TitleFormEmbeddedController(
 	$scope.title.data.memo = $scope.title.data.memo || $scope.$ctrl.voice || "";   // Colocando o parametro da voz no campo de historico //
 	$scope.title.data.parcelpenalty = $scope.title.data.parcelpenalty || 0;
 	$scope.title.data.parcelinterest = $scope.title.data.parcelinterest || 0;
-	$scope.title.data.expiration = $scope.title.data.expiration ? new Date($scope.title.data.expiration) : new Date();
+	$scope.title.data.expiration = $scope.title.data.expiration ? moment($scope.title.data.expiration)._d: new Date();
 
 	if($scope.title.data.titleType === 'PAY')
 		$scope.title.data.value = $scope.title.data.parcel[0].value;
@@ -646,12 +646,12 @@ function TitleFormEmbeddedController(
 		//     return new Date(elem.expiration);
 		// });
 		angular.forEach($scope.title.data.parcel, function (params, index) {
-			$scope.title.data.parcel[index].expiration = new Date(params.expiration);
+			$scope.title.data.parcel[index].expiration = moment(params.expiration)._d;
 			if (!params.fullPaid) {
 				$scope.paymentRest += params.value;
 			}
 			if(params.number === "1"){
-				$scope.title.data.expiration = new Date(params.expiration) || new Date();
+				$scope.title.data.expiration = moment(params.expiration)._d || new Date();
 			}
 		});
 	};
