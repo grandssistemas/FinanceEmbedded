@@ -58,6 +58,11 @@ function PayEmbeddedController(
     gumgaController.createRestMethods($scope, FinanceUnitService, 'financeunit');
     FinanceUnitService.resetDefaultState();
 
+    // $scope.onSelectChequePortfolio = (value) => {
+		// ChequePortfolioService.getById(value.id).then((data) => {
+		//     $scope.payment.check.financeUnit.cheques = data.data.cheques;
+		// })
+    // }
 
     $scope.getPersonalCredits = function (params) {
         return IndividualCreditService.getSearch('name', params).then(function (data) {
@@ -95,14 +100,19 @@ function PayEmbeddedController(
     $scope.cheques = {};
     $scope.cheques.data = [];
     $scope.filtered = [];
+	$scope.chequeList = [];
 
-    $scope.listCheques = function (name, param) {
-        // thirdpartycheque.methods.asyncSearch('name', param)
-        $scope.cheques.data = []
-    };
+	$scope.listCheques = (id, param) => {
+	    id = id || 0;
 
+	    param = param || '';
+	    return ThirdPartyChequeService.getAdvancedSearch("lower(obj.issuer.name) like lower('%"+param+"%') and obj.portfolio.id = "+id)
+            .then((data) => {
+	            $scope.chequeList = data.data.values;
+            } );
+	};
 
-    $scope.changeCheques = function () {
+	$scope.changeCheques = function () {
         $scope.payment.cheques = $scope.selectedValues;
     };
     $scope.uploadStart = function () {
@@ -289,7 +299,7 @@ function PayEmbeddedController(
     // Pega o total pago
     $scope.totalSelecionado = 0;
     $scope.selecionados = function (selecionado) {
-        $scope.totalSelecionado += selecionado.value;
+	    $scope.totalSelecionado = $scope.payment.check.checks.map(a => a.value).reduce((a,b) => a+b,0);
         $scope.payment.value = $scope.totalSelecionado;
         $scope.itemsSelected = $scope.payment.check.checks;
     };
