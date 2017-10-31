@@ -95,7 +95,8 @@
                                         add-method="checkingaccount.methods.asyncPost(value,'name')"
                                         field="name"
                                         authorize-add="false"
-                                        id="paymentCheckFinanceunit">
+                                        id="paymentCheckFinanceunit"
+                                        on-select="listCheques(value.id, param)">
                                 </gumga-many-to-one>
                             </div>
                         </div>
@@ -118,10 +119,10 @@
                         </div>
                         <div class="col-md-12">
                             <gumga-many-to-many
-                                    left-list="cheques.data"
+                                    left-list="chequeList"
                                     right-list="payment.check.checks"
-                                    left-search="listCheques('name', param)"
                                     post-method="thirdpartycheque.methods.save(value)"
+                                    left-search="listCheques(payment.check.financeUnit.id, param)"
                                     authorize-add="false"
                                     text-left="Listando {{$value}} {{$value > 1 ? 'itens': 'item'}}"
                                     text-right="Listando {{$value}} {{$value > 1 ? 'itens': 'item'}}"
