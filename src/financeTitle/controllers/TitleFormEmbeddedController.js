@@ -204,7 +204,7 @@ function TitleFormEmbeddedController(
 	$scope.title.data.memo = $scope.title.data.memo || $scope.$ctrl.voice || "";   // Colocando o parametro da voz no campo de historico //
 	$scope.title.data.parcelpenalty = $scope.title.data.parcelpenalty || 0;
 	$scope.title.data.parcelinterest = $scope.title.data.parcelinterest || 0;
-	$scope.title.data.expiration = $scope.title.data.expiration ? moment($scope.title.data.expiration)._d: new Date();
+	$scope.title.data.expiration = $scope.title.data.expiration ? moment.tz(params.expiration, "America/Sao_Paulo").toDate(): new Date();
 
 	if($scope.title.data.titleType === 'PAY')
 		$scope.title.data.value = $scope.title.data.parcel[0].value;
@@ -289,15 +289,6 @@ function TitleFormEmbeddedController(
 	}
 
 	$scope.save = function (entity) {
-		entity.expiration = moment(entity.expiration).tz('America/Sao_Paulo').format('YYYY-MM-DDTHH:mm:ss')+'Z';
-
-		entity.parcel = entity.parcel.map(function(data){
-			if(data.expiration){
-				data.expiration = moment(data.expiration).tz('America/Sao_Paulo').format('YYYY-MM-DDTHH:mm:ss')+'Z';
-			}
-			return data;
-		});
-
 		if ($scope.$ctrl.operation === "REPLEACEMENT") {
 			$scope.replecement.replacedBy = entity;
 			TitleService.saveReplecement(entity)
@@ -649,12 +640,13 @@ function TitleFormEmbeddedController(
 		//     return new Date(elem.expiration);
 		// });
 		angular.forEach($scope.title.data.parcel, function (params, index) {
-			$scope.title.data.parcel[index].expiration = moment(params.expiration)._d;
+			console.log(moment.tz(params.expiration, "America/Sao_Paulo").toDate())
+			$scope.title.data.parcel[index].expiration = moment.tz(params.expiration, "America/Sao_Paulo").toDate();
 			if (!params.fullPaid) {
 				$scope.paymentRest += params.value;
 			}
 			if(params.number === "1"){
-				$scope.title.data.expiration = moment(params.expiration)._d || new Date();
+				$scope.title.data.expiration = moment.tz(params.expiration, "America/Sao_Paulo").toDate() || new Date();
 			}
 		});
 	};
