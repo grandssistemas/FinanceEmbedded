@@ -345,6 +345,9 @@
                                                     <span class="bar"></span>
                                                 </gmd-input>
                                             </div>
+                                            <div class="col-md-1" ng-show="parcel.parcelPayments && parcel.parcelPayments.length">
+                                                <button type="button" class="inline-block btn-link btn-xs text-primary" ng-click="showPayments(parcel)"><i class="material-icons">search</i></button>
+                                            </div>
                                             <div class="col-md-1">
                                                 <span ng-if="parcel.fullPaid" class="label label-success">Pago</span>
                                             </div>
