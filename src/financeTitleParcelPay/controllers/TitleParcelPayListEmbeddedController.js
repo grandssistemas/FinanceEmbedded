@@ -22,6 +22,15 @@ function TitleParcelPayListEmbeddedController(
     TitleParcelPayService.resetDefaultState();
     IndividualEmbeddedService.resetDefaultState();
 
+
+    let queryStatus = new GQuery(new Criteria('name', ComparisonOperator.EQUAL, 'Moíses'));
+
+    IndividualEmbeddedService.searchWithGQuery(queryStatus).then(function (data) {
+        $scope.inventory.pageSize = data.data.pageSize;
+        $scope.inventory.data = data.data.values;
+        $scope.inventory.count = data.data.count;
+    })
+
     $scope.endDate = new Date();
     $scope.paidOut = false;
     $scope.containsFullPaid = false;
