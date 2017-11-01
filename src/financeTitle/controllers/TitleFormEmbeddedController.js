@@ -1,4 +1,5 @@
 let template = require('./../views/modalLaunchPaid.html');
+let templatePayments = require('./../views/PaymentsModal.html');
 
 TitleFormEmbeddedController.$inject = [
 	'TitleService',
@@ -13,7 +14,8 @@ TitleFormEmbeddedController.$inject = [
 	'WalletService',
 	'FinanceUnitService',
 	'SweetAlert',
-	'MoneyUtilsService'];
+	'MoneyUtilsService',
+	'TitleParcelPayService'];
 
 function TitleFormEmbeddedController(
 	TitleService,
@@ -28,7 +30,8 @@ function TitleFormEmbeddedController(
 	WalletService,
 	FinanceUnitService,
 	SweetAlert,
-	MoneyUtils) {
+	MoneyUtils,
+    TitleParcelPayService) {
 
 	$scope.entity = angular.copy($scope.$ctrl.entity);
 	$scope.entity.data.parcel.sort((a,b) => {
@@ -651,6 +654,29 @@ function TitleFormEmbeddedController(
 	$scope.showBarCodeTitle = function(){
 		return ($scope.title.data.titleType == 'PAY');
 	};
+
+    $scope.showPayments = function (parcel) {
+    	if (!parcel.parcelPayments.length){
+            SweetAlert.swal("Nenhum pagamento encontrado", "Nenhum pagamento foi realizado para a parcela selecionada.", "warning");
+    		return;
+		}
+
+    	TitleParcelPayService.getPaymentsByParcel(parcel.id).then((data) => {
+    		let payments = data.data;
+            $uibModal.open({
+                animation: true,
+                templateUrl: templatePayments,
+                controller: 'PaymentsModalController',
+                backdrop: 'static',
+                size: 'md',
+                resolve: {
+                    payments: function () {
+                        return payments;
+                    }
+                }
+            });
+		});
+    }
 }
 
 module.exports = TitleFormEmbeddedController;
