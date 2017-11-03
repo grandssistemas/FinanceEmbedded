@@ -1,5 +1,6 @@
 @import url('./finance.css');
-
+@import url('../../resources/stimulsoft/css/stimulsoft.designer.office2013.whiteblue.css');
+@import url('../../resources/stimulsoft/css/stimulsoft.viewer.office2013.whiteblue.css');
 
 .tab-content {
     margin-top: 2%;

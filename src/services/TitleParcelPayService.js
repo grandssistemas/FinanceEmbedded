@@ -55,6 +55,10 @@ function TitleParcelPayService(GumgaRest, $http, FinanceEmbeddedService) {
         }
     };
 
+    Service.getPaymentsByParcel = function (id){
+        return Service.extend('get', `/getpaymentsbyparcel/${id}`);
+    };
+
     return Service;
 }
 
