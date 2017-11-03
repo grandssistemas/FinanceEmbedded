@@ -21,114 +21,71 @@ function TitleParcelPayListEmbeddedController(
 
     TitleParcelPayService.resetDefaultState();
     IndividualEmbeddedService.resetDefaultState();
-
-
-    let queryStatus = new GQuery(new Criteria('name', ComparisonOperator.EQUAL, 'Moíses'));
-
-    IndividualEmbeddedService.searchWithGQuery(queryStatus).then(function (data) {
-        $scope.inventory.pageSize = data.data.pageSize;
-        $scope.inventory.data = data.data.values;
-        $scope.inventory.count = data.data.count;
-    })
-
+    
     $scope.endDate = new Date();
     $scope.paidOut = false;
     $scope.containsFullPaid = false;
     $scope.lastClicked = null;
-    $scope.aqFilterSelected = null;
-
-    $scope.getParcels = function (date, page) {
-        TitleParcelPayService.findOpenByMaxDate(date, 'PAY', page, $scope.individualSearch, $scope.paidOut, $scope.aqFilterSelected)
-            .then(function (data) {
-                $scope.selectedValues = [];
-                $scope.titleparcelPay.data = data.data.values;
-                $scope.titleparcelPay.pageSize = data.data.pageSize;
-                $scope.titleparcelPay.count = data.data.count;
-            });
-
-    };
-
-    $scope.cleanFilter = function () {
-        $scope.lastClicked = null;
-        $scope.aqFilterSelected = null;
-        delete $scope.filters;
-        delete $scope.individualSearch;
-        $scope.selectedSubType = '';
-    };
+    $scope.gQueryFilters = null;
 
     $scope.$watch('individualSearch', function (individual) {
-        $scope.cleanFilter();
         $scope.individualSearch = individual;
-        $scope.getParcels(null, 1);
+        $scope.filter($scope.lastClicked, $scope.paidOut);
     });
 
-    $scope.filter = function (whichFilter) {
+
+    $scope.filter = function (whichFilter, fullpaid) {
+        $scope.paidOut = fullpaid;
         $scope.lastClicked = whichFilter;
-        var aq = "obj.title.titleType='PAY'";
+        let gQuery = new GQuery(new Criteria('obj.title.titleType', ComparisonOperator.EQUAL, 'PAY'));
+
+        let beginDate;
+        let endDate;
+
         switch (whichFilter) {
-            case 'thisWeek':
-                aq = aq.concat(" AND obj.expiration >='" + moment().startOf('isoWeek').subtract(1, 'days').format('YYYY-MM-DD') + "' AND obj.expiration <='" + moment().endOf('isoWeek').subtract(1, 'days').format('YYYY-MM-DD') + "'");
+            case 'thisWeek': {
+                beginDate = moment().startOf('isoWeek').subtract(1, 'days').format('YYYY-MM-DD');
+                endDate = moment().endOf('isoWeek').subtract(1, 'days').format('YYYY-MM-DD');
                 break;
-            case 'thisMonth':
-                aq = aq.concat(" AND obj.expiration >='" + moment().startOf('month').format('YYYY-MM-DD') + "' AND obj.expiration <='" + moment().endOf('month').format('YYYY-MM-DD') + "'");
+            }
+            case 'thisMonth': {
+                beginDate = moment().startOf('month').format('YYYY-MM-DD');
+                endDate = moment().endOf('month').format('YYYY-MM-DD');
                 break;
-            case 'thisYear':
-                aq = aq.concat(" AND obj.expiration >='" + moment().startOf('year').format('YYYY-MM-DD') + "' AND obj.expiration <='" + moment().endOf('year').format('YYYY-MM-DD') + "'");
+            }
+            case 'thisYear':{
+                beginDate = moment().startOf('year').format('YYYY-MM-DD');
+                endDate = moment().endOf('year').format('YYYY-MM-DD');
                 break;
-            case 'today':
-                aq = aq.concat(" AND obj.expiration >='" + moment().format('YYYY-MM-DD') + " 00:00:00" + "' AND obj.expiration <='" + moment().format('YYYY-MM-DD') + " 23:59:59" + "' " );
+            }
+            case 'today':{
+                beginDate = moment().format('YYYY-MM-DD') + " 00:00:00";
+                endDate = moment().format('YYYY-MM-DD') + " 23:59:59";
                 break;
-            case 'custom':
-                aq = aq.concat(" AND obj.expiration >='" + moment($scope.endDate).format('YYYY-MM-DD') + " 00:00:00" + "' AND obj.expiration <='" + moment($scope.endDate).format('YYYY-MM-DD') + " 23:59:59" + "' " );
+            }
+            case 'custom':{
+                beginDate = moment($scope.endDate).format('YYYY-MM-DD') + " 00:00:00";
+                endDate =  moment($scope.endDate).format('YYYY-MM-DD') + " 23:59:59";
                 break;
+            }
+        }
+
+        if (beginDate && endDate){
+            gQuery = gQuery.and(new Criteria('obj.expiration', ComparisonOperator.BETWEEN, [beginDate, endDate]));
         }
 
         if ($scope.individualSearch && $scope.individualSearch.id) {
-            aq = aq.concat(" AND obj.individual.name='" + $scope.individualSearch.name + "'")
+            gQuery = gQuery.and(new Criteria('obj.individual.name', ComparisonOperator.EQUAL, $scope.individualSearch.name));
         }
 
         if ($scope.paidOut) {
-            aq = aq.concat(" AND obj.title.titleType='PAY' AND obj.fullPaid = true");
+            gQuery = gQuery.and(new Criteria('obj.fullPaid', ComparisonOperator.EQUAL, true));
         } else {
-            aq = aq.concat(" AND obj.title.titleType='PAY' AND (obj.fullPaid = false OR obj.fullPaid is null)");
+            gQuery = gQuery.and(new Criteria('obj.fullPaid', ComparisonOperator.EQUAL, false));
         }
-        $scope.aqFilterSelected = aq;
-        $scope.titleparcelPay.methods.advancedSearch(aq);
+        $scope.gQueryFilters = gQuery;
+        $scope.getByGQuery();
         $scope.changeSubTypeButton(whichFilter);
-    };
-
-    $scope.paid = function (page) {
-        $scope.lastClicked = null;
-        $scope.aqFilterSelected = null;
-        $scope.paidOut = true;
-        $scope.selectedSubType = '';
-        delete $scope.filters;
-
-        TitleParcelPayService.findOpenByMaxDate(null, 'PAY', page, $scope.individualSearch, $scope.paidOut, $scope.aqFilterSelected)
-            .then(function (data) {
-                $scope.selectedValues = [];
-                $scope.titleparcelPay.data = data.data.values;
-                $scope.titleparcelPay.pageSize = data.data.pageSize;
-                $scope.titleparcelPay.count = data.data.count;
-                $scope.changeTypeButton('paid');
-            });
-    };
-
-    $scope.pays = function (page) {
-        $scope.lastClicked = null;
-        $scope.aqFilterSelected = null;
-        $scope.paidOut = false;
-        $scope.selectedSubType = '';
-        delete $scope.filters;
-
-        TitleParcelPayService.findOpenByMaxDate(null, 'PAY', page, $scope.individualSearch, $scope.paidOut, $scope.aqFilterSelected)
-            .then(function (data) {
-                $scope.selectedValues = [];
-                $scope.titleparcelPay.data = data.data.values;
-                $scope.titleparcelPay.pageSize = data.data.pageSize;
-                $scope.titleparcelPay.count = data.data.count;
-                $scope.changeTypeButton('pays');
-            });
     };
 
     $scope.totalize = function () {
@@ -277,7 +234,7 @@ function TitleParcelPayListEmbeddedController(
 
     $scope.selectedType = 'pays';
     $scope.buttonTypeClass = function (parameter) {
-        return $scope.selectedType === parameter ? 'btn btn-danger' : 'btn btn-primary';
+        return $scope.paidOut === parameter ? 'btn btn-danger' : 'btn btn-primary';
     };
 
     $scope.changeTypeButton = function (newType) {
@@ -294,9 +251,26 @@ function TitleParcelPayListEmbeddedController(
 
     $scope.configData = {
         change : function (data) {
-            $scope.filter('custom');
+            $scope.filter('custom', $scope.paidOut);
         }
     }
+
+    $scope.getByGQuery = (page, pageSize) => {
+        TitleParcelPayService.getByGQueryMaxDate(null, 'PAY', page, $scope.individualSearch, $scope.paidOut, $scope.gQueryFilters, pageSize, $scope.sortField, $scope.sortDir)
+            .then(function (data) {
+                $scope.selectedValues = [];
+                $scope.titleparcelPay.data = data.data.values;
+                $scope.titleparcelPay.pageSize = data.data.pageSize;
+                $scope.titleparcelPay.count = data.data.count;
+                $scope.changeTypeButton($scope.paidOut ? 'paid' : 'pays');
+            });
+    };
+
+    $scope.sortByGQuery = (sortField, dir) => {
+        $scope.sortField = sortField;
+        $scope.sortDir = dir;
+        $scope.getByGQuery();
+    };
 
 }
 

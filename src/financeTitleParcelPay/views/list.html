@@ -16,22 +16,22 @@
         <div ng-class="{'col-md-3 col-lg-3': filters == 'custom', 'col-md-8 col-lg-8': filters !== 'custom'}">
             <label>Filtros Rápidos:</label>
             <div class="row">
-                <label class="btn-sm gmd raised" ng-class="buttonTypeClass('pays')" uib-btn-radio="'pays'" ng-model="filterPay" uncheckable ng-click="pays(1)">A pagar</label>
-                <label class="btn-sm gmd raised" ng-class="buttonTypeClass('paid')" uib-btn-radio="'paid'" ng-model="filterPay" uncheckable ng-click="paid(1)">Pagos</label>
+                <label class="btn-sm gmd raised" ng-class="buttonTypeClass(false)" uib-btn-radio="'pays'" ng-model="filterPay" uncheckable ng-click="filter(lastClicked, false)">A pagar</label>
+                <label class="btn-sm gmd raised" ng-class="buttonTypeClass(true)" uib-btn-radio="'paid'" ng-model="filterPay" uncheckable ng-click="filter(lastClicked, true)">Pagos</label>
             </div>
             <div class="row" style="margin-top: 10px">
                 <label class="btn-sm gmd raised" ng-if="filters !== 'custom'" ng-model="filters"
                        uncheckable
-                       ng-click="filter('today')" ng-class="buttonSubTypeClass('today')" uib-btn-radio="'today'">Hoje</label>
+                       ng-click="filter('today', paidOut)" ng-class="buttonSubTypeClass('today')" uib-btn-radio="'today'">Hoje</label>
                 <label class="btn-sm gmd raised" ng-if="filters !== 'custom'" ng-model="filters"
                        uncheckable
-                       ng-click="filter('thisWeek')" ng-class="buttonSubTypeClass('thisWeek')" uib-btn-radio="'thisWeek'">Esta semana</label>
+                       ng-click="filter('thisWeek', paidOut)" ng-class="buttonSubTypeClass('thisWeek')" uib-btn-radio="'thisWeek'">Esta semana</label>
                 <label class="btn-sm gmd raised" ng-if="filters !== 'custom'" ng-model="filters"
                        uncheckable
-                       ng-click="filter('thisMonth')" ng-class="buttonSubTypeClass('thisMonth')" uib-btn-radio="'thisMonth'">Este Mês</label>
+                       ng-click="filter('thisMonth', paidOut)" ng-class="buttonSubTypeClass('thisMonth')" uib-btn-radio="'thisMonth'">Este Mês</label>
                 <label class="btn-sm gmd raised" ng-if="filters !== 'custom'" ng-model="filters"
                        uncheckable
-                       ng-click="filter('thisYear')" ng-class="buttonSubTypeClass('thisYear')" uib-btn-radio="'Thisyear'">Este Ano</label>
+                       ng-click="filter('thisYear', paidOut)" ng-class="buttonSubTypeClass('thisYear')" uib-btn-radio="'Thisyear'">Este Ano</label>
                 <label class="btn-sm gmd raised" ng-model="filters" uncheckable ng-class="buttonSubTypeClass('custom')"
                        uib-btn-radio="'custom'" ng-click="changeSubTypeButton('custom')">Personalizado</label>
             </div>
@@ -69,7 +69,7 @@
     </div>
     <gumga-list
             class="table-striped"
-            sort="titleparcelPay.methods.sort(field, dir)"
+            sort="sortByGQuery(field, dir)"
             data="titleparcelPay.data"
             on-click="totalize()"
             configuration="tableConfig"
@@ -77,6 +77,6 @@
             count="titleparcelPay.count"
             page-model="titleparcelPay.page"
             max-height="400px"
-            on-page-change="titleparcelPay.methods.get(page, pageSize)">
+            on-page-change="getByGQuery(page, pageSize)">
     </gumga-list>
 </div>
