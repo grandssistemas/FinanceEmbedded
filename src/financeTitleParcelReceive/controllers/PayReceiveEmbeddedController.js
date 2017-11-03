@@ -18,7 +18,9 @@ PayReceiveEmbeddedController.$inject = [
     '$filter',
     '$uibModal',
     'CreditCardAccountService',
-    'FinanceUnitService', 'FinanceReportService'];
+    'FinanceUnitService',
+    'MoneyUtilsService',
+    'FinanceReportService'];
 
 function PayReceiveEmbeddedController(FinanceConfigurationService,
                                       $scope,
@@ -38,6 +40,7 @@ function PayReceiveEmbeddedController(FinanceConfigurationService,
                                       $uibModal,
                                       CreditCardAccountService,
                                       FinanceUnitService,
+                                      MoneyUtilsService,
                                       FinanceReportService) {
 
     gumgaController.createRestMethods($scope, FinanceConfigurationService, 'financeConfiguration');
@@ -151,15 +154,11 @@ function PayReceiveEmbeddedController(FinanceConfigurationService,
                     valueModifierOperation: (field === 'discount' ? 'DECREASE' : 'INCREASE'),
                     valueModifierType: 'ABSOLUTE',
                     value: parseFloat(row[field])
-                }
-
+                };
                 row[field] = newObj;
             }
-
         })
-
-
-    }
+    };
 
     $scope.tableConfig = {
         columns: 'expiration, value,remaining,interest, penalty, discount, individual',
@@ -176,17 +175,28 @@ function PayReceiveEmbeddedController(FinanceConfigurationService,
             name: 'interest',
             editable: true,
             title: '<span>Juros</span>',
-            content: '<input type="text" ui-money-mask ng-change="$parent.$parent.updateTotal()" ng-model="$value.interest.value">'
+            content: '<input type="text" ui-money-mask ' +
+            'ng-change="$parent.$parent.updateTotal($value,interestValue,penaltyValue,discountValue)" ' +
+            'ng-disabled="!$parent.$parent.isExpired($value.expiration)" ' +
+            'ng-init="interestValue = $parent.$parent.calcInterestValue($value)" ' +
+            'ng-model="interestValue">'
         }, {
             name: 'penalty',
             editable: true,
             title: '<span>Multa</span>',
-            content: '<input type="text" ui-money-mask ng-change="$parent.$parent.updateTotal()" ng-model="$value.penalty.value">'
+            content: '<input type="text" ui-money-mask ' +
+            'ng-change="$parent.$parent.updateTotal($value,interestValue,penaltyValue,discountValue)" ' +
+            'ng-disabled="!$parent.$parent.isExpired($value.expiration)" ' +
+            'ng-init="penaltyValue = $parent.$parent.calcPenaltyValue($value)" ' +
+            'ng-model="penaltyValue">'
         }, {
             name: 'discount',
             editable: true,
             title: '<span>Desconto</span>',
-            content: '<input type="text" ui-money-mask ng-change="$parent.$parent.updateTotal()" ng-model="$value.discount.value">'
+            content: '<input type="text" ui-money-mask ' +
+            'ng-change="$parent.$parent.updateTotal($value,interestValue,penaltyValue,discountValue)" ' +
+            'ng-init="discountValue = $parent.$parent.calcDiscountValue($value)" ' +
+            'ng-model="discountValue">'
         }, {
             name: 'remaining',
             title: '<span>Saldo</span>',
@@ -195,16 +205,67 @@ function PayReceiveEmbeddedController(FinanceConfigurationService,
             name: 'individual',
             title: '<span>Pessoa</span>',
             content: '{{$value.individual.name}}'
+        }]
+    };
+    $scope.calcDiscountValue = ($value)=>{
+        if($value.discount && $value.discount.value){
+            return MoneyUtilsService.multiplyMoney($value.discount.value,$value.value);
         }
-        ]
+        return 0;
+    };
+    $scope.calcPenaltyValue = ($value)=>{
+        if($value.penalty && $value.penalty.value){
+            return MoneyUtilsService.multiplyMoney($value.penalty.value,$value.value);
+        }
+        return 0;
+    };
+    $scope.calcInterestValue = ($value)=>{
+        const days = getExpiredDays($value.expiration);
+        if($value.interest && $value.interest.value){
+            console.log($value.expiration)
+            return MoneyUtilsService.multiplyMoney(MoneyUtilsService.multiplyMoney($value.interest.value,$value.value),days);
+        }
+        return 0;
     };
 
 
-    $scope.updateTotal = () =>{
-        console.log('total');
+    $scope.isExpired = getExpiredDays;
+
+    $scope.updateTotal = (value, interrest, penalty, discount) => {
+        let expiredDays = getExpiredDays(value.expiration);
+        value.interest.value = getInterestPerc(value, interrest, expiredDays);
+        value.penalty.value = getPenaltyPerc(value, penalty, expiredDays);
+        value.discount.value = getDiscountPerc(value, discount);
+
+        console.log(value)
+
         $scope.total = $scope.totalizeRemaining();
         $scope.lastReceive = ($scope.totalizeRemaining() - $scope.totalReceive());
         $scope.totalize();
+    };
+
+    function getExpiredDays(value) {
+        const diff = moment(value).diff(moment(), 'days');
+        return diff < 0 ? diff : 0;
+    }
+
+    function getInterestPerc(value, interrest, expiredDays) {
+        if (expiredDays) {
+            return MoneyUtilsService.divideMoney(MoneyUtilsService.divideMoney(interrest, expiredDays), value.value);
+        }
+        return 0;
+    }
+
+
+    function getPenaltyPerc(value, penalty, expiredDays) {
+        if (expiredDays) {
+            return MoneyUtilsService.divideMoney(penalty, value.value);
+        }
+        return 0;
+    }
+
+    function getDiscountPerc(value, discount) {
+        return MoneyUtilsService.divideMoney(discount, value.value);
     }
 
 
@@ -344,9 +405,9 @@ function PayReceiveEmbeddedController(FinanceConfigurationService,
 
     $scope.printPaid = function (items) {
         const variables = [];
-        variables.push('', 'parcelIds',items.map(item => item.id));
-        variables.push('', 'orgName',JSON.parse(window.sessionStorage.getItem('user')).organization)
-        FinanceReportService.openModalViewer('RECEIPT','',variables,()=>{
+        variables.push('', 'parcelIds', items.map(item => item.id));
+        variables.push('', 'orgName', JSON.parse(window.sessionStorage.getItem('user')).organization)
+        FinanceReportService.openModalViewer('RECEIPT', '', variables, () => {
             SweetAlert.swal("Falta de Recibos", "Você esta sem o recibo configurado contate o suporte.", "warning");
         })
     };
