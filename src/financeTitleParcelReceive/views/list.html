@@ -18,18 +18,18 @@
                 <label>Filtros Rápidos:</label>
             </div>
             <div class="row">
-                <label id="toReceive" class="btn-sm gmd raised" ng-class="buttonTypeClass('TORECEIVE')" uib-btn-radio="'toReceive'" ng-model="filterReceive" uncheckable ng-click="receive('TORECEIVE')">A Receber</label>
-                <label class="btn-sm gmd raised" ng-class="buttonTypeClass('RECEIVE')" uib-btn-radio="'receive'" ng-model="filterReceive" uncheckable ng-click="receive('RECEIVE')">Recebido</label>
+                <label id="toReceive" class="btn-sm gmd raised" ng-class="buttonTypeClass(false)" uib-btn-radio="'toReceive'" ng-model="filterReceive" uncheckable ng-click="filter(lastClicked, false)">A Receber</label>
+                <label class="btn-sm gmd raised" ng-class="buttonTypeClass(true)" uib-btn-radio="'receive'" ng-model="filterReceive" uncheckable ng-click="filter(lastClicked, true)">Recebido</label>
             </div>
             <div class="row" style="margin-top: 10px">
                 <label class="btn-sm gmd raised" ng-model="filters" ng-show="hideOthers" uncheckable
-                       ng-click="filter('today')" uib-btn-radio="'today'" ng-class="buttonSubTypeClass('today')">Hoje</label>
+                       ng-click="filter('today', paidOut)" uib-btn-radio="'today'" ng-class="buttonSubTypeClass('today')">Hoje</label>
                 <label class="btn-sm gmd raised" ng-model="filters" ng-show="hideOthers" uncheckable
-                       ng-click="filter('thisWeek')" uib-btn-radio="'thisWeek'" ng-class="buttonSubTypeClass('thisWeek')">Esta semana</label>
+                       ng-click="filter('thisWeek', paidOut)" uib-btn-radio="'thisWeek'" ng-class="buttonSubTypeClass('thisWeek')">Esta semana</label>
                 <label class="btn-sm gmd raised" ng-model="filters" ng-show="hideOthers" uncheckable
-                       ng-click="filter('thisMonth')" uib-btn-radio="'thisMonth'" ng-class="buttonSubTypeClass('thisMonth')">Este Mês</label>
+                       ng-click="filter('thisMonth', paidOut)" uib-btn-radio="'thisMonth'" ng-class="buttonSubTypeClass('thisMonth')">Este Mês</label>
                 <label class="btn-sm gmd raised" ng-model="filters" ng-show="hideOthers" uncheckable
-                       ng-click="filter('thisYear')" uib-btn-radio="'Thisyear'" ng-class="buttonSubTypeClass('thisYear')">Este Ano</label>
+                       ng-click="filter('thisYear', paidOut)" uib-btn-radio="'Thisyear'" ng-class="buttonSubTypeClass('thisYear')">Este Ano</label>
                 <label class="btn-sm gmd raised" ng-model="filters" uncheckable uib-btn-radio="'custom'"
                        ng-click="hideOthers = !hideOthers; changeSubTypeButton('custom')" ng-class="buttonSubTypeClass('custom')">Personalizado</label>
             </div>
@@ -71,7 +71,7 @@
         </div>
     </div>
     <gumga-list class="table-striped"
-                sort="sort(field, dir)"
+                sort="sortByGQuery(field, dir)"
                 data="titleparcel.data"
                 on-click="totalize()"
                 configuration="tableConfig"
@@ -79,6 +79,6 @@
                 count="titleparcel.count"
                 page-model="titleparcel.page"
                 max-height="400px"
-                on-page-change="titleparcel.methods.get(page, pageSize)">
+                on-page-change="getByGQuery(page, pageSize)">
     </gumga-list>
 </div>
