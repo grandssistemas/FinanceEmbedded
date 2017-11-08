@@ -37,129 +37,14 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
     $scope.containsFullPaid = false;
     $scope.paidOut = false;
     $scope.lastClicked = null;
-    $scope.aqFilterSelected = null;
-
+    $scope.gQueryFilters = null;
     $scope.hideOthers = true;
 
-    $scope.sort = function(field, dir){
-        TitleParcelPayService.sort(field,dir).then(function (data) {
-            $scope.selectedValues = [];
-            $scope.titleparcel.data = data.data.values;
-            $scope.titleparcel.pageSize = data.data.pageSize;
-            $scope.titleparcel.count = data.data.count;
-        });
-    };
-
-    $scope.getParcels = function () {
-        let hql = "obj.title.titleType = 'RECEIVE' AND (obj.fullPaid = " + $scope.paidOut + " OR obj.fullPaid is null)";
-
-        if (dateStart) {
-            hql += " AND obj.expiration >= '" + moment(dateStart).format('YYYY-MM-DD') + " 00:00:00'";
-        }
-        if (dateEnd) {
-            hql += " AND obj.expiration <= '" + moment(dateEnd).format('YYYY-MM-DD') + " 23:59:59'";
-        }
-        if ($scope.individualSearch) {
-            hql += " AND obj.individual.id = " + $scope.individualSearch.id;
-        }
-
-        TitleParcelPayService.getAdvancedSearch(hql).then(function (data) {
-            $scope.selectedValues = [];
-            $scope.titleparcel.data = data.data.values;
-            $scope.titleparcel.pageSize = data.data.pageSize;
-            $scope.titleparcel.count = data.data.count;
-        });
-    };
-
-
-    function cleanFilter() {
-        $scope.lastClicked = null;
-        $scope.aqFilterSelected = null;
-        $scope.hideOthers = true;
-        dateEnd = null;
-        dateStart = null;
-        delete $scope.filters;
-        delete $scope.individualSearch;
-        $scope.selectedSubType = '';
-    }
-
-    $scope.getParcels(null, 1);
 
     $scope.$watch('individualSearch', function (individual) {
-        cleanFilter();
         $scope.individualSearch = individual;
-        $scope.getParcels(null, 1);
+        $scope.filter($scope.lastClicked, $scope.paidOut);
     });
-
-    $scope.filter = function (whichFilter) {
-        $scope.lastClicked = whichFilter;
-        let startDate;
-        let endDate;
-        switch (whichFilter) {
-            case 'thisWeek':
-                startDate = moment().startOf('isoWeek').subtract(1, 'days');
-                endDate = moment().endOf('isoWeek').subtract(1, 'days');
-                break;
-            case 'thisMonth':
-                startDate = moment().startOf('month');
-                endDate = moment().endOf('month');
-                break;
-            case 'thisYear':
-                startDate = moment().startOf('year');
-                endDate = moment().endOf('year');
-                break;
-            case 'today':
-                startDate = moment();
-                endDate = moment();
-                break;
-            case 'custom':
-                startDate = moment($scope.endDate);
-                endDate = moment($scope.endDate);
-                break;
-        }
-        $scope.changeSubTypeButton(whichFilter);
-        dateStart = startDate?startDate._d:null;
-        dateEnd = endDate?endDate._d:null;
-
-        $scope.getParcels();
-
-
-    };
-
-    $scope.searchByIndividual = function (individual) {
-        $scope.getParcels($scope.endDate, 1);
-    };
-
-    $scope.receive = function (label) {
-        cleanFilter();
-        $scope.lastClicked = null;
-        $scope.aqFilterSelected = null;
-        $scope.paidOut = label === 'RECEIVE';
-        $scope.selectedSubType = '';
-        delete $scope.filters;
-        $scope.hideOthers = true;
-        $scope.changeTypeButton(label);
-
-        $scope.getParcels();
-    };
-
-    $scope.toReceive = function (page) {
-        $scope.lastClicked = null;
-        $scope.aqFilterSelected = null;
-        $scope.paidOut = false;
-        $scope.selectedSubType = '';
-        delete $scope.filters;
-        $scope.hideOthers = true;
-
-        TitleParcelPayService.findOpenByMaxDate(null, 'RECEIVE', page, $scope.individualSearch, $scope.paidOut, $scope.aqFilterSelected)
-            .then(function (data) {
-                $scope.selectedValues = [];
-                $scope.titleparcel.data = data.data.values;
-                $scope.titleparcel.pageSize = data.data.pageSize;
-                $scope.titleparcel.count = data.data.count;
-                $scope.changeTypeButton('TORECEIVE');
-            });
-    };
 
     $scope.totalize = function () {
         $timeout(function () {
@@ -304,7 +189,7 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
     $scope.selectedType = 'TORECEIVE';
 
     $scope.buttonTypeClass = function (parameter) {
-        return $scope.selectedType === parameter ? 'btn btn-danger' : 'btn btn-primary';
+        return $scope.paidOut === parameter ? 'btn btn-danger' : 'btn btn-primary';
     };
 
     $scope.buttonSubTypeClass = function (parameter) {
@@ -321,9 +206,78 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
 
     $scope.configData = {
         change : function (data) {
-            $scope.filter('custom');
+            $scope.filter('custom', $scope.paidOut);
         }
     }
+
+
+    $scope.getByGQuery = (page, pageSize) => {
+        TitleParcelPayService.getByGQueryMaxDate(null, 'RECEIVE', page, $scope.individualSearch, $scope.paidOut, $scope.gQueryFilters, pageSize, $scope.sortField, $scope.sortDir)
+            .then(function (data) {
+                $scope.selectedValues = [];
+                $scope.titleparcel.data = data.data.values;
+                $scope.titleparcel.pageSize = data.data.pageSize;
+                $scope.titleparcel.count = data.data.count;
+                $scope.changeTypeButton($scope.paidOut ? 'paid' : 'pays');
+            });
+    };
+
+    $scope.sortByGQuery = (sortField, dir) => {
+        $scope.sortField = sortField;
+        $scope.sortDir = dir;
+        $scope.getByGQuery();
+    };
+
+
+    $scope.filter = function (whichFilter, fullpaid) {
+        $scope.paidOut = fullpaid;
+        $scope.lastClicked = whichFilter;
+        let gQuery = new GQuery(new Criteria('obj.title.titleType', ComparisonOperator.EQUAL, 'RECEIVE'));
+
+        let startDate;
+        let endDate;
+
+        switch (whichFilter) {
+            case 'thisWeek':
+                startDate = moment().startOf('isoWeek').subtract(1, 'days');
+                endDate = moment().endOf('isoWeek').subtract(1, 'days');
+                break;
+            case 'thisMonth':
+                startDate = moment().startOf('month');
+                endDate = moment().endOf('month');
+                break;
+            case 'thisYear':
+                startDate = moment().startOf('year');
+                endDate = moment().endOf('year');
+                break;
+            case 'today':
+                startDate = moment();
+                endDate = moment();
+                break;
+            case 'custom':
+                startDate = moment($scope.endDate);
+                endDate = moment($scope.endDate);
+                break;
+        }
+
+        if (startDate && endDate){
+            gQuery = gQuery.and(new Criteria('obj.expiration', ComparisonOperator.BETWEEN, [startDate, endDate]));
+        }
+
+        if ($scope.individualSearch && $scope.individualSearch.id) {
+            gQuery = gQuery.and(new Criteria('obj.individual.name', ComparisonOperator.EQUAL, $scope.individualSearch.name));
+        }
+
+        if ($scope.paidOut) {
+            gQuery = gQuery.and(new Criteria('obj.fullPaid', ComparisonOperator.EQUAL, true));
+        } else {
+            gQuery = gQuery.and(new Criteria('obj.fullPaid', ComparisonOperator.EQUAL, false));
+        }
+        $scope.gQueryFilters = gQuery;
+        $scope.getByGQuery();
+        $scope.changeSubTypeButton(whichFilter);
+    };
+
 
 }
 

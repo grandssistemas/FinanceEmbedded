@@ -15,6 +15,8 @@ PayEmbeddedController.$inject = [
     'ChequePortfolioService',
     '$filter',
     'IndividualCreditService',
+    'MoneyUtilsService',
+    'PercentageFinanceUtilsService',
     'CreditCardAccountService'];
 
 function PayEmbeddedController(
@@ -32,6 +34,8 @@ function PayEmbeddedController(
     ChequePortfolioService,
     $filter,
     IndividualCreditService,
+    MoneyUtilsService,
+    PercentageFinanceUtilsService,
     CreditCardAccountService) {
 
     $scope.configuration = {};
@@ -58,6 +62,11 @@ function PayEmbeddedController(
     gumgaController.createRestMethods($scope, FinanceUnitService, 'financeunit');
     FinanceUnitService.resetDefaultState();
 
+    // $scope.onSelectChequePortfolio = (value) => {
+		// ChequePortfolioService.getById(value.id).then((data) => {
+		//     $scope.payment.check.financeUnit.cheques = data.data.cheques;
+		// })
+    // }
 
     $scope.getPersonalCredits = function (params) {
         return IndividualCreditService.getSearch('name', params).then(function (data) {
@@ -95,14 +104,19 @@ function PayEmbeddedController(
     $scope.cheques = {};
     $scope.cheques.data = [];
     $scope.filtered = [];
+	$scope.chequeList = [];
 
-    $scope.listCheques = function (name, param) {
-        // thirdpartycheque.methods.asyncSearch('name', param)
-        $scope.cheques.data = []
-    };
+	$scope.listCheques = (id, param) => {
+	    id = id || 0;
 
+	    param = param || '';
+	    return ThirdPartyChequeService.getAdvancedSearch("lower(obj.issuer.name) like lower('%"+param+"%') and obj.portfolio.id = "+id)
+            .then((data) => {
+	            $scope.chequeList = data.data.values;
+            } );
+	};
 
-    $scope.changeCheques = function () {
+	$scope.changeCheques = function () {
         $scope.payment.cheques = $scope.selectedValues;
     };
     $scope.uploadStart = function () {
@@ -122,13 +136,53 @@ function PayEmbeddedController(
         }
         return total;
     };
+
+
+    function getInterestValue(value, expiredDays) {
+        const interest = value.interest.value;
+        if (expiredDays) {
+            return MoneyUtilsService.divideMoney(
+                MoneyUtilsService.multiplyMoney(
+                    PercentageFinanceUtilsService.multiply6(interest, value.value), expiredDays), 30);
+        }
+        return 0;
+    }
+
+    function getPenaltyValue(value, expiredDays) {
+        const penalty = value.penalty.value;
+        if (expiredDays) {
+            return MoneyUtilsService.roundMoney(PercentageFinanceUtilsService.multiply6(penalty, value.value));
+        }
+        return 0;
+    }
+
+    function getDiscountValue(value) {
+        const discount = value.discount.value;
+        return MoneyUtilsService.roundMoney(PercentageFinanceUtilsService.multiply6(discount, value.value));
+    }
+
+    $scope.getRemainingValue = (row) => {
+        let expiredDays = getExpiredDays(row.expiration);
+        let interestValue = getInterestValue(row, expiredDays);
+        let penaltyValue = getPenaltyValue(row, expiredDays);
+        let discountValue = getDiscountValue(row);
+
+        const value = MoneyUtilsService.sumMoney(row.value,
+            MoneyUtilsService.sumMoney(interestValue,
+                MoneyUtilsService.sumMoney(penaltyValue, -discountValue)));
+        return MoneyUtilsService.sumMoney(value, -row.totalpayed);
+    }
+
     // Calcula o total restante para o pagamento
     $scope.totalizeRemaining = function () {
-        var total = 0;
-        for (var i = 0; i < $scope.parcels.length; i++) {
-            total += ($scope.parcels[i].remaining + $scope.parcels[i].calculedInterest + $scope.parcels[i].calculedPenalty);
-        }
-        return total;
+        return $scope.payment.parcels.reduce((sum, current) => {
+            return sum + $scope.getRemainingValue(current);
+        }, 0);
+        // var total = 0;
+        // for (var i = 0; i < $scope.parcels.length; i++) {
+        //     total += ($scope.parcels[i].remaining + $scope.parcels[i].calculedInterest + $scope.parcels[i].calculedPenalty);
+        // }
+        // return total;
     };
     $scope.total = $scope.totalizeRemaining();
 
@@ -289,7 +343,7 @@ function PayEmbeddedController(
     // Pega o total pago
     $scope.totalSelecionado = 0;
     $scope.selecionados = function (selecionado) {
-        $scope.totalSelecionado += selecionado.value;
+	    $scope.totalSelecionado = $scope.payment.check.checks.map(a => a.value).reduce((a,b) => a+b,0);
         $scope.payment.value = $scope.totalSelecionado;
         $scope.itemsSelected = $scope.payment.check.checks;
     };
@@ -321,30 +375,51 @@ function PayEmbeddedController(
 
     // Configuração da tabela que mostra as parcelas selecionadas
     $scope.parcelsConfig = {
-        columns: 'docNumber, parcels, remaining, expiration',
+        columns: 'expiration, value,remaining,interest, penalty, discount, individual',
         materialTheme: true,
-        columnsConfig: [
-            {
-                name: 'docNumber',
-                title: '<span>Nº Doc</span>',
-                content: '{{$value.titleData.documentNumber}}'
-            },
-            {
-                name: 'parcels',
-                title: '<span>Parcela</span>',
-                content: '{{$value.number}} / {{$value.titleData.parcelsCount}}'
-            },
-            {
-                name: 'remaining',
-                title: '<span>A pagar</span>',
-                content: '{{($value.remaining) | currency: "R$ "}}'
-            },
-            {
-                name: 'expiration',
-                title: '<span>Vencimento</span>',
-                content: '{{$value.expiration | date: "dd/MM/yyyy"}}'
-            }
-        ]
+        columnsConfig: [{
+            name: 'expiration',
+            title: '<span>Vencimento</span>',
+            content: '{{$value.expiration | date: "dd/MM/yyyy"}}'
+        }, {
+            name: 'value',
+            title: '<span>Valor</span>',
+            content: '{{$value.value | currency: "R$"}}'
+        }, {
+            name: 'interest',
+            editable: true,
+            title: '<span>Juros</span>',
+            content: '<input type="text" ui-money-mask ' +
+            'ng-change="$parent.$parent.updateTotal($value,interestValue,penaltyValue,discountValue)" ' +
+            'ng-disabled="!$parent.$parent.isExpired($value.expiration)" ' +
+            'ng-init="interestValue = $parent.$parent.calcInterestValue($value)" ' +
+            'ng-model="interestValue">'
+        }, {
+            name: 'penalty',
+            editable: true,
+            title: '<span>Multa</span>',
+            content: '<input type="text" ui-money-mask ' +
+            'ng-change="$parent.$parent.updateTotal($value,interestValue,penaltyValue,discountValue)" ' +
+            'ng-disabled="!$parent.$parent.isExpired($value.expiration)" ' +
+            'ng-init="penaltyValue = $parent.$parent.calcPenaltyValue($value)" ' +
+            'ng-model="penaltyValue">'
+        }, {
+            name: 'discount',
+            editable: true,
+            title: '<span>Desconto</span>',
+            content: '<input type="text" ui-money-mask ' +
+            'ng-change="$parent.$parent.updateTotal($value,interestValue,penaltyValue,discountValue)" ' +
+            'ng-init="discountValue = $parent.$parent.calcDiscountValue($value)" ' +
+            'ng-model="discountValue">'
+        }, {
+            name: 'remaining',
+            title: '<span>Saldo</span>',
+            content: '{{$parent.$parent.getRemainingValue($value) | currency: "R$"}}'
+        }, {
+            name: 'individual',
+            title: '<span>Pessoa</span>',
+            content: '{{$value.individual.name}}'
+        }]
     };
 
     $scope.chequesConfig = {
@@ -409,14 +484,9 @@ function PayEmbeddedController(
     };
 
 
-    $scope.makePayment = function (payment, generalDiscount) {
-        for (var index = 0; index < payment.parcels.length; index++) {
-            payment.parcels[index].discount.value = generalDiscount
-        }
-        $scope.printReceipt();
+    $scope.makePayment = function (payment) {
         PaymentService.pay(payment)
             .then(function () {
-                // $state.go('titleparcel.list');
                 $scope.$ctrl.onBackClick();
             });
 
@@ -426,8 +496,7 @@ function PayEmbeddedController(
                 $scope.thirdpartycheque.methods.put(data)
             })
         }
-
-    }
+    };
 
     $scope.setarfocusPayment = function(value) {
         switch (value) {
@@ -465,6 +534,75 @@ function PayEmbeddedController(
     $scope.back = function(){
         $scope.$ctrl.onBackClick();
     };
+
+
+    /**
+     * Nova tela de pagamento
+     */
+
+    $scope.calcDiscountValue = ($value) => {
+        if ($value.discount && $value.discount.value) {
+            return MoneyUtilsService.multiplyMoney($value.discount.value, $value.value);
+        }
+        return 0;
+    };
+    $scope.calcPenaltyValue = ($value) => {
+        const days = getExpiredDays($value.expiration);
+        if (days && $value.penalty && $value.penalty.value) {
+            return MoneyUtilsService.multiplyMoney($value.penalty.value, $value.value);
+        }
+        return 0;
+    };
+    $scope.calcInterestValue = ($value) => {
+        const days = getExpiredDays($value.expiration);
+        if (days && $value.interest && $value.interest.value) {
+            return MoneyUtilsService.divideMoney(MoneyUtilsService.multiplyMoney(MoneyUtilsService.multiplyMoney($value.interest.value, $value.value), days), 30);
+        }
+        return 0;
+    };
+
+    $scope.totalReceive = function () {
+        return $scope.payment.methodPayment.reduce((sum, current) => {
+            return sum + current.value;
+        }, 0);
+    };
+
+    $scope.updateTotal = (value, interrest, penalty, discount) => {
+        let expiredDays = getExpiredDays(value.expiration);
+        value.interest.value = getInterestPerc(value, interrest, expiredDays);
+        value.penalty.value = getPenaltyPerc(value, penalty, expiredDays);
+        value.discount.value = getDiscountPerc(value, discount);
+
+        $scope.total = $scope.totalizeRemaining();
+        $scope.lastPayment = ($scope.totalizeRemaining() - $scope.totalReceive());
+    };
+
+
+    function getExpiredDays(value) {
+        const diff = moment(value).diff(moment(), 'days');
+        return diff < 0 ? -diff : 0;
+    }
+
+    $scope.isExpired = getExpiredDays;
+
+    function getInterestPerc(value, interrest, expiredDays) {
+        if (expiredDays) {
+            return PercentageFinanceUtilsService.multiply6(30,PercentageFinanceUtilsService.divide6(PercentageFinanceUtilsService.divide6(interrest, expiredDays), value.value));
+        }
+        return 0;
+    }
+
+
+    function getPenaltyPerc(value, penalty, expiredDays) {
+        if (expiredDays) {
+            return PercentageFinanceUtilsService.divide6(penalty, value.value);
+        }
+        return 0;
+    }
+
+    function getDiscountPerc(value, discount) {
+        return PercentageFinanceUtilsService.divide6(discount, value.value);
+    }
 
 }
 
