@@ -31,21 +31,26 @@
                                 <label gumga-translate-tag="titleparcel.formPayment">formPayment</label><br/>
                                 <label class="btn btn-info gmd raised" ng-model="payment.method" uib-btn-radio="'money'"
                                        gumga-translate-tag="titleparcel.money"
-                                       ng-click="setarfocusPayment('money')">money</label>
+                                       ng-click="setarfocusPayment('money')"
+                                       ng-disabled="lastPayment <= 0">money</label>
                                 <label class="btn btn-info gmd raised" ng-model="payment.method"
                                        uib-btn-radio="'thirdCheck'"
                                        gumga-translate-tag="titleparcel.thirdCheck"
-                                       ng-click="setarfocusPayment('check')">thirdCheck</label>
+                                       ng-click="setarfocusPayment('check')"
+                                       ng-disabled="lastPayment <= 0">thirdCheck</label>
                                 <label class="btn btn-info gmd raised" ng-model="payment.method" uib-btn-radio="'bank'"
-                                       gumga-translate-tag="titleparcel.bank">bank</label>
+                                       gumga-translate-tag="titleparcel.bank"
+                                       ng-disabled="lastPayment <= 0">bank</label>
                                 <label class="btn btn-info gmd raised" ng-model="payment.method" uib-btn-radio="'card'"
                                        gumga-translate-tag="titleparcel.card"
-                                       ng-click="setarfocusPayment('card')">card</label>
+                                       ng-click="setarfocusPayment('card')"
+                                       ng-disabled="lastPayment <= 0">card</label>
                                 <label class="btn btn-info gmd raised" ng-model="payment.method"
                                        uib-btn-radio="'credit'"
                                        gumga-translate-tag="titleparcel.credit"
                                        ng-if="showMenuPersonalCredit"
-                                       ng-click="setarfocusPayment('credit')">credit</label>
+                                       ng-click="setarfocusPayment('credit')"
+                                       ng-disabled="lastPayment <= 0">credit</label>
                             </div>
                         </div>
                         <hr style="margin: 10px 0 10px 0;"/>
