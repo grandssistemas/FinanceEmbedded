@@ -61,19 +61,6 @@ function PayEmbeddedController(
 
     gumgaController.createRestMethods($scope, FinanceUnitService, 'financeunit');
 
-    // $scope.onSelectChequePortfolio = (value) => {
-		// ChequePortfolioService.getById(value.id).then((data) => {
-		//     $scope.payment.check.financeUnit.cheques = data.data.cheques;
-		// })
-    // }
-
-    $scope.getFinanceUnits = (param, name) => {
-        FinanceUnitService.findByOpenUnitGroup(name).then(data => {
-            console.log(data);
-            $scope.financeunit.data = data.data;
-        });
-    };
-
     $scope.getPersonalCredits = function (params) {
         return IndividualCreditService.getSearch('name', params).then(function (data) {
             if (!$scope.configuration.displayPersonalCredit) {
@@ -609,6 +596,13 @@ function PayEmbeddedController(
     function getDiscountPerc(value, discount) {
         return PercentageFinanceUtilsService.divide6(discount, value.value);
     }
+
+    $scope.getFinanceUnits = (param, name) => {
+        return FinanceUnitService.findByOpenUnitGroup(name).then(data => {
+            $scope.financeunit.data = data.data.values;
+            return data.data.values;
+        });
+    };
 
 }
 

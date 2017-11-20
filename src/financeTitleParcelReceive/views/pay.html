@@ -46,7 +46,7 @@
                                     <label gumga-translate-tag="titleparcelreceive.financeunit">financeunit</label><br/>
                                     <gumga-many-to-one
                                             value="payment.money.financeUnit"
-                                            search-method="localcash.methods.asyncSearch('name', param)"
+                                            search-method="getFinanceUnits('name', param)"
                                             field="name"
                                             authorize-add="false"
                                             id="paymentMoneyFinanceunit">
