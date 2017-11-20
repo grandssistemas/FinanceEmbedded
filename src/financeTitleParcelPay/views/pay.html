@@ -64,15 +64,12 @@
                                             tab-seq="1"
                                             value="payment.money.financeUnit"
                                             list="financeunit.data"
-                                            search-method="localcash.methods.asyncSearch('name',param)"
-                                            add-method="financeunit.methods.asyncPost(value,'name')"
-                                            on-new-value-added="checkType()"
+                                            search-method="getFinanceUnits('name',param)"
                                             description="type"
                                             field="name"
                                             authorize-add="false"
                                             id="paymentMoneyFinanceunit">
                                     </gumga-many-to-one>
-
                                 </div>
                             </div>
                             <div class="col-md-3 m-t-md">

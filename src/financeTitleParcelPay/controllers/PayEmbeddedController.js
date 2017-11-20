@@ -60,13 +60,19 @@ function PayEmbeddedController(
     gumgaController.createRestMethods($scope, IndividualCreditService, 'individualCredit');
 
     gumgaController.createRestMethods($scope, FinanceUnitService, 'financeunit');
-    FinanceUnitService.resetDefaultState();
 
     // $scope.onSelectChequePortfolio = (value) => {
 		// ChequePortfolioService.getById(value.id).then((data) => {
 		//     $scope.payment.check.financeUnit.cheques = data.data.cheques;
 		// })
     // }
+
+    $scope.getFinanceUnits = (param, name) => {
+        FinanceUnitService.findByOpenUnitGroup(name).then(data => {
+            console.log(data);
+            $scope.financeunit.data = data.data;
+        });
+    };
 
     $scope.getPersonalCredits = function (params) {
         return IndividualCreditService.getSearch('name', params).then(function (data) {

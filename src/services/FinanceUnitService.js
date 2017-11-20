@@ -40,6 +40,10 @@ function FinanceUnitService(GumgaRest, $http, FinanceEmbeddedService) {
         return $http.get(`${apiExecutionQuery}/financeUnitBalance?financeUnitId=${financeUnitId}`);
     };
 
+    Service.findByOpenUnitGroup = function (name) {
+        return Service.extend('get', `/findbyopenunitgroup?nome=${name}`);
+    };
+
     return Service;
 }
 
