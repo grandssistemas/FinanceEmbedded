@@ -192,6 +192,7 @@ function PayEmbeddedController(
     };
     // Adicionar pagamento de cheque terceiro
     $scope.addPaymentCheck = function (payment) {
+        console.log(payment)
         var methodPayment = {
             historic: "Cheque Terceiro",
             method: "check",
@@ -522,7 +523,7 @@ function PayEmbeddedController(
     $scope.selectAllText = function(id){
         document.getElementById(id).focus();
         document.getElementById(id).select();
-    }
+    };
 
     $scope.back = function(){
         $scope.$ctrl.onBackClick();
