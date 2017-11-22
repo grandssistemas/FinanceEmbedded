@@ -154,7 +154,6 @@ function PayReceiveEmbeddedController(FinanceConfigurationService,
         let interestValue = getInterestValue(row, expiredDays);
         let penaltyValue = getPenaltyValue(row, expiredDays);
         let discountValue = getDiscountValue(row);
-        console.log(interestValue, penaltyValue, discountValue, row.value, row.totalpayed);
         const value = MoneyUtilsService.sumMoney(row.value,
             MoneyUtilsService.sumMoney(interestValue,
                 MoneyUtilsService.sumMoney(penaltyValue, -discountValue)));
