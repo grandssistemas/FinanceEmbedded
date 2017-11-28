@@ -2,6 +2,7 @@
  * Created by gelatti on 25/05/17.
  */
 
+require('../views/receivefilters.html')
 FinanceReportListEmbeddedController.$inject = [
     '$scope',
     'FinanceReportService',

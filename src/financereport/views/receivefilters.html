@@ -1,0 +1,63 @@
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="row">
+            <div class="row">
+                <div class="col-md-3" style="margin-left: 25px">
+                    <label>Data Inicial</label><br/>
+                    <gumga-date ng-model="inicialDate"
+                                name="inicialDate"></gumga-date>
+                </div>
+                <div class="col-md-3">
+                    <label gumga-translate-tag="">Data Final</label><br/>
+                    <gumga-date ng-model="finalDate"
+                                name="finalDate"></gumga-date>
+                </div>
+
+                <div class="col-md-2">
+                    <gmd-input>
+                        <label class="control-label">Type</label>
+                        <input style="margin-top: 14%" type="checkbox" class="checkbox" ng-model="tipo" id="tipo" min="1">
+                    </gmd-input>
+                </div>
+
+                <div class="col-md-3">
+                    <label>Situação</label>
+                    <select name="row" id="row" ng-model="grid.rowValue" class="form-control"
+                            ng-change="changeOption(grid, countSku)"
+                            ng-options="obj as obj.value for obj in grid.colValue.rows track by obj.id"></select>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px">
+                <div class="row">
+
+                    <div class="col-md-5" style="margin-left: 25px">
+                        <gmd-input>
+                            <input type="text" class="form-control gmd" autocomplete="false" ng-model="$parent.$parent.nameCount" id="gridCount" min="1">
+                            <span class="bar"></span>
+                            <label class="control-label">Cliente</label>
+                        </gmd-input>
+                    </div>
+
+                    <div class="col-md-5">
+                        <gmd-input>
+                            <input type="text" class="form-control gmd" autocomplete="false" ng-model="$parent.$parent.nameCount" id="gridCount" min="1">
+                            <span class="bar"></span>
+                            <label class="control-label">Classificação</label>
+                        </gmd-input>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-5" style="margin-left: 25px">
+                        <gmd-input>
+                            <input type="text" class="form-control gmd" autocomplete="false" ng-model="$parent.$parent.nameCount" id="gridCount" min="1">
+                            <span class="bar"></span>
+                            <label class="control-label">Cidade</label>
+                        </gmd-input>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
