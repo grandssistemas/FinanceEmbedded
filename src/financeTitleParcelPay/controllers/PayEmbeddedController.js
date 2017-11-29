@@ -103,7 +103,7 @@ function PayEmbeddedController(
 	    id = id || 0;
 
 	    param = param || '';
-	    return ThirdPartyChequeService.getAdvancedSearch("lower(obj.issuer.name) like lower('%"+param+"%') and obj.portfolio.id = "+id)
+	    return ThirdPartyChequeService.getAdvancedSearch("lower(obj.issuer.name) like lower('%"+param+"%') and obj.portfolio.id = "+id+" and obj.status = 'AVAILABLE'")
             .then((data) => {
 	            $scope.chequeList = data.data.values;
             } );
@@ -485,8 +485,8 @@ function PayEmbeddedController(
             });
 
         if ($scope.itemsSelected.length > 0) {
-            $scope.itemsSelected.forEach(function (data) {
-                data.status = "UNAVAILABLE";
+            $scope.itemsSelected.forEach((data) => {
+                data.status = "PASSED_ALONG";
                 $scope.thirdpartycheque.methods.put(data)
             })
         }

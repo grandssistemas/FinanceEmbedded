@@ -26,7 +26,7 @@ function BalanceModalController($scope,
                 name: 'date',
                 size: 'col-md-2',
                 title: '<div>Data</div>',
-                content: '<div>{{$value.momment | date:"dd/MM/yyyy HH:mm:ss"}}</div>'
+                content: '<div>{{$value.momment | date:"dd/MM/yyyy"}}</div>'
             },{
                 name: 'historic',
                 size: 'col-md-4',
