@@ -4,60 +4,43 @@
             <div class="row">
                 <div class="col-md-3" style="margin-left: 25px">
                     <label>Data Inicial</label><br/>
-                    <gumga-date ng-model="inicialDate"
+                    <gumga-date ng-model="$parent.$parent.inicialDate"
                                 name="inicialDate"></gumga-date>
                 </div>
                 <div class="col-md-3">
-                    <label gumga-translate-tag="">Data Final</label><br/>
-                    <gumga-date ng-model="finalDate"
+                    <label>Data Final</label><br/>
+                    <gumga-date ng-model="$parent.$parent.finalDate"
                                 name="finalDate"></gumga-date>
                 </div>
-
-                <div class="col-md-2">
+                <div class="col-md-5" style="margin-top: 25px">
                     <gmd-input>
-                        <label class="control-label">Type</label>
-                        <input style="margin-top: 14%" type="checkbox" class="checkbox" ng-model="tipo" id="tipo" min="1">
+                        <input type="text" class="form-control gmd" autocomplete="false" ng-model="$parent.$parent.$parent.$parent.filterClient" id="filterClient">
+                        <span class="bar"></span>
+                        <label class="control-label">Cliente</label>
                     </gmd-input>
                 </div>
-
-                <div class="col-md-3">
-                    <label>Situação</label>
-                    <select name="row" id="row" ng-model="grid.rowValue" class="form-control"
-                            ng-change="changeOption(grid, countSku)"
-                            ng-options="obj as obj.value for obj in grid.colValue.rows track by obj.id"></select>
-                </div>
             </div>
-
-            <div style="margin-top: 30px">
-                <div class="row">
-
-                    <div class="col-md-5" style="margin-left: 25px">
-                        <gmd-input>
-                            <input type="text" class="form-control gmd" autocomplete="false" ng-model="$parent.$parent.nameCount" id="gridCount" min="1">
-                            <span class="bar"></span>
-                            <label class="control-label">Cliente</label>
-                        </gmd-input>
-                    </div>
-
-                    <div class="col-md-5">
-                        <gmd-input>
-                            <input type="text" class="form-control gmd" autocomplete="false" ng-model="$parent.$parent.nameCount" id="gridCount" min="1">
-                            <span class="bar"></span>
-                            <label class="control-label">Classificação</label>
-                        </gmd-input>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-5" style="margin-left: 25px">
-                        <gmd-input>
-                            <input type="text" class="form-control gmd" autocomplete="false" ng-model="$parent.$parent.nameCount" id="gridCount" min="1">
-                            <span class="bar"></span>
-                            <label class="control-label">Cidade</label>
-                        </gmd-input>
-                    </div>
-                </div>
-            </div>
+            <!--<div class="row">-->
+                <!--{{$parent.filterLabel}}-->
+                <!--<div class="col-md-6" style="margin-left: 25px">-->
+                    <!--<div gumga-form-class="labels">-->
+                        <!--<label for="labels" gumga-translate-tag="title.labels">Marcadores</label>-->
+                        <!--<ui-select multiple tagging="labelTransform" tagging-tokens=",|/" id="labels"-->
+                                   <!--ng-model="$parent.$parent.$parent.filterLabel"-->
+                                   <!--theme="bootstrap"-->
+                                   <!--tabindex="13"-->
+                                   <!--name="filterLabel"-->
+                                   <!--title="Escolhe um marcador">-->
+                            <!--<ui-select-match placeholder="Selecione os marcadores...">{{$item.value}}-->
+                            <!--</ui-select-match>-->
+                            <!--<ui-select-choices repeat="label in labels">-->
+                                <!--<div ng-if="label.isTag">{{label.value +' (novo)'}}</div>-->
+                                <!--<div ng-if="!label.isTag">{{label.value + label.isTag}}</div>-->
+                            <!--</ui-select-choices>-->
+                        <!--</ui-select>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
         </div>
     </div>
 </div>

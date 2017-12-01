@@ -10,12 +10,21 @@ FinanceReportListEmbeddedController.$inject = [
     '$state',
     '$q',
     'SweetAlert',
-    '$rootScope'];
+    '$rootScope',
+	'TitleService'];
 
-function FinanceReportListEmbeddedController($scope, FinanceReportService, gumgaController, $state, $q, SweetAlert, $rootScope) {
+function FinanceReportListEmbeddedController($scope, FinanceReportService, gumgaController, $state, $q, SweetAlert, $rootScope, TitleService) {
     gumgaController.createRestMethods($scope, FinanceReportService, 'financeReport');
+	gumgaController.createRestMethods($scope, TitleService, 'title');
     var filters = '',
         variables = [];
+
+	$scope.inicialDate  = new Date();
+	$scope.finalDate    = new Date();
+	$scope.statusList   = ['Todos','Aberto', 'Pago', 'Estornado', 'Amortizado'];
+	$scope.status       = $scope.statusList[0];
+	$scope.filterClient = null;
+	console.log($scope.filterClient);
 
     $scope.financeReport.methods.get = function (page) {
         FinanceReportService.getByType(page, $scope.type).then(function (data) {
@@ -32,6 +41,18 @@ function FinanceReportListEmbeddedController($scope, FinanceReportService, gumga
     FinanceReportService.getReportType().then(function (data) {
         $scope.reportType = data.data;
     });
+
+	// $scope.labels = [];
+	// TitleService.getLabels()
+	// 	.then((response) => {$scope.labels = response.data.values},
+     //          (error) => {console.error(error.data)});
+	//
+	// $scope.labelTransform = function (newLabel) {
+	// 	var label = {
+	// 		value: newLabel
+	// 	};
+	// 	return label;
+	// };
 
     $scope.delete = function (entity) {
         if (entity.oi) {
@@ -61,18 +82,47 @@ function FinanceReportListEmbeddedController($scope, FinanceReportService, gumga
 
     $scope.insertReport = function () {
         variables = [];
-        // variables = CompanyService.variablesReport;
-        // $state.go('financereport.insert', {variable: variables, backState: 'financereport.list'});
         $scope.$ctrl.insertReport();
     };
 
     $scope.editReport = function (entity) {
         variables = [];
-        $scope.$ctrl.editReport({$value: entity});
+        $scope.$ctrl.editReport({$value: entity, variables: variables});
     };
 
-    $scope.viewReport = function (entity) {
-        $scope.$ctrl.viewReport({$value: entity, variables: variables});
+	 var mountVariable = (category, name, value) => {
+		const variable = new Stimulsoft.Report.Dictionary.StiVariable();
+		variable.category = category;
+		variable.name = name;
+		variable.alias = name;
+		variable.description = '';
+		variable.value = value;
+		variable.readOnly = true;
+		variable.typeT = String;
+		variable.requestFromUser = false;
+		variable.key = null;
+		variable.allowUseAsSqlParameter = false;
+		return variable;
+	};
+
+	$scope.viewReport = function (entity) {
+        variables.push(mountVariable('', 'inicialDate', $scope.inicialDate));
+		variables.push(mountVariable('', 'finalDate', $scope.finalDate));
+		variables.push(mountVariable('', 'filterClient', $scope.filterClient));
+
+		// console.log($scope.filterLabel[0].value);
+        console.log($scope.filterClient);
+	    $scope.$ctrl.viewReport({$value: entity, variables: variables});
+        //
+        // {content:
+        // '<span ng-if="!$value.titleData.reversed && $value.totalpayed == 0" class="label label-info">' +
+        // '      Aberta</span>' +
+        // '<span ng-if="!$value.titleData.reversed && $value.fullPaid" class="label label-danger">' +
+        // '      Pago</span>' +
+        // '<span ng-if="$value.titleData.reversed" class="label label-danger">' +
+        // '      Estornado</span>' +
+        // '<span ng-if="!$value.titleData.reversed && ($value.totalpayed > 0) && !$value.fullPaid" class="label label-warning">' +
+        // '      Amortizado</span>'}
     };
 
     $scope.copyReport = function (entity) {
