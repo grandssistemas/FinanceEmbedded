@@ -4,6 +4,7 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-content">
                     <div class="row">
+                        <br>
                         <div class="cold-md-6">
                             <div class="col-md-6">
                                 <div class="panel gmd">
@@ -20,35 +21,18 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!--<div class="panel gmd">-->
-                                    <!--<div class="panel-heading cl-light-primary">-->
-                                        <!--Filtros-->
-                                    <!--</div>-->
-                                    <!--<div class="panel-body">-->
-                                        <!--<div class="row">-->
-                                            <!--<div class="col-md-12" ng-if="type === 'PERSON'">-->
-                                                <!--<div ng-include="'/modules/reportpersonfilter/views/personfilters.html'"-->
-                                                     <!--ng-controller="PersonFilterController"></div>-->
-                                            <!--</div>-->
-                                            <!--<div class="col-md-12" ng-if="type === 'SALE'">-->
-                                                <!--<div ng-include="'/modules/reportmovfilter/views/salefilters.html'"-->
-                                                     <!--ng-controller="SaleFilterController"></div>-->
-                                            <!--</div>-->
-                                            <!--<div class="col-md-12" ng-if="type === 'PRODUCT'">-->
-                                                <!--<div ng-include="'/modules/reportproductfilter/views/productfilters.html'"-->
-                                                     <!--ng-controller="ProductFilterController"></div>-->
-                                            <!--</div>-->
-                                            <!--<div class="col-md-12" ng-if="type === 'TAG'">-->
-                                                <!--<div ng-include="'/modules/reportproductfilter/views/tagfilters.html'"-->
-                                                     <!--ng-controller="TagFilterController"></div>-->
-                                            <!--</div>-->
-                                            <!--<div class="col-md-12" ng-if="type === 'CASHCHECKOUT'">-->
-                                                <!--<div ng-include="'/modules/reportpdvfilter/views/cashcheckoutfilters.html'"-->
-                                                     <!--ng-controller="CashCheckoutFilterController"></div>-->
-                                            <!--</div>-->
-                                        <!--</div>-->
-                                    <!--</div>-->
-                                <!--</div>-->
+                                <div class="panel gmd">
+                                    <div class="panel-heading cl-light-primary">
+                                        Filtros
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div ng-if="type === 'RECEIVE_BILL'">
+                                                <div ng-include="'/financereport/views/receivefilters.html'"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="cold-md-6">
