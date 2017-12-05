@@ -202,7 +202,9 @@ function PayEmbeddedController(
             financeUnit: payment.check.financeUnit
         };
         $scope.addPayment(methodPayment, "check");
-        $scope.cheques.data = [];
+
+	    $scope.chequeList    = [];
+        $scope.cheques.data  = [];
         $scope.payment.check = {};
         $scope.payment.check.checks = []
     };
