@@ -82,8 +82,8 @@
                                                                 </div>
                                                                 <div class="col-md-3">
                                                                     <label gumga-translate-tag="cashcheckin.difference"></label><br>
-                                                                    <label class="form-control">{{value.informedValue -
-                                                                        value.movementedValue|currency:'R$'}}</label>
+                                                                    <label class="form-control">{{(value.informedValue -
+                                                                        value.movementedValue) * -1|currency:'R$'}}</label>
                                                                 </div>
                                                                 <div class="col-md-1 m-t-lg">
                                                                     <button type="button" class="inline-block btn-link btn-xs text-primary" ng-click="showMovements(value.financeUnit)"><i class="material-icons">search</i></button>
