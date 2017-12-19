@@ -15,7 +15,8 @@ TitleFormEmbeddedController.$inject = [
 	'FinanceUnitService',
 	'SweetAlert',
 	'MoneyUtilsService',
-	'TitleParcelPayService'];
+	'TitleParcelPayService',
+	'$state'];
 
 function TitleFormEmbeddedController(
 	TitleService,
@@ -31,7 +32,8 @@ function TitleFormEmbeddedController(
 	FinanceUnitService,
 	SweetAlert,
 	MoneyUtils,
-    TitleParcelPayService) {
+    TitleParcelPayService,
+	$state) {
 
 	$scope.entity = angular.copy($scope.$ctrl.entity);
 	$scope.entity.data.parcel.sort((a,b) => {
@@ -61,8 +63,37 @@ function TitleFormEmbeddedController(
 	$scope.step = 1;
 	$scope.interestActive = true;
 
+    $scope.blockBtnSave = (formInvalid) => {
+        return formInvalid;
+    }
 
-	TitleService.getPlanTree()
+    $scope.updatePaid = (invalid) => {
+        if (invalid) {
+            return;
+        }
+        $scope.launchPaid();
+    }
+
+    $scope.update = (invalid, entity) => {
+        if (invalid) {
+            return;
+        }
+        $scope.save(entity);
+    }
+
+    $scope.backToList= () => {
+    	console.log($scope.titleType)
+		var title;
+		if($scope.titleType == 'editreceive'){
+    		title = 'receive'
+		}else {
+			title = 'pay';
+		}
+        $state.go('title.list'+title);
+    }
+
+
+    TitleService.getPlanTree()
 		.then(function (response) {
 			$scope.planTree = response.data.values;
 		});
