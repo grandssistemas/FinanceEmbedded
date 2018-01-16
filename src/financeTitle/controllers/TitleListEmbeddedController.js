@@ -27,6 +27,12 @@ function TitleListEmbeddedController(
         $scope.title.methods.get(1);
     });
 
+
+    $scope.verdata = (valor) => {
+        $scope.openPrintings(valor.id)
+        console.log(valor)
+    }
+
     $scope.title.methods.get = function (page) {
         $scope.currentPage = page;
         TitleService.findTitleWithParticipations($scope.titleType.toUpperCase(), page).then(function (response) {
@@ -145,13 +151,8 @@ function TitleListEmbeddedController(
                 name: 'btns',
                 title: ' ',
                 content: `
-                <div style="display:inline-block;width:100px">
+                <div style="display:inline-block;">
                     <span>
-                        <a uib-tooltip="{{$value.hasPayment || $value.fullPaid || $value.isReversed ? \'Visualzar\'  : \'Editar\'}}" 
-                           ng-click="$parent.$parent.goEdit($value.titleType, $value.id, $value.hasPayment)" 
-                           class="btn btn-primary btn-sm">                               
-                            <i class="{{$value.hasPayment || $value.fullPaid  || $value.isReversed ? \'glyphicon glyphicon-eye-open\' : \'glyphicon glyphicon-pencil\'}}"></i>
-                        </a>
                         &nbsp;&nbsp;
                         <a uib-tooltip="Renegociar" 
                            ng-show="!$value.fullPaid && $value.isRenegotiate" 
@@ -160,13 +161,7 @@ function TitleListEmbeddedController(
                            ng-click="$parent.$parent.replacement($value, $value.fullPaid)">
                             <i class="fa fa-share-square-o"></i>
                         </a>
-                    </span>                                                         
-                    <span>
-                        <a uib-tooltip="Impressões" ng-click="$parent.$parent.openPrintings($value.id)" class="btn btn-default btn-sm">
-                            <i class="fa fa-print"></i>
-                        </a>
-                        &nbsp;&nbsp;
-                    </span>                         
+                    </span>                                                                         
                 </div>
                 <span ng-if="!$value.isReversed && $value.replacedBy" class="label label-warning">Renegociado</span>
                 <span ng-if="$value.isReversed" class="label label-danger">Estornado</span>
@@ -174,7 +169,7 @@ function TitleListEmbeddedController(
                 <span ng-if="!$value.isReversed && $value.fullPaid && $value.titleType == \'RECEIVE\'" class="label label-success">Recebido</span>
                 <span ng-if="!$value.isReversed && $value.fullPaid && $value.titleType == \'PAY\'" class="label label-success">Pago</span>
                 <span ng-if="!$value.isReversed && !$value.hasRatio" class="glyphicon glyphicon-info-sign pull-right" uib-tooltip=\'Sem Rateio\' tooltip-placement=\'left\'></span>`,
-                size: 'col-md-4'
+                size: 'col-md-3'
             }]
     };
 
