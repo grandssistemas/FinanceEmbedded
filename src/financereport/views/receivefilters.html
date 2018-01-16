@@ -1,0 +1,46 @@
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="row">
+            <div class="row">
+                <div class="col-md-3" style="margin-left: 25px">
+                    <label>Data Inicial</label><br/>
+                    <gumga-date ng-model="$parent.$parent.inicialDate"
+                                name="inicialDate"></gumga-date>
+                </div>
+                <div class="col-md-3">
+                    <label>Data Final</label><br/>
+                    <gumga-date ng-model="$parent.$parent.finalDate"
+                                name="finalDate"></gumga-date>
+                </div>
+                <div class="col-md-5" style="margin-top: 25px">
+                    <gmd-input>
+                        <input type="text" class="form-control gmd" autocomplete="false" ng-model="$parent.$parent.$parent.$parent.filterClient" id="filterClient">
+                        <span class="bar"></span>
+                        <label class="control-label">Cliente</label>
+                    </gmd-input>
+                </div>
+            </div>
+            <!--<div class="row">-->
+                <!--{{$parent.filterLabel}}-->
+                <!--<div class="col-md-6" style="margin-left: 25px">-->
+                    <!--<div gumga-form-class="labels">-->
+                        <!--<label for="labels" gumga-translate-tag="title.labels">Marcadores</label>-->
+                        <!--<ui-select multiple tagging="labelTransform" tagging-tokens=",|/" id="labels"-->
+                                   <!--ng-model="$parent.$parent.$parent.filterLabel"-->
+                                   <!--theme="bootstrap"-->
+                                   <!--tabindex="13"-->
+                                   <!--name="filterLabel"-->
+                                   <!--title="Escolhe um marcador">-->
+                            <!--<ui-select-match placeholder="Selecione os marcadores...">{{$item.value}}-->
+                            <!--</ui-select-match>-->
+                            <!--<ui-select-choices repeat="label in labels">-->
+                                <!--<div ng-if="label.isTag">{{label.value +' (novo)'}}</div>-->
+                                <!--<div ng-if="!label.isTag">{{label.value + label.isTag}}</div>-->
+                            <!--</ui-select-choices>-->
+                        <!--</ui-select>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        </div>
+    </div>
+</div>

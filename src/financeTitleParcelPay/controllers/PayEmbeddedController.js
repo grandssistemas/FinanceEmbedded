@@ -60,13 +60,6 @@ function PayEmbeddedController(
     gumgaController.createRestMethods($scope, IndividualCreditService, 'individualCredit');
 
     gumgaController.createRestMethods($scope, FinanceUnitService, 'financeunit');
-    FinanceUnitService.resetDefaultState();
-
-    // $scope.onSelectChequePortfolio = (value) => {
-		// ChequePortfolioService.getById(value.id).then((data) => {
-		//     $scope.payment.check.financeUnit.cheques = data.data.cheques;
-		// })
-    // }
 
     $scope.getPersonalCredits = function (params) {
         return IndividualCreditService.getSearch('name', params).then(function (data) {
@@ -110,7 +103,7 @@ function PayEmbeddedController(
 	    id = id || 0;
 
 	    param = param || '';
-	    return ThirdPartyChequeService.getAdvancedSearch("lower(obj.issuer.name) like lower('%"+param+"%') and obj.portfolio.id = "+id)
+	    return ThirdPartyChequeService.getAdvancedSearch("lower(obj.issuer.name) like lower('%"+param+"%') and obj.portfolio.id = "+id+" and obj.status = 'AVAILABLE'")
             .then((data) => {
 	            $scope.chequeList = data.data.values;
             } );
@@ -199,6 +192,7 @@ function PayEmbeddedController(
     };
     // Adicionar pagamento de cheque terceiro
     $scope.addPaymentCheck = function (payment) {
+        console.log(payment)
         var methodPayment = {
             historic: "Cheque Terceiro",
             method: "check",
@@ -208,7 +202,9 @@ function PayEmbeddedController(
             financeUnit: payment.check.financeUnit
         };
         $scope.addPayment(methodPayment, "check");
-        $scope.cheques.data = [];
+
+	    $scope.chequeList    = [];
+        $scope.cheques.data  = [];
         $scope.payment.check = {};
         $scope.payment.check.checks = []
     };
@@ -491,8 +487,8 @@ function PayEmbeddedController(
             });
 
         if ($scope.itemsSelected.length > 0) {
-            $scope.itemsSelected.forEach(function (data) {
-                data.status = "UNAVAILABLE";
+            $scope.itemsSelected.forEach((data) => {
+                data.status = "PASSED_ALONG";
                 $scope.thirdpartycheque.methods.put(data)
             })
         }
@@ -529,7 +525,7 @@ function PayEmbeddedController(
     $scope.selectAllText = function(id){
         document.getElementById(id).focus();
         document.getElementById(id).select();
-    }
+    };
 
     $scope.back = function(){
         $scope.$ctrl.onBackClick();
@@ -603,6 +599,13 @@ function PayEmbeddedController(
     function getDiscountPerc(value, discount) {
         return PercentageFinanceUtilsService.divide6(discount, value.value);
     }
+
+    $scope.getFinanceUnits = (param, name) => {
+        return FinanceUnitService.findByOpenUnitGroup(name).then(data => {
+            $scope.financeunit.data = data.data.values;
+            return data.data.values;
+        });
+    };
 
 }
 

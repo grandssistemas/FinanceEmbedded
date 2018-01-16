@@ -21,16 +21,21 @@
                             <div class="col-md-9">
                                 <label gumga-translate-tag="titleparcelreceive.receipt">receipt</label><br/>
                                 <label gumga-translate-tag="titleparcelreceive.money" class="btn btn-primary gmd raised"
-                                       ng-model="payment.method" uib-btn-radio="'money'" ng-click="setarfocusPayment('money')">money</label>
+                                       ng-model="payment.method" uib-btn-radio="'money'" ng-click="setarfocusPayment('money')"
+                                       ng-disabled="lastReceive <= 0">money</label>
                                 <label gumga-translate-tag="titleparcelreceive.check" class="btn btn-primary gmd raised"
-                                       ng-model="payment.method" uib-btn-radio="'thirdCheck'" ng-click="setarfocusPayment('check')">check</label>
+                                       ng-model="payment.method" uib-btn-radio="'thirdCheck'" ng-click="setarfocusPayment('check')"
+                                       ng-disabled="lastReceive <= 0">check</label>
                                 <label gumga-translate-tag="titleparcelreceive.bank" class="btn btn-primary gmd raised"
-                                       ng-model="payment.method" uib-btn-radio="'tedDoc'" ng-click="setarfocusPayment('bank')">bank</label>
+                                       ng-model="payment.method" uib-btn-radio="'tedDoc'" ng-click="setarfocusPayment('bank')"
+                                       ng-disabled="lastReceive <= 0">bank</label>
                                 <label gumga-translate-tag="titleparcelreceive.card" class="btn btn-primary gmd raised"
-                                       ng-model="payment.method" uib-btn-radio="'card'" ng-click="setarfocusPayment('card')">card</label>
+                                       ng-model="payment.method" uib-btn-radio="'card'" ng-click="setarfocusPayment('card')"
+                                       ng-disabled="lastReceive <= 0">card</label>
                                 <label class="btn btn-primary gmd raised" ng-model="payment.method" uib-btn-radio="'credit'"
                                        gumga-translate-tag="titleparcel.credit"
-                                       ng-if="showMenuPersonalCredit" ng-click="setarfocusPayment('credit')">credit</label>
+                                       ng-if="showMenuPersonalCredit" ng-click="setarfocusPayment('credit')"
+                                       ng-disabled="lastReceive <= 0">credit</label>
                             </div>
                             <div class="col-md-3">
                                 <label gumga-translate-tag="titleparcelreceive.date">date</label><br/>
@@ -46,7 +51,7 @@
                                     <label gumga-translate-tag="titleparcelreceive.financeunit">financeunit</label><br/>
                                     <gumga-many-to-one
                                             value="payment.money.financeUnit"
-                                            search-method="localcash.methods.asyncSearch('name', param)"
+                                            search-method="getFinanceUnits('name', param)"
                                             field="name"
                                             authorize-add="false"
                                             id="paymentMoneyFinanceunit">

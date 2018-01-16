@@ -454,8 +454,13 @@ function TitleFormEmbeddedController(TitleService,
         var valueRemainingCalculateReceive = parseFloat((valueParcel - (valueParcelReceive * numberParcel)).toFixed(2));
         $scope.title.data.parcel = [];
 
-        var expiration = new Date($scope.title.data.expiration);
-        for (var i = 0; i < $scope.title.data.numberParcel; i++) {
+		if ((valueParcel / numberParcel) < 0.01){
+			SweetAlert.swal("Atenção!", "O valor das parcelas não deve ser menor que R$ 0,01 centavo", "warning");
+			$scope.title.data.numberParcel = 0;
+		}
+
+		var expiration = new Date($scope.title.data.expiration);
+		for (var i = 0; i < $scope.title.data.numberParcel; i++) {
 
             if ($scope.titleType === "pay" || $scope.titleType === "editpay") {
                 var currentParcel = {

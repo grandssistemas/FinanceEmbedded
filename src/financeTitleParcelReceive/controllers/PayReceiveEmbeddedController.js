@@ -127,7 +127,6 @@ function PayReceiveEmbeddedController(FinanceConfigurationService,
 
     function getInterestValue(value, expiredDays) {
         const interest = value.interest.value;
-        console.log(interest)
         if (expiredDays) {
             return MoneyUtilsService.divideMoney(
                     MoneyUtilsService.multiplyMoney(
@@ -155,7 +154,6 @@ function PayReceiveEmbeddedController(FinanceConfigurationService,
         let interestValue = getInterestValue(row, expiredDays);
         let penaltyValue = getPenaltyValue(row, expiredDays);
         let discountValue = getDiscountValue(row);
-        console.log(interestValue, penaltyValue, discountValue, row.value, row.totalpayed);
         const value = MoneyUtilsService.sumMoney(row.value,
             MoneyUtilsService.sumMoney(interestValue,
                 MoneyUtilsService.sumMoney(penaltyValue, -discountValue)));
@@ -496,6 +494,13 @@ function PayReceiveEmbeddedController(FinanceConfigurationService,
 
     $scope.back = function () {
         $scope.$ctrl.onMakePayment();
+    };
+
+    $scope.getFinanceUnits = (param, name) => {
+        return FinanceUnitService.findByOpenUnitGroup(name).then(data => {
+            $scope.financeunit.data = data.data.values;
+            return data.data.values;
+        });
     };
 
 }
