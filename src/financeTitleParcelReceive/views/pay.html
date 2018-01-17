@@ -70,7 +70,9 @@
                             </div>
                             <div class="col-md-1 m-t-md">
                                 <label style="height: 0;">&nbsp;</label>
-                                <button class="btn gmd fab btn-success btn-sm" ng-click="addReceiveMoney(payment)">
+                                <button class="btn gmd fab btn-success btn-sm"
+                                        ng-click="addReceiveMoney(payment)"
+                                        ng-disabled="!payment.value || payment.value == 0">
                                     <i class="material-icons">add</i>
                                 </button>
                             </div>

@@ -24,7 +24,6 @@ function FinanceReportListEmbeddedController($scope, FinanceReportService, gumga
 	$scope.statusList   = ['Todos','Aberto', 'Pago', 'Estornado', 'Amortizado'];
 	$scope.status       = $scope.statusList[0];
 	$scope.filterClient = null;
-	console.log($scope.filterClient);
 
     $scope.financeReport.methods.get = function (page) {
         FinanceReportService.getByType(page, $scope.type).then(function (data) {
@@ -38,8 +37,10 @@ function FinanceReportListEmbeddedController($scope, FinanceReportService, gumga
     $scope.financeReport.execute('reset');
     $scope.financeReport.execute('get');
 
-    FinanceReportService.getReportType().then(function (data) {
-        $scope.reportType = data.data;
+    FinanceReportService.getReportType().then((data) => {
+        const newData = {label: "Todos"};
+	    $scope.reportType = data.data;
+	    $scope.reportType.splice(0,0,newData);
     });
 
 	// $scope.labels = [];
@@ -111,7 +112,7 @@ function FinanceReportListEmbeddedController($scope, FinanceReportService, gumga
 		variables.push(mountVariable('', 'filterClient', $scope.filterClient));
 
 		// console.log($scope.filterLabel[0].value);
-        console.log($scope.filterClient);
+		// console.log($scope.filterClient);
 	    $scope.$ctrl.viewReport({$value: entity, variables: variables});
         //
         // {content:

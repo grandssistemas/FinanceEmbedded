@@ -1,10 +1,6 @@
 <div class="row">
     <div class="col-md-12">
         <div class="col-md-3">
-            <a ng-click="goInsert()" class="btn btn-primary">
-                <i class="fa fa-plus"></i>
-                <span gumga-translate-tag="formbuttons.new{{titleType}}"> New </span>
-            </a>
             <a ng-click="print(titleType)" class="btn btn-default" ng-show="titleType == 'receive'">
                 <i class="fa fa-printer"></i>
                 <span gumga-translate-tag="formbuttons.printreport"> Print Report</span>
@@ -44,4 +40,34 @@
                 on-page-change="title.methods.get(page, pageSize)">
     </gumga-list>
 </div>
+
+
+<gmd-fab force-click="false" fixed opened="selectedValues.length > 0">
+    <button class="bg-accent gmd-ripple" ng-click="goInsert()" ng-if="selectedValues.length == 0">
+        <span class="material-icons">add</span>
+    </button>
+    <button class="bg-accent" ng-if="selectedValues.length > 0">
+        <span class="material-icons">menu</span>
+    </button>
+    <ul>
+        <li class="btn-info"
+            ng-click="openPrintings(selectedValues[0].id)"
+            ng-class="{'gmd-invisible' : selectedValues.length == 0}">
+            <span>Imprimir</span>
+            <i class="material-icons gmd-ripple">print</i>
+        </li>
+        <li class="btn-warning"
+            ng-click="goEdit(selectedValues[0].titleType, selectedValues[0].id, selectedValues[0].hasPayment)"
+            ng-class="{'gmd-invisible' : selectedValues.length == 0}">
+            <span>{{selectedValues[0].hasPayment || selectedValues[0].fullPaid || selectedValues[0].isReversed ? 'Visualizar'  : 'Editar'}}</span>
+            <i class="material-icons gmd-ripple">{{selectedValues[0].hasPayment || selectedValues[0].fullPaid || selectedValues[0].isReversed ? 'remove_red_eye'  : 'edit'}}</i>
+        </li>
+        <li class="btn-primary"
+            ui-sref="individual.insert"
+            ng-class="{'gmd-invisible' : selectedValues.length == 0}">
+            <span>Novo</span>
+            <i class="material-icons gmd-ripple">add</i>
+        </li>
+    </ul>
+</gmd-fab>
 
