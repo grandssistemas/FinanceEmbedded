@@ -27,11 +27,9 @@ function TitleListEmbeddedController(
         $scope.title.methods.get(1);
     });
 
-
     $scope.verdata = (valor) => {
         $scope.openPrintings(valor.id)
-        console.log(valor)
-    }
+    };
 
     $scope.title.methods.get = function (page) {
         $scope.currentPage = page;
@@ -77,7 +75,6 @@ function TitleListEmbeddedController(
         });
 
     $scope.buscaTag = function (param) {
-
         var search = "searchFields=value&q=" + param;
         return TitleService.searchLabels(search).then(function (response) {
             $scope.labels = response.data.values
@@ -85,7 +82,6 @@ function TitleListEmbeddedController(
     };
 
     $scope.selectLabel = function (label) {
-        // $scope.selected = angular.copy(label);
         $scope.selected.labels.clear();
         $scope.selected.labels[0] = label;
 
@@ -100,9 +96,7 @@ function TitleListEmbeddedController(
 
     $scope.titleList = [];
 
-    $scope.isParcial = function (idTitle, typeTitle) {
         //TODO
-    };
 
     $scope.tableConf = {
         columns: 'titleType, issuedAt,documentNumber, participationsFormatted, expiration, docname, value, btns',
@@ -185,7 +179,7 @@ function TitleListEmbeddedController(
                 }
             }
         });
-    }
+    };
 
     $scope.goInsert = function () {
         $scope.$ctrl.onNewTitle({type: $scope.$ctrl.titleType});
@@ -236,29 +230,29 @@ function TitleListEmbeddedController(
             }
         });
 
-        if(!result)
-            parcels.forEach(function (parcel) {
-                if(!result){
-                    result = parcel;
-                }else{
-                    let dateIndex = new Date(parcel);
-                    let dateResult = new Date(result);
-                    if(dateResult > dateIndex){
-                        result = dateIndex;
-                    }
-                }
-            });
+        if(!result) {
+	        parcels.forEach(function (parcel) {
+		        if (!result) {
+			        result = parcel;
+		        } else {
+			        let dateIndex = new Date(parcel);
+			        let dateResult = new Date(result);
+			        if (dateResult > dateIndex) {
+				        result = dateIndex;
+			        }
+		        }
+	        });
+        }
 
         return result.expiration;
     };
 
     $scope.print = function(type){
-        // console.log(type);
         var typePrint = type === 'receive'? 'RECEIVE_BILL':null;
         FinanceReportService.openModalViewer(typePrint,'',[],()=>{
             SweetAlert.swal("Falta de Relatorio de contas a receber", "Você esta sem o relátorio de contas a receber contate o suporte.", "warning");
         })
     };
-};
+}
 
 module.exports =  TitleListEmbeddedController;
