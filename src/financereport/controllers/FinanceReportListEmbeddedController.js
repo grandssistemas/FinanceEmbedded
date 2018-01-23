@@ -111,8 +111,6 @@ function FinanceReportListEmbeddedController($scope, FinanceReportService, gumga
 		variables.push(mountVariable('', 'finalDate', $scope.finalDate));
 		variables.push(mountVariable('', 'filterClient', $scope.filterClient));
 
-		// console.log($scope.filterLabel[0].value);
-		// console.log($scope.filterClient);
 	    $scope.$ctrl.viewReport({$value: entity, variables: variables});
         //
         // {content:
