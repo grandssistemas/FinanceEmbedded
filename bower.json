@@ -11,7 +11,7 @@
     "moment-timezone": "0.5.11",
     "remarkable-bootstrap-notify": "latest",
     "angular-locale-pt-br": "1.3.15",
-    "gumga-rest": "1.7.1",
+    "gumga-rest-ng": "1.7.1",
     "gumga-controller-ng": "1.10.0",
     "gumga-alert-ng": "1.0.5",
     "gumga-web-storage-ng": "1.1.0",
