@@ -16,7 +16,6 @@ TitleFormEmbeddedController.$inject = [
     'SweetAlert',
     'MoneyUtilsService',
     'TitleParcelPayService',
-    'PlanService',
     '$state'];
 
 function TitleFormEmbeddedController(TitleService,
@@ -33,7 +32,6 @@ function TitleFormEmbeddedController(TitleService,
                                      SweetAlert,
                                      MoneyUtils,
                                      TitleParcelPayService,
-                                     PlanService,
                                      $state) {
 
     $scope.entity = angular.copy($scope.$ctrl.entity);
@@ -48,7 +46,7 @@ function TitleFormEmbeddedController(TitleService,
     gumgaController.createRestMethods($scope, PlanLeafService, 'planLeaf');
     gumgaController.createRestMethods($scope, WalletService, 'wallet');
     gumgaController.createRestMethods($scope, TitleService, 'title');
-    gumgaController.createRestMethods($scope, PlanService, 'plan');
+
 
     $scope.documentType.methods.search('name', '');
     $scope.financeunit.methods.search('name', '');
@@ -68,38 +66,37 @@ function TitleFormEmbeddedController(TitleService,
 
     $scope.blockBtnSave = (formInvalid) => {
         return formInvalid;
-    }
+    };
 
     $scope.updatePaid = (invalid) => {
         if (invalid) {
             return;
         }
         $scope.launchPaid();
-    }
+    };
 
     $scope.update = (invalid, entity) => {
         if (invalid) {
             return;
         }
-        console.log(entity)
         $scope.save(entity);
-    }
+    };
 
     $scope.backToList = () => {
         var title;
-        if ($scope.titleType == 'editreceive') {
+        if ($scope.titleType === 'editreceive') {
             title = 'receive'
         } else {
             title = 'pay';
         }
         $state.go('title.list' + title);
-    }
+    };
 
     $scope.ratioPlanSearch = (param) => {
         param = param || '';
-        var search = $scope.ratioPlan.methods.asyncSearchWithGQuery(new GQuery(new Criteria('obj.name', ComparisonOperator.CONTAINS, param).addTranslate().addIgnoreCase()))
+        var search = $scope.ratioPlan.methods.asyncSearchWithGQuery(new GQuery(new Criteria('obj.name', ComparisonOperator.CONTAINS, param).addTranslate().addIgnoreCase()));
         return search
-    }
+    };
 
     TitleService.getPlanTree()
         .then(function (response) {
@@ -143,18 +140,15 @@ function TitleFormEmbeddedController(TitleService,
         }
     };
 
-
-
     $scope.automaticRatio = function (value) {
         $scope.planTree[0] = value.plan;
         var total = $scope.sumParcels($scope.title.data.parcel);
         if(value.label && value){
         RatioPlanService.getAutomaticRatio(value.label, total)
             .then(function (response) {
-                console.log(response.data)
                 $scope.title.data.planLeafs = response.data;
             });
-    }
+        }
     };
 
     $scope.disable = false;
@@ -190,7 +184,6 @@ function TitleFormEmbeddedController(TitleService,
         return PlanLeafService.getAdvancedSearch(search).then(function (data) {
             $scope.selectArrays[plan.type.id] = data.data.values;
         })
-
     };
 
     $scope.checkSubPlanLeafs = function (account) {
@@ -699,7 +692,6 @@ function TitleFormEmbeddedController(TitleService,
             }
         });
     }
-    ;
 
     $scope.showBarCodeTitle = function () {
         return ($scope.title.data.titleType == 'PAY');
