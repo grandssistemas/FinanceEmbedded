@@ -241,9 +241,9 @@ function TitleFormEmbeddedController(TitleService,
     $scope.title.data.memo = $scope.title.data.memo || $scope.$ctrl.voice || "";   // Colocando o parametro da voz no campo de historico //
     $scope.title.data.parcelpenalty = $scope.title.data.parcelpenalty || 0;
     $scope.title.data.parcelinterest = $scope.title.data.parcelinterest || 0;
-    $scope.title.data.expiration = $scope.title.data.expiration ? moment.tz(params.expiration, "America/Sao_Paulo").toDate() : new Date();
+	$scope.title.data.expiration = $scope.title.data.expiration || new Date();
 
-    if ($scope.title.data.titleType === 'PAY')
+    if ($scope.title.data.titleType === 'PAY' && $scope.title.data.parcel[0])
         $scope.title.data.value = $scope.title.data.parcel[0].value;
 
     $scope.calculatedInterest = function () {
@@ -259,6 +259,9 @@ function TitleFormEmbeddedController(TitleService,
         $scope.title.data.emissionDate = new Date($scope.title.data.emissionDate) || new Date();
     }
 
+	$scope.verifyParcelDate = (parcel) => {
+        $scope.dateNull = !parcel.expiration || parcel.expiration === null;
+    };
 
     if ($scope.title.data.hasPayment || $scope.title.data.fullPaid || $scope.title.data.isReversed) {
         $scope.disable = true;
