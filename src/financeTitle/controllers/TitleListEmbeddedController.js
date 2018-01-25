@@ -218,7 +218,13 @@ function TitleListEmbeddedController(
 
     $scope.getNextParcelExpiration = function(parcels){
         let result;
+
+        if (parcels.length < 1){
+            return null;
+        }
+
         parcels.forEach(function (parcel) {
+
             if(!result && !parcel.fullPaid){
                 result = parcel;
             }else if(!parcel.fullPaid){
@@ -243,7 +249,6 @@ function TitleListEmbeddedController(
 		        }
 	        });
         }
-
         return result.expiration;
     };
 

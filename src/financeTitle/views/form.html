@@ -383,7 +383,8 @@
                                                         <div class="col-md-4" style="margin-top: 20px">
                                                             <gumga-date ng-model="parcel.expiration"
                                                                         name="expirationParcel{{$index}}"
-                                                                        ng-disabled="disableParcel(parcel)"></gumga-date>
+                                                                        ng-disabled="disableParcel(parcel)"
+                                                                        ng-keyup="verifyParcelDate(parcel)"></gumga-date>
                                                         </div>
                                                         <div class="col-md-3" style="margin-left: -30px;">
                                                             <gmd-input>
@@ -643,8 +644,8 @@
                     <button class="bg-accent gmd-ripple"
                             type="button"
                             gumga-button
-                            ng-class="{ 'gmd-disabled' : blockBtnSave(TitleForm.$invalid)}"
-                            ng-click="update(blockBtnSave(TitleForm.$invalid), title.data)">
+                            ng-class="{ 'gmd-disabled' : blockBtnSave(TitleForm.$invalid || dateNull)}"
+                            ng-click="update(blockBtnSave(TitleForm.$invalid || dateNull), title.data)">
                         <span class="material-icons">check</span>
                     </button>
                     <ul>
@@ -653,7 +654,7 @@
                             <i class="material-icons gmd-ripple">keyboard_backspace</i>
                         </li>
                         <li class="info bg-accent"
-                            ng-class="{ 'gmd-disabled' : blockBtnSave(TitleForm.$invalid)}"
+                            ng-class="{ 'gmd-disabled' : blockBtnSave(TitleForm.$invalid || dateNull)}"
                             ng-click="updatePaid(blockBtnSave(TitleForm.$invalid))">
                             <span>Lançar Pago</span>
                             <i class="material-icons gmd-ripple">save</i>
