@@ -21,7 +21,12 @@ function TitleListEmbeddedController(
     $scope.participation = "";
     $scope.currentPage = 1;
 
-    $scope.titleType = $scope.$ctrl.titleType;
+
+
+    $scope.$ctrl.$onInit = () => {
+        $scope.titleType = $scope.$ctrl.titleType;
+        $scope.title.methods.get($scope.currentPage);
+    }
 
     $scope.title.on('deleteSuccess', function () {
         $scope.title.methods.get(1);
@@ -33,7 +38,7 @@ function TitleListEmbeddedController(
 
     $scope.title.methods.get = function (page) {
         $scope.currentPage = page;
-        TitleService.findTitleWithParticipations($scope.titleType.toUpperCase(), page).then(function (response) {
+        TitleService.findTitleWithParticipations(($scope.titleType||"").toUpperCase(), page).then(function (response) {
             $scope.title.data = response.data.values;
             $scope.title.count = response.data.count;
             $scope.title.pageSize = response.data.pageSize;
@@ -47,14 +52,14 @@ function TitleListEmbeddedController(
         }
 
         var aq = "obj." + field + " like '" + param + "'";
-        TitleService.findTitleWithParticipations($scope.titleType.toUpperCase(), 1, aq).then(function (data) {
+        TitleService.findTitleWithParticipations(($scope.titleType||"").toUpperCase(), 1, aq).then(function (data) {
             $scope.title.data = data.data.values;
             $scope.title.count = data.data.count;
             $scope.title.pageSize = data.data.pageSize;
         })
     };
 
-    $scope.title.methods.get($scope.currentPage);
+
 
     $scope.buscaParticipations = function (participation) {
         if (participation === "") {
@@ -85,7 +90,7 @@ function TitleListEmbeddedController(
         $scope.selected.labels.clear();
         $scope.selected.labels[0] = label;
 
-        TitleService.searchTags(label.value, $scope.titleType.toUpperCase()).then(function (response) {
+        TitleService.searchTags(label.value, ($scope.titleType||"").toUpperCase()).then(function (response) {
             $scope.title.data = response.data.values
         })
     };
@@ -95,8 +100,6 @@ function TitleListEmbeddedController(
     };
 
     $scope.titleList = [];
-
-        //TODO
 
     $scope.tableConf = {
         columns: 'titleType, issuedAt,documentNumber, participationsFormatted, expiration, docname, value, btns',

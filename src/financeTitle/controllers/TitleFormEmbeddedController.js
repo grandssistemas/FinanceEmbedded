@@ -34,10 +34,8 @@ function TitleFormEmbeddedController(TitleService,
                                      TitleParcelPayService,
                                      $state) {
 
-    $scope.entity = angular.copy($scope.$ctrl.entity);
-    $scope.entity.data.parcel.sort((a, b) => {
-        return a.number - b.number;
-    });
+
+
 
     gumgaController.createRestMethods($scope, DocumentTypeService, 'documentType');
     gumgaController.createRestMethods($scope, FinanceUnitService, 'financeunit');
@@ -47,6 +45,16 @@ function TitleFormEmbeddedController(TitleService,
     gumgaController.createRestMethods($scope, WalletService, 'wallet');
     gumgaController.createRestMethods($scope, TitleService, 'title');
 
+    $scope.$ctrl.$onInit = () => {
+        console.log($scope.$ctrl);
+        console.log(angular.copy($scope.$ctrl));
+    }
+
+
+
+    $scope.entity.data.parcel.sort((a, b) => {
+        return a.number - b.number;
+    });
 
     $scope.documentType.methods.search('name', '');
     $scope.financeunit.methods.search('name', '');
@@ -101,7 +109,7 @@ function TitleFormEmbeddedController(TitleService,
     TitleService.getPlanTree()
         .then(function (response) {
             $scope.planTree = response.data.values;
-    });
+        });
 
     $scope.postDocType = function (value) {
         return DocumentTypeService.save(value);
@@ -143,11 +151,11 @@ function TitleFormEmbeddedController(TitleService,
     $scope.automaticRatio = function (value) {
         $scope.planTree[0] = value.plan;
         var total = $scope.sumParcels($scope.title.data.parcel);
-        if(value.label && value){
-        RatioPlanService.getAutomaticRatio(value.label, total)
-            .then(function (response) {
-                $scope.title.data.planLeafs = response.data;
-            });
+        if (value.label && value) {
+            RatioPlanService.getAutomaticRatio(value.label, total)
+                .then(function (response) {
+                    $scope.title.data.planLeafs = response.data;
+                });
         }
     };
 
@@ -241,7 +249,7 @@ function TitleFormEmbeddedController(TitleService,
     $scope.title.data.memo = $scope.title.data.memo || $scope.$ctrl.voice || "";   // Colocando o parametro da voz no campo de historico //
     $scope.title.data.parcelpenalty = $scope.title.data.parcelpenalty || 0;
     $scope.title.data.parcelinterest = $scope.title.data.parcelinterest || 0;
-	$scope.title.data.expiration = $scope.title.data.expiration || new Date();
+    $scope.title.data.expiration = $scope.title.data.expiration || new Date();
 
     if ($scope.title.data.titleType === 'PAY' && $scope.title.data.parcel[0])
         $scope.title.data.value = $scope.title.data.parcel[0].value;
@@ -259,7 +267,7 @@ function TitleFormEmbeddedController(TitleService,
         $scope.title.data.emissionDate = new Date($scope.title.data.emissionDate) || new Date();
     }
 
-	$scope.verifyParcelDate = (parcel) => {
+    $scope.verifyParcelDate = (parcel) => {
         $scope.dateNull = !parcel.expiration || parcel.expiration === null;
     };
 
@@ -450,13 +458,13 @@ function TitleFormEmbeddedController(TitleService,
         var valueRemainingCalculateReceive = parseFloat((valueParcel - (valueParcelReceive * numberParcel)).toFixed(2));
         $scope.title.data.parcel = [];
 
-		if ((valueParcel / numberParcel) < 0.01){
-			SweetAlert.swal("Atenção!", "O valor das parcelas não deve ser menor que R$ 0,01 centavo", "warning");
-			$scope.title.data.numberParcel = 0;
-		}
+        if ((valueParcel / numberParcel) < 0.01) {
+            SweetAlert.swal("Atenção!", "O valor das parcelas não deve ser menor que R$ 0,01 centavo", "warning");
+            $scope.title.data.numberParcel = 0;
+        }
 
-		var expiration = new Date($scope.title.data.expiration);
-		for (var i = 0; i < $scope.title.data.numberParcel; i++) {
+        var expiration = new Date($scope.title.data.expiration);
+        for (var i = 0; i < $scope.title.data.numberParcel; i++) {
 
             if ($scope.titleType === "pay" || $scope.titleType === "editpay") {
                 var currentParcel = {
