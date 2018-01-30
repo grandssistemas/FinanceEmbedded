@@ -45,12 +45,7 @@ function TitleFormEmbeddedController(TitleService,
     gumgaController.createRestMethods($scope, WalletService, 'wallet');
     gumgaController.createRestMethods($scope, TitleService, 'title');
 
-    $scope.$ctrl.$onInit = () => {
-        console.log($scope.$ctrl);
-        console.log(angular.copy($scope.$ctrl));
-    }
-
-
+    $scope.entity = angular.copy($scope.$ctrl.entity);
 
     $scope.entity.data.parcel.sort((a, b) => {
         return a.number - b.number;
