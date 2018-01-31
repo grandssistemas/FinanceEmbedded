@@ -21,12 +21,15 @@ function TitleParcelPayListEmbeddedController(
 
     TitleParcelPayService.resetDefaultState();
     IndividualEmbeddedService.resetDefaultState();
-    
+
+	$scope.beginDate = new Date();
     $scope.endDate = new Date();
     $scope.paidOut = false;
     $scope.containsFullPaid = false;
     $scope.lastClicked = null;
     $scope.gQueryFilters = null;
+	$scope.increase = 0;
+	$scope.total = 0;
 
     $scope.$watch('individualSearch', function (individual) {
         $scope.individualSearch = individual;
@@ -64,7 +67,7 @@ function TitleParcelPayListEmbeddedController(
                 break;
             }
             case 'custom':{
-                beginDate = moment($scope.endDate).format('YYYY-MM-DD') + " 00:00:00";
+                beginDate = moment($scope.beginDate).format('YYYY-MM-DD') + " 00:00:00";
                 endDate =  moment($scope.endDate).format('YYYY-MM-DD') + " 23:59:59";
                 break;
             }
@@ -166,10 +169,8 @@ function TitleParcelPayListEmbeddedController(
         columns: 'documentNumber, parcel, individual, expiration, amount, calculedInterest, calculedPenalty, valuePay, value, status',
         checkbox: true,
         selection: 'multi',
-        // sortDefault: 'expiration',
         materialTheme: true,
         itemsPerPage: [5, 10, 25, 50, 100],
-        title:'Listagem de Pagar Títulos',
         columnsConfig: [
             {
                 name: 'documentNumber',
@@ -249,11 +250,7 @@ function TitleParcelPayListEmbeddedController(
         $scope.selectedSubType = newType;
     };
 
-    $scope.configData = {
-        change : function (data) {
-            $scope.filter('custom', $scope.paidOut);
-        }
-    }
+    $scope.configData = () => $scope.filter('custom', $scope.paidOut);
 
     $scope.getByGQuery = (page, pageSize) => {
         TitleParcelPayService.getByGQueryMaxDate(null, 'PAY', page, $scope.individualSearch, $scope.paidOut, $scope.gQueryFilters, pageSize, $scope.sortField, $scope.sortDir)
@@ -272,6 +269,9 @@ function TitleParcelPayListEmbeddedController(
         $scope.getByGQuery();
     };
 
+	$scope.changeSubTypeButton('all');
+	$scope.buttonSubTypeClass();
+	$scope.filter($scope.selectedSubType, $scope.paidOut);
 }
 
 module.exports = TitleParcelPayListEmbeddedController;
