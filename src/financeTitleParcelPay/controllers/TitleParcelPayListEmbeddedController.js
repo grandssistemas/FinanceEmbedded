@@ -235,7 +235,7 @@ function TitleParcelPayListEmbeddedController(
 
     $scope.selectedType = 'pays';
     $scope.buttonTypeClass = function (parameter) {
-        return $scope.paidOut === parameter ? 'btn btn-danger' : 'btn btn-primary';
+        return $scope.paidOut === parameter ? 'btn btn-danger' : 'btn btn-dark-default';
     };
 
     $scope.changeTypeButton = function (newType) {
@@ -243,7 +243,7 @@ function TitleParcelPayListEmbeddedController(
     };
 
     $scope.buttonSubTypeClass = function (parameter) {
-        return $scope.selectedSubType === parameter ? 'btn btn-danger' : 'btn btn-info';
+        return $scope.selectedSubType === parameter ? 'btn btn-danger' : 'btn btn-default';
     };
 
     $scope.changeSubTypeButton = function (newType) {

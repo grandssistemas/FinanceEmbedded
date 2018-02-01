@@ -190,11 +190,11 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
     $scope.selectedType = 'TORECEIVE';
 
     $scope.buttonTypeClass = function (parameter) {
-        return $scope.paidOut === parameter ? 'btn btn-danger' : 'btn btn-primary';
+        return $scope.paidOut === parameter ? 'btn btn-danger' : 'btn btn-dark-default';
     };
 
     $scope.buttonSubTypeClass = function (parameter) {
-        return $scope.selectedSubType === parameter ? 'btn btn-danger' : 'btn btn-info';
+        return $scope.selectedSubType === parameter ? 'btn btn-danger' : 'btn btn-default';
     };
 
     $scope.changeTypeButton = function (newType) {
