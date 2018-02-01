@@ -22,6 +22,9 @@
                                 <div class="btn-group">
                                     <button class="btn-sm gmd raised" ng-model="filters"
                                             uncheckable
+                                            ng-click="filter('all', paidOut)" ng-class="buttonSubTypeClass('all')" uib-btn-radio="'all'">Todos</button>
+                                    <button class="btn-sm gmd raised" ng-model="filters"
+                                            uncheckable
                                             ng-click="filter('today', paidOut)" ng-class="buttonSubTypeClass('today')" uib-btn-radio="'today'">Hoje</button>
                                     <button class="btn-sm gmd raised" ng-model="filters"
                                             uncheckable
@@ -32,9 +35,6 @@
                                     <button class="btn-sm gmd raised" ng-model="filters"
                                             uncheckable
                                             ng-click="filter('thisYear', paidOut)" ng-class="buttonSubTypeClass('thisYear')" uib-btn-radio="'Thisyear'">Este Ano</button>
-                                    <button class="btn-sm gmd raised" ng-model="filters"
-                                            uncheckable
-                                            ng-click="filter('all', paidOut)" ng-class="buttonSubTypeClass('all')" uib-btn-radio="'all'">Todos</button>
                                     <button class="btn-sm gmd raised" ng-model="filters"
                                             uncheckable
                                             ng-click="filter('custom', paidOut)" ng-class="buttonSubTypeClass('custom')" uib-btn-radio="'custom'">Personalizado</button>
@@ -56,7 +56,7 @@
                                             authorize-add="false"
                                             display-info="false">
                                         <match>
-                                            <div>{{match.model.nome}}</div>
+                                            <div>{{match.model.name}}</div>
                                         </match>
                                     </gumga-many-to-one>
                                 </form>
@@ -85,28 +85,10 @@
                 <div class="panel gmd ma-panel">
                     <div class="panel-body ma-pad-panel">
                         <div class="row">
-                            <div class="col-md-2" style="padding-top: 18px">
-                                <button
-                                        class="btn btn-primary gmd raised"
-                                        ng-click="individualCheckAndPay(selectedValues, containsFullPaid)"
-                                        ng-disabled="(total <= 0) && (increase <= 0)">
-                                    <i ng-if="!containsFullPaid">Receber</i>
-                                    <i ng-if="containsFullPaid">Imprimir Recibo</i>
-                                </button>
-                                <button
-                                        class="btn btn-default gmd raised"
-                                        ng-click="renegotiation(selectedValues)"
-                                        ng-if="isRenegotiate"
-                                        ng-disabled="selectedValues.length === 0 || containsReplaced || containsFullPaid">
-                                    Renegociar
-                                </button>
-                            </div>
-
-
                             <div class="col-md-4">
                                 <label ng-if="errorMessage" class="text-danger">{{errorMessage}}</label>
                             </div>
-                            <div class="col-md-6 text-right">
+                            <div class="col-md-8 text-right">
                                 <h5 class="text-success">À Receber: {{ total | currency: 'R$ ' }}</h5>
                                 <h5 class="text-success">Acréscimo: {{ increase | currency: 'R$ ' }}</h5>
                             </div>
@@ -128,5 +110,26 @@
                 </div>
             </div>
         </div>
+        <gmd-fab force-click="false" fixed opened="!fabs">
+            <button class="bg-primary gmd-ripple"
+                    type="button"
+                    title="Receber"
+                    gumga-button
+                    ng-class="{ 'gmd-disabled' : (total <= 0) && (increase <= 0)}"
+                    ng-click="individualCheckAndPay(selectedValues, containsFullPaid)"
+                    ng-disabled="(total <= 0) && (increase <= 0)">
+                <span class="material-icons">attach_money</span>
+            </button>
+
+            <ul>
+                <!--<li class="info bg-accent"-->
+                    <!--ng-class="{ 'gmd-disabled' : isRenegotiate}"-->
+                    <!--ng-click="renegotiation(selectedValues)"-->
+                    <!--ng-disabled="selectedValues.length === 0 || containsReplaced || containsFullPaid || isRenegotiate">-->
+                    <!--<span>Renegociar</span>-->
+                    <!--<i class="material-icons">trending_up</i>-->
+                <!--</li>-->
+            </ul>
+        </gmd-fab>
     </div>
 </div>

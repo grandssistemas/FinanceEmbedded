@@ -595,6 +595,10 @@ function TitleFormEmbeddedController(TitleService,
     $scope.totalSumParcel = $scope.sumParcels($scope.title.data.parcel);
 
     $scope.changeValueParcel = function (payment, oldValue) {
+	    if (!$scope.entity.data.id) {
+		    $scope.totalSumParcel = $scope.sumParcels($scope.title.data.parcel);
+		    return;
+        }
         if (!angular.equals(oldValue, payment.value) && $scope.title.data.parcel.length > 1) {
             SweetAlert.swal({
                     title: "Valor",
