@@ -97,7 +97,7 @@ function TitleFormEmbeddedController(TitleService,
 
     $scope.ratioPlanSearch = (param) => {
         param = param || '';
-        var search = $scope.ratioPlan.methods.asyncSearchWithGQuery(new GQuery(new Criteria('obj.name', ComparisonOperator.CONTAINS, param).addTranslate().addIgnoreCase()));
+        var search = $scope.ratioPlan.methods.asyncSearch('name', param);
         return search
     };
 
