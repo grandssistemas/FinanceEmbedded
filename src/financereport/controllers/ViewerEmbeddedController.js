@@ -49,8 +49,6 @@ function ViewerEmbeddedController($scope,
             report.load(jsonReport);
         }
 
-        console.log('123 testando a parada que nao quer funcionar');
-
         report.dictionary.variable = variableVar;
         variableVar.forEach((vars) => {
             report.dictionary.variables.list.forEach((item) => {
