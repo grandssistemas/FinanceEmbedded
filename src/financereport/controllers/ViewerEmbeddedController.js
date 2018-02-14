@@ -1,12 +1,15 @@
 ViewerEmbeddedController.$inject = [
     '$scope',
     '$window',
-    'FinanceReportService'];
+    'FinanceReportService',
+    'IndividualEmbeddedService'];
 
 function ViewerEmbeddedController($scope,
                                   $window,
-                                  FinanceReportService) {
+                                  FinanceReportService,
+                                  IndividualEmbeddedService) {
     let variableVar, filtersVar;
+
     if ($scope.$resolve) {
         variableVar = angular.copy($scope.$resolve.variable);
         filtersVar = angular.copy($scope.$resolve.filters);
@@ -15,12 +18,27 @@ function ViewerEmbeddedController($scope,
         $scope.entity = angular.copy($scope.$ctrl.entity);
         variableVar = angular.copy($scope.$ctrl.variable);
         filtersVar = angular.copy($scope.$ctrl.filters);
-        init();
+        initVariables();
     }
+
 
     $scope.back = function () {
         $scope.$ctrl.backState({$type: $scope.entity.reportType});
     };
+
+
+
+    function initVariables () {
+
+        IndividualEmbeddedService.variablesReport().then(vars => {
+            variableVar = variableVar.concat(vars);
+
+            console.log(variableVar);
+
+            init();
+        });
+
+    }
 
     function init() {
         StiOptions.WebServer.url = FinanceReportService.connectionLocal;
@@ -30,6 +48,9 @@ function ViewerEmbeddedController($scope,
         if ($scope.entity.id) {
             report.load(jsonReport);
         }
+
+        console.log('123 testando a parada que nao quer funcionar');
+
         report.dictionary.variable = variableVar;
         variableVar.forEach((vars) => {
             report.dictionary.variables.list.forEach((item) => {
@@ -40,6 +61,8 @@ function ViewerEmbeddedController($scope,
                 }
             });
         });
+
+
         viewer.report = report;
         viewer.renderHtml('viewer');
 
@@ -97,7 +120,7 @@ function ViewerEmbeddedController($scope,
         };
     }
 
-    $scope.init = init;
+    $scope.init = initVariables;
 
 }
 
