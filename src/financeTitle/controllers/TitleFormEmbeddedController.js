@@ -107,7 +107,10 @@ function TitleFormEmbeddedController(TitleService,
         });
 
     $scope.postDocType = function (value) {
-        return DocumentTypeService.save(value);
+        return DocumentTypeService.save(value).then(data => { return data}, reject => {
+            $scope.title.data.documentType = null;
+            return reject;
+        });
     };
 
     $scope.labels = [];
