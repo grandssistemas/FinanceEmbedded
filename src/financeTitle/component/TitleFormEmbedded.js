@@ -1,8 +1,9 @@
+import TitleFormEmbeddedController from '../controllers/TitleFormEmbeddedController';
 let template = require('../views/form.html');
 
 module.exports = {
     templateUrl: template,
-    controller: 'TitleFormEmbeddedController',
+    controller: TitleFormEmbeddedController,
     bindings:{
         typeTitle: '@',
         operation: '@',
