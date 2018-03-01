@@ -11,9 +11,18 @@ FinanceReportListEmbeddedController.$inject = [
     '$q',
     'SweetAlert',
     '$rootScope',
-	'TitleService'];
+	'TitleService',
+    'IndividualEmbeddedService'];
 
-function FinanceReportListEmbeddedController($scope, FinanceReportService, gumgaController, $state, $q, SweetAlert, $rootScope, TitleService) {
+function FinanceReportListEmbeddedController($scope,
+                                             FinanceReportService,
+                                             gumgaController,
+                                             $state,
+                                             $q,
+                                             SweetAlert,
+                                             $rootScope,
+                                             TitleService,
+                                             IndividualEmbeddedService) {
     gumgaController.createRestMethods($scope, FinanceReportService, 'financeReport');
 	gumgaController.createRestMethods($scope, TitleService, 'title');
     var filters = '',
@@ -107,21 +116,17 @@ function FinanceReportListEmbeddedController($scope, FinanceReportService, gumga
 	};
 
 	$scope.viewReport = function (entity) {
-        variables.push(mountVariable('', 'inicialDate', $scope.inicialDate));
-		variables.push(mountVariable('', 'finalDate', $scope.finalDate));
-		variables.push(mountVariable('', 'filterClient', $scope.filterClient));
 
-	    $scope.$ctrl.viewReport({$value: entity, variables: variables});
-        //
-        // {content:
-        // '<span ng-if="!$value.titleData.reversed && $value.totalpayed == 0" class="label label-info">' +
-        // '      Aberta</span>' +
-        // '<span ng-if="!$value.titleData.reversed && $value.fullPaid" class="label label-danger">' +
-        // '      Pago</span>' +
-        // '<span ng-if="$value.titleData.reversed" class="label label-danger">' +
-        // '      Estornado</span>' +
-        // '<span ng-if="!$value.titleData.reversed && ($value.totalpayed > 0) && !$value.fullPaid" class="label label-warning">' +
-        // '      Amortizado</span>'}
+        IndividualEmbeddedService.variablesReport().then(vars => {
+            variables = vars;
+            variables.push(mountVariable('', 'inicialDate', $scope.inicialDate));
+            variables.push(mountVariable('', 'finalDate', $scope.finalDate));
+            variables.push(mountVariable('', 'filterClient', $scope.filterClient));
+
+
+            $scope.$ctrl.viewReport({$value: entity, variables: variables});
+        });
+
     };
 
     $scope.copyReport = function (entity) {
