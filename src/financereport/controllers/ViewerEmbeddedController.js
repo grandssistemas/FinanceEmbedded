@@ -1,15 +1,12 @@
 ViewerEmbeddedController.$inject = [
     '$scope',
     '$window',
-    'FinanceReportService',
-    'IndividualEmbeddedService'];
+    'FinanceReportService'];
 
 function ViewerEmbeddedController($scope,
                                   $window,
-                                  FinanceReportService,
-                                  IndividualEmbeddedService) {
+                                  FinanceReportService) {
     let variableVar, filtersVar;
-
     if ($scope.$resolve) {
         variableVar = angular.copy($scope.$resolve.variable);
         filtersVar = angular.copy($scope.$resolve.filters);
@@ -18,27 +15,12 @@ function ViewerEmbeddedController($scope,
         $scope.entity = angular.copy($scope.$ctrl.entity);
         variableVar = angular.copy($scope.$ctrl.variable);
         filtersVar = angular.copy($scope.$ctrl.filters);
-        initVariables();
+        init();
     }
-
 
     $scope.back = function () {
         $scope.$ctrl.backState({$type: $scope.entity.reportType});
     };
-
-
-
-    function initVariables () {
-
-        IndividualEmbeddedService.variablesReport().then(vars => {
-            variableVar = variableVar.concat(vars);
-
-            console.log(variableVar);
-
-            init();
-        });
-
-    }
 
     function init() {
         StiOptions.WebServer.url = FinanceReportService.connectionLocal;
@@ -48,7 +30,6 @@ function ViewerEmbeddedController($scope,
         if ($scope.entity.id) {
             report.load(jsonReport);
         }
-
         report.dictionary.variable = variableVar;
         variableVar.forEach((vars) => {
             report.dictionary.variables.list.forEach((item) => {
@@ -59,8 +40,6 @@ function ViewerEmbeddedController($scope,
                 }
             });
         });
-
-
         viewer.report = report;
         viewer.renderHtml('viewer');
 
@@ -118,7 +97,7 @@ function ViewerEmbeddedController($scope,
         };
     }
 
-    $scope.init = initVariables;
+    $scope.init = init;
 
 }
 

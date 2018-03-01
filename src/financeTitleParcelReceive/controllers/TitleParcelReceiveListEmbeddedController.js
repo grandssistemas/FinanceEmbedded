@@ -32,16 +32,14 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
     TitleParcelPayService.resetDefaultState();
     IndividualEmbeddedService.resetDefaultState();
 
-	$scope.startDate = new Date();
-	$scope.endDate = new Date();
+    $scope.endDate = null;
     $scope.containsReplaced = false;
     $scope.containsFullPaid = false;
     $scope.paidOut = false;
     $scope.lastClicked = null;
     $scope.gQueryFilters = null;
     $scope.hideOthers = true;
-	$scope.increase = 0;
-	$scope.total = 0;
+
 
     $scope.$watch('individualSearch', function (individual) {
         $scope.individualSearch = individual;
@@ -131,6 +129,7 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
         selection: 'multi',
         materialTheme: true,
         itemsPerPage: [5, 10, 25, 50, 100],
+        title: 'Listagem de Receber Títulos',
         columnsConfig: [
             {
                 name: 'documentNumber',
@@ -190,11 +189,11 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
     $scope.selectedType = 'TORECEIVE';
 
     $scope.buttonTypeClass = function (parameter) {
-        return $scope.paidOut === parameter ? 'btn btn-danger' : 'btn btn-dark-default';
+        return $scope.paidOut === parameter ? 'btn btn-danger' : 'btn btn-primary';
     };
 
     $scope.buttonSubTypeClass = function (parameter) {
-        return $scope.selectedSubType === parameter ? 'btn btn-danger' : 'btn btn-default';
+        return $scope.selectedSubType === parameter ? 'btn btn-danger' : 'btn btn-info';
     };
 
     $scope.changeTypeButton = function (newType) {
@@ -205,7 +204,11 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
         $scope.selectedSubType = newType;
     };
 
-	$scope.configData = () => $scope.filter('custom', $scope.paidOut);
+    $scope.configData = {
+        change : function (data) {
+            $scope.filter('custom', $scope.paidOut);
+        }
+    }
 
 
     $scope.getByGQuery = (page, pageSize) => {
@@ -252,7 +255,7 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
                 endDate = moment();
                 break;
             case 'custom':
-                startDate = moment($scope.startDate);
+                startDate = moment($scope.endDate);
                 endDate = moment($scope.endDate);
                 break;
         }
@@ -275,9 +278,7 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
         $scope.changeSubTypeButton(whichFilter);
     };
 
-	$scope.changeSubTypeButton('all');
-	$scope.buttonSubTypeClass();
-	$scope.filter($scope.selectedSubType, $scope.paidOut);
+
 }
 
 module.exports = TitleParcelReceiveListEmbeddedController;
