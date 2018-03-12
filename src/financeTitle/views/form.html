@@ -113,7 +113,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <div>
+                                            <div class="reset-height">
                                                 <label ng-if="titleType == 'pay'     || titleType == 'editpay'"
                                                        gumga-translate-tag="title.provider"></label>
                                                 <label ng-if="titleType == 'receive' || titleType == 'editreceive'"
@@ -127,7 +127,7 @@
                                                         class="gmd"
                                                         authorize-add="false"
                                                         tab-seq="3"
-                                                        modal-fields="id,id"
+                                                        modal-fields="id,name"
                                                         disabled="disable">
                                                     <match>
                                                         <div>{{match.model.id}} - {{match.model.name}}</div>
@@ -139,7 +139,7 @@
                                     <div ng-if="titleType == 'receive' || titleType == 'editreceive'"
                                          class="row">
                                         <div class="col-md-12">
-                                            <div>
+                                            <div class="reset-height">
                                                 <label gumga-translate-tag="title.wallet"></label>
                                                 <gumga-many-to-one
                                                         value="title.data.walletTitle"
@@ -162,6 +162,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <label gumga-translate-tag="title.documenttype"></label>
+                                            <div class="reset-height">
                                             <!--async="false"-->
                                             <gumga-many-to-one
                                                     display-info="false"
@@ -177,6 +178,7 @@
                                                     display-info="false"
                                                     disabled="disable">
                                             </gumga-many-to-one>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -396,7 +398,7 @@
                                                                        ng-focus="oldValueParcel = parcel.value"
                                                                        ng-blur="changeValueParcel(parcel, oldValueParcel)"
                                                                        style="padding:0"
-                                                                       ng-disabled="disableParcel(parcel) || $last"/>
+                                                                       ng-disabled="disableParcel(parcel)"/>
                                                                 <span class="bar"></span>
                                                             </gmd-input>
                                                         </div>
@@ -653,12 +655,12 @@
                             <span>Voltar</span>
                             <i class="material-icons gmd-ripple">keyboard_backspace</i>
                         </li>
-                        <li class="info bg-accent"
-                            ng-class="{ 'gmd-disabled' : blockBtnSave(TitleForm.$invalid || dateNull)}"
-                            ng-click="updatePaid(blockBtnSave(TitleForm.$invalid))">
-                            <span>Lançar Pago</span>
-                            <i class="material-icons gmd-ripple">save</i>
-                        </li>
+                        <!--<li class="info bg-accent"-->
+                            <!--ng-class="{ 'gmd-disabled' : blockBtnSave(TitleForm.$invalid || dateNull)}"-->
+                            <!--ng-click="updatePaid(blockBtnSave(TitleForm.$invalid))">-->
+                            <!--<span>Lançar Pago</span>-->
+                            <!--<i class="material-icons gmd-ripple">save</i>-->
+                        <!--</li>-->
                     </ul>
                 </gmd-fab>
             </form>

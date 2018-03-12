@@ -1,82 +1,128 @@
-<div class="row">
-    <div class="col-md-12">
-        <div class="col-md-4">
-            <label>Pessoa:</label>
-            <form name="Form">
-                <gumga-many-to-one
-                        value="individualSearch"
-                        list="individual.data"
-                        search-method="individual.methods.asyncSearch('name',param)"
-                        add-method="individual.methods.asyncPost(value,'name')"
-                        field="name"
-                        authorize-add="false">
-                </gumga-many-to-one>
-            </form>
+<div class="ma-container">
+    <div class="ma-page">
+        <div class="ma-form-title ma-title">
+            Pagar Títulos
         </div>
-        <div ng-class="{'col-md-3 col-lg-3': filters == 'custom', 'col-md-8 col-lg-8': filters !== 'custom'}">
-            <label>Filtros Rápidos:</label>
-            <div class="row">
-                <label class="btn-sm gmd raised" ng-class="buttonTypeClass(false)" uib-btn-radio="'pays'" ng-model="filterPay" uncheckable ng-click="filter(lastClicked, false)">A pagar</label>
-                <label class="btn-sm gmd raised" ng-class="buttonTypeClass(true)" uib-btn-radio="'paid'" ng-model="filterPay" uncheckable ng-click="filter(lastClicked, true)">Pagos</label>
-            </div>
-            <div class="row" style="margin-top: 10px">
-                <label class="btn-sm gmd raised" ng-if="filters !== 'custom'" ng-model="filters"
-                       uncheckable
-                       ng-click="filter('today', paidOut)" ng-class="buttonSubTypeClass('today')" uib-btn-radio="'today'">Hoje</label>
-                <label class="btn-sm gmd raised" ng-if="filters !== 'custom'" ng-model="filters"
-                       uncheckable
-                       ng-click="filter('thisWeek', paidOut)" ng-class="buttonSubTypeClass('thisWeek')" uib-btn-radio="'thisWeek'">Esta semana</label>
-                <label class="btn-sm gmd raised" ng-if="filters !== 'custom'" ng-model="filters"
-                       uncheckable
-                       ng-click="filter('thisMonth', paidOut)" ng-class="buttonSubTypeClass('thisMonth')" uib-btn-radio="'thisMonth'">Este Mês</label>
-                <label class="btn-sm gmd raised" ng-if="filters !== 'custom'" ng-model="filters"
-                       uncheckable
-                       ng-click="filter('thisYear', paidOut)" ng-class="buttonSubTypeClass('thisYear')" uib-btn-radio="'Thisyear'">Este Ano</label>
-                <label class="btn-sm gmd raised" ng-model="filters" uncheckable ng-class="buttonSubTypeClass('custom')"
-                       uib-btn-radio="'custom'" ng-click="changeSubTypeButton('custom')">Personalizado</label>
-            </div>
-        </div>
-        <div class="col-md-2 col-lg-2" ng-show="filters == 'custom'">
-            <label style="margin-bottom: 0">Data final</label>
-            <gumga-date name="expiration" configuration="configData" ng-model="endDate"></gumga-date>
-        </div>
-    </div>
-</div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel gmd ma-panel">
+                    <div class="panel-body ma-pad-panel">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="input-label">Filtros Rápidos:</label>
+                                <div class="row" style="padding-top: 12px">
+                                    <div class="btn-group">
+                                        <button class="btn-sm gmd raised" ng-class="buttonTypeClass(false)" uib-btn-radio="'pays'" ng-model="filterPay" uncheckable ng-click="filter(lastClicked, false)">A pagar</button>
+                                        <button class="btn-sm gmd raised" ng-class="buttonTypeClass(true)" uib-btn-radio="'paid'" ng-model="filterPay" uncheckable ng-click="filter(lastClicked, true)">Pagos</button>
+                                    </div>
+                                </div>
+                            </div>
 
-<div class="col-md-12" style="margin-top:1%">
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-1">
-                    <button
-                            class="btn btn-success gmd raised"
-                            ng-click="individualCheckAndPay(selectedValues, containsFullPaid)">
-                        <i ng-if="!containsFullPaid">Pagar</i>
-                        <i ng-if="containsFullPaid">Imprimir Recibo</i>
-                    </button>
-                </div>
+                            <div class="row" style="margin-top: 21px">
+                                <div class="btn-group">
+                                    <button class="btn-sm gmd raised" ng-model="filters"
+                                            uncheckable
+                                            ng-click="filter('all', paidOut)" ng-class="buttonSubTypeClass('all')" uib-btn-radio="'all'">Todos</button>
+                                    <button class="btn-sm gmd raised" ng-model="filters"
+                                            uncheckable
+                                            ng-click="filter('today', paidOut)" ng-class="buttonSubTypeClass('today')" uib-btn-radio="'today'">Hoje</button>
+                                    <button class="btn-sm gmd raised" ng-model="filters"
+                                            uncheckable
+                                            ng-click="filter('thisWeek', paidOut)" ng-class="buttonSubTypeClass('thisWeek')" uib-btn-radio="'thisWeek'">Esta semana</button>
+                                    <button class="btn-sm gmd raised" ng-model="filters"
+                                            uncheckable
+                                            ng-click="filter('thisMonth', paidOut)" ng-class="buttonSubTypeClass('thisMonth')" uib-btn-radio="'thisMonth'">Este Mês</button>
+                                    <button class="btn-sm gmd raised" ng-model="filters"
+                                            uncheckable
+                                            ng-click="filter('thisYear', paidOut)" ng-class="buttonSubTypeClass('thisYear')" uib-btn-radio="'Thisyear'">Este Ano</button>
+                                    <button class="btn-sm gmd raised" ng-model="filters"
+                                            uncheckable
+                                            ng-click="filter('custom', paidOut)" ng-class="buttonSubTypeClass('custom')" uib-btn-radio="'custom'">Personalizado</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-12 ma-no-pad-left">
+                                <label class="input-label">Pessoa:</label>
+                                <form name="Form">
+                                    <gumga-many-to-one
+                                            value="individualSearch"
+                                            list="individual.data"
+                                            class="gmd"
+                                            search-method="individual.methods.asyncSearch('name',param)"
+                                            add-method="individual.methods.asyncPost(value,'name')"
+                                            field="name"
+                                            authorize-add="false"
+                                            display-info="false">
+                                        <match>
+                                            <div>{{match.model.name}}</div>
+                                        </match>
+                                    </gumga-many-to-one>
+                                </form>
+                            </div>
 
-                <div class="col-md-4">
-                    <label ng-if="errorMessage" class="text-danger">{{errorMessage}}</label>
-                </div>
-                <div class="col-md-3 text-right">
-                    <h3 ng-if="total > 0" class="text-success">{{ total | currency: 'R$ ' }} à Pagar</h3>
-                    <h3 ng-if="increase > 0" class="text-success">{{ increase | currency: 'R$ ' }} de
-                        Acréscimo</h3>
+                            <div class="row">
+                                <div class="col-md-12 ma-no-pad-all">
+                                    <div class="col-md-6 ma-no-pad-left" ng-show="filters == 'custom'">
+                                        <label style="margin-bottom: 0" class="input-label">Data inicial</label>
+                                        <gumga-date name="expirationBegin" ng-blur="configData()" ng-model="beginDate"></gumga-date>
+                                    </div>
+                                    <div class="col-md-6 ma-no-pad-left" ng-show="filters == 'custom'">
+                                        <label style="margin-bottom: 0" class="input-label">Data final</label>
+                                        <gumga-date name="expirationEnd" ng-blur="configData()" ng-model="endDate"></gumga-date>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel gmd ma-panel">
+                    <div class="panel-body ma-pad-panel">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label ng-if="errorMessage" class="text-danger">{{errorMessage}}</label>
+                            </div>
+                            <div class="col-md-8 text-right">
+                                <h5 class="text-success">À Pagar: {{ total | currency: 'R$ ' }}</h5>
+                                <h5 class="text-success">Acréscimo: {{ increase | currency: 'R$ ' }}</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <gumga-list
+                                    class="table-striped"
+                                    sort="sortByGQuery(field, dir)"
+                                    data="titleparcelPay.data"
+                                    on-click="totalize()"
+                                    configuration="tableConfig"
+                                    page-size="titleparcelPay.pageSize"
+                                    count="titleparcelPay.count"
+                                    page-model="titleparcelPay.page"
+                                    max-height="400px"
+                                    on-page-change="getByGQuery(page, pageSize)">
+                            </gumga-list>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <gmd-fab force-click="false" fixed opened="!fabs">
+            <button class="bg-primary gmd-ripple"
+                    type="button"
+                    title="Pagar"
+                    gumga-button
+                    ng-class="{ 'gmd-disabled' : (total <= 0) && (increase <= 0)}"
+                    ng-click="individualCheckAndPay(selectedValues, containsFullPaid)"
+                    ng-disabled="(total <= 0) && (increase <= 0)">
+                <span class="material-icons">attach_money</span>
+            </button>
+            <ul>
+            </ul>
+        </gmd-fab>
     </div>
-    <gumga-list
-            class="table-striped"
-            sort="sortByGQuery(field, dir)"
-            data="titleparcelPay.data"
-            on-click="totalize()"
-            configuration="tableConfig"
-            page-size="titleparcelPay.pageSize"
-            count="titleparcelPay.count"
-            page-model="titleparcelPay.page"
-            max-height="400px"
-            on-page-change="getByGQuery(page, pageSize)">
-    </gumga-list>
 </div>
