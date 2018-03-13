@@ -604,7 +604,7 @@ function TitleFormEmbeddedController(TitleService,
         $scope.totalSumParcel = $scope.sumParcels($scope.title.data.parcel);
 
         $scope.changeValueParcel = function (payment, oldValue) {
-            if (!angular.equals(oldValue, payment.value) && $scope.title.data.parcel.length > 1) {
+            if (!angular.equals(oldValue, payment.value) && $scope.title.data.parcel.length > 1 && $scope.title.data.id != null  && $scope.title.data.titleType == "RECEIVE") {
                 SweetAlert.swal({
                         title: "Valor",
                         text: "Deseja alterar o valor das demais parcelas?",
@@ -617,14 +617,15 @@ function TitleFormEmbeddedController(TitleService,
                         closeOnCancel: false
                     },
                     function (isConfirm) {
+
                         if (isConfirm) {
                             var index = $scope.title.data.parcel.indexOf(payment);
                             var totalParcels = 0.00;
 
                             for (var i = 0; i <= index; i++) {
-                                totalParcels += $scope.title.data.parcel[i].value || 0;
+                                totalParcels += $scope.title.data.parcel[i].value;
                             }
-                            ;
+
 
                             if (totalParcels > $scope.totalSumParcel) {
                                 SweetAlert.swal("Atenção!", "O valor da soma das parcelas não deve ser maior que o valor total da venda", "error");
@@ -659,7 +660,7 @@ function TitleFormEmbeddedController(TitleService,
                             }
                             swal("Alterado!", "Os valores foram alterados", "success");
                         } else {
-                            payment.value = oldValue;
+
                             swal("Mantido", "Os valores foram mantidos :)", "success");
                         }
                     });
