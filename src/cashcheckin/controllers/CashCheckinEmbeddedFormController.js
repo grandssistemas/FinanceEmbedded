@@ -15,15 +15,28 @@ function CashCheckinEmbeddedFormController($scope,
         $scope.changeOriginTooltip = 'Informe a conta de onde o valor do troco será retirado.';
         $scope.changeDestinyTooltip = 'Informe a conta onde o valor do troco será incluído.';
         $scope.entity = {};
+
+
+
         $scope.entity.employee = angular.copy($scope.$ctrl.employee);
         $scope.entity.date = new Date();
         $scope.disableOpening = $scope.$ctrl.disableOpening;
 
+        console.log($scope.entity);
+
         $scope.getGroups = function (param) {
             return FinanceUnitGroupService.getSearch('name', param || '').then(function (data) {
+                console.log(data.data);
                 return $scope.groups = data.data.values;
+
             })
         };
+
+        CashCheckinEmbeddedService.getCurrentCheckin().then(function (data) {
+            $scope.entity.group = data.data.group;
+        });
+
+
 
         $scope.open = function (entity) {
             entity.status = 'NORMAL';
