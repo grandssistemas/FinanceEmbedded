@@ -1,8 +1,7 @@
 DocTedService.$inject = ['GumgaRest', 'FinanceEmbeddedService'];
 
 function DocTedService(GumgaRest, FinanceEmbeddedService) {
-    var Service = new GumgaRest(FinanceEmbeddedService.getDefaultConfiguration().api);
-
+    var Service = new GumgaRest(FinanceEmbeddedService.getDefaultConfiguration().api + '/entry');
 
     Service.save = save;
     Service.getEntry = getEntry;
@@ -26,7 +25,7 @@ function DocTedService(GumgaRest, FinanceEmbeddedService) {
 
     function getEntry(url, start) {
         start = start || 0;
-        return Service.extend('GET', '/entry', {
+        return Service.extend('GET', '/', {
             params: {
                 aq: url,
                 pageSize: 10,
