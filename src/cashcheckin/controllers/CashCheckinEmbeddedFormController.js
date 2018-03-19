@@ -22,11 +22,8 @@ function CashCheckinEmbeddedFormController($scope,
         $scope.entity.date = new Date();
         $scope.disableOpening = $scope.$ctrl.disableOpening;
 
-        console.log($scope.entity);
-
         $scope.getGroups = function (param) {
             return FinanceUnitGroupService.getSearch('name', param || '').then(function (data) {
-                console.log(data.data);
                 return $scope.groups = data.data.values;
 
             })
