@@ -100,7 +100,7 @@ function TitleFormEmbeddedController(TitleService,
             } else {
                 title = 'pay';
             }
-            $state.go('title.list' + title);
+            $state.go('app.title.list' + title);
         };
 
         $scope.ratioPlanSearch = (param) => {
