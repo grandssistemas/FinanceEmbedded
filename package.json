@@ -1,5 +1,5 @@
 {
-  "name": "finance-embedded",
+  "name": "@mobiage/finance-embedded",
   "version": "1.0.0",
   "description": "Financeiro embutido",
   "main": "app.js",
