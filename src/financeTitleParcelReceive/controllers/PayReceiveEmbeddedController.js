@@ -2,6 +2,7 @@ let template = require('./../views/receiptPrint.html');
 
 PayReceiveEmbeddedController.$inject = [
     'FinanceConfigurationService',
+    'SweetAlert',
     '$scope',
     '$timeout',
     'IndividualCreditService',
@@ -24,26 +25,27 @@ PayReceiveEmbeddedController.$inject = [
     'FinanceReportService'];
 
 function PayReceiveEmbeddedController(FinanceConfigurationService,
-                                      $scope,
-                                      $timeout,
-                                      IndividualCreditService,
-                                      TitleParcelPayService,
-                                      IndividualEmbeddedService,
-                                      DocTedService,
-                                      BankService,
-                                      CheckingAccountService,
-                                      LocalCashService,
-                                      ChequePortfolioService,
-                                      ThirdPartyChequeService,
-                                      gumgaController,
-                                      PaymentService,
-                                      $filter,
-                                      $uibModal,
-                                      CreditCardAccountService,
-                                      FinanceUnitService,
-                                      MoneyUtilsService,
-                                      PercentageFinanceUtilsService,
-                                      FinanceReportService) {
+    SweetAlert,
+    $scope,
+    $timeout,
+    IndividualCreditService,
+    TitleParcelPayService,
+    IndividualEmbeddedService,
+    DocTedService,
+    BankService,
+    CheckingAccountService,
+    LocalCashService,
+    ChequePortfolioService,
+    ThirdPartyChequeService,
+    gumgaController,
+    PaymentService,
+    $filter,
+    $uibModal,
+    CreditCardAccountService,
+    FinanceUnitService,
+    MoneyUtilsService,
+    PercentageFinanceUtilsService,
+    FinanceReportService) {
 
     gumgaController.createRestMethods($scope, FinanceConfigurationService, 'financeConfiguration');
     gumgaController.createRestMethods($scope, CheckingAccountService, 'checkingaccount');
@@ -91,11 +93,11 @@ function PayReceiveEmbeddedController(FinanceConfigurationService,
     });
 
     $scope.valueThirdPartyChequeStatus = [
-        {value: "AVAILABLE", label: "Em Carteira - Disponível"},
-        {value: "UNAVAILABLE", label: "Em Carteira - Indisponível"},
-        {value: "CASHED", label: "Compensado"},
-        {value: "RETURNED", label: "Devolvido"},
-        {value: "PASSED_ALONG", label: "Repassado"}
+        { value: "AVAILABLE", label: "Em Carteira - Disponível" },
+        { value: "UNAVAILABLE", label: "Em Carteira - Indisponível" },
+        { value: "CASHED", label: "Compensado" },
+        { value: "RETURNED", label: "Devolvido" },
+        { value: "PASSED_ALONG", label: "Repassado" }
     ];
 
     $scope.parcels = TitleParcelPayService.getInstallmentsPayable();
@@ -129,8 +131,8 @@ function PayReceiveEmbeddedController(FinanceConfigurationService,
         const interest = value.interest.value;
         if (expiredDays) {
             return MoneyUtilsService.divideMoney(
-                    MoneyUtilsService.multiplyMoney(
-                        PercentageFinanceUtilsService.multiply6(interest, value.value), expiredDays), 30);
+                MoneyUtilsService.multiplyMoney(
+                    PercentageFinanceUtilsService.multiply6(interest, value.value), expiredDays), 30);
         }
         return 0;
     }
@@ -209,27 +211,27 @@ function PayReceiveEmbeddedController(FinanceConfigurationService,
             editable: true,
             title: '<span>Juros</span>',
             content: '<input type="text" ui-money-mask ' +
-            'ng-change="$parent.$parent.updateTotal($value,interestValue,penaltyValue,discountValue)" ' +
-            'ng-disabled="!$parent.$parent.isExpired($value.expiration)" ' +
-            'ng-init="interestValue = $parent.$parent.calcInterestValue($value)" ' +
-            'ng-model="interestValue">'
+                'ng-change="$parent.$parent.updateTotal($value,interestValue,penaltyValue,discountValue)" ' +
+                'ng-disabled="!$parent.$parent.isExpired($value.expiration)" ' +
+                'ng-init="interestValue = $parent.$parent.calcInterestValue($value)" ' +
+                'ng-model="interestValue">'
         }, {
             name: 'penalty',
             editable: true,
             title: '<span>Multa</span>',
             content: '<input type="text" ui-money-mask ' +
-            'ng-change="$parent.$parent.updateTotal($value,interestValue,penaltyValue,discountValue)" ' +
-            'ng-disabled="!$parent.$parent.isExpired($value.expiration)" ' +
-            'ng-init="penaltyValue = $parent.$parent.calcPenaltyValue($value)" ' +
-            'ng-model="penaltyValue">'
+                'ng-change="$parent.$parent.updateTotal($value,interestValue,penaltyValue,discountValue)" ' +
+                'ng-disabled="!$parent.$parent.isExpired($value.expiration)" ' +
+                'ng-init="penaltyValue = $parent.$parent.calcPenaltyValue($value)" ' +
+                'ng-model="penaltyValue">'
         }, {
             name: 'discount',
             editable: true,
             title: '<span>Desconto</span>',
             content: '<input type="text" ui-money-mask ' +
-            'ng-change="$parent.$parent.updateTotal($value,interestValue,penaltyValue,discountValue)" ' +
-            'ng-init="discountValue = $parent.$parent.calcDiscountValue($value)" ' +
-            'ng-model="discountValue">'
+                'ng-change="$parent.$parent.updateTotal($value,interestValue,penaltyValue,discountValue)" ' +
+                'ng-init="discountValue = $parent.$parent.calcDiscountValue($value)" ' +
+                'ng-model="discountValue">'
         }, {
             name: 'remaining',
             title: '<span>Saldo</span>',
@@ -282,7 +284,7 @@ function PayReceiveEmbeddedController(FinanceConfigurationService,
 
     function getInterestPerc(value, interrest, expiredDays) {
         if (expiredDays) {
-            return PercentageFinanceUtilsService.multiply6(30,PercentageFinanceUtilsService.divide6(PercentageFinanceUtilsService.divide6(interrest, expiredDays), value.value));
+            return PercentageFinanceUtilsService.multiply6(30, PercentageFinanceUtilsService.divide6(PercentageFinanceUtilsService.divide6(interrest, expiredDays), value.value));
         }
         return 0;
     }
@@ -440,15 +442,37 @@ function PayReceiveEmbeddedController(FinanceConfigurationService,
         variables.push('', 'orgName', JSON.parse(window.sessionStorage.getItem('user')).organization)
         FinanceReportService.openModalViewer('RECEIPT', '', variables, () => {
             SweetAlert.swal("Falta de Recibos", "Você esta sem o recibo configurado contate o suporte.", "warning");
-        })
+        });
     };
 
     $scope.makePayment = function (payment) {
         $scope.post = payment;
+        $scope.teste = () => {
+
+        }
         PaymentService.receive(payment)
-            .then(function () {
-                $scope.$ctrl.onMakePayment();
-            })
+            .then(function (resp) {
+                let baseState = 'titleparcelreceive.list';
+                SweetAlert.swal({
+                    title: 'Confirmação',
+                    text: 'Deseja imprimir o recibo deste título?',
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: '#DD6B55', confirmButtonText: "Sim",
+                    cancelButtonText: 'Não',
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                },
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            FinanceReportService.openModalViewer('RECEIPTTITLE', [], [], $scope.teste(), baseState).then((resp) => {
+                                console.log('Má Foi ...');
+                            });
+                        }
+                    }
+                );
+                // $scope.$ctrl.onMakePayment();
+            });
     }
 
     $scope.setarfocusPayment = function (value) {
