@@ -70,7 +70,12 @@
                                                             <div class="col-md-12">
                                                                 <div class="col-md-4">
                                                                     <label><span>{{value.financeUnit.name}}</span></label>
-                                                                    <input type="number" class="form-control"
+                                                                    <input type="text" class="form-control"
+                                                                           mobiage-money-mask
+                                                                           data-prefix="R$ " 
+                                                                           data-decimal=","
+                                                                           data-allow-negative="true"
+                                                                           data-thousands="."
                                                                            ng-model="value.informedValue">
                                                                 </div>
                                                                 <div class="col-md-4">
