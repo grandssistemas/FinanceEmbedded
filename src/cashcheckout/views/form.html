@@ -15,58 +15,41 @@
                                         <div ng-show="!!entity.change">
                                             <label gumga-translate-tag="cashcheckin.initchange">Init Change
                                             </label>
-                                            <span class="form-control"
-                                                  disabled>{{entity.change|currency}}</span>
+                                            <span class="form-control" disabled>{{entity.change|currency}}</span>
                                         </div>
                                     </div>
                                     <div class="col-md-4 pull-right">
-                                        <label gumga-translate-tag="cashcheckin.defaulttransfer">Init
-                                            Change </label>
-                                        <strong class="fa fa-question-circle"
-                                                style="cursor: pointer; position: absolute;"
-                                                uib-popover="Todo o valor movimentado será transferido para a conta selecionada."></strong>
-                                        <gumga-many-to-one value="defaultTransfer" tab-seq="3" class="gmd"
-                                                           search-method="getDefaultTransfer(param)"
-                                                           field="name"
-                                                           async="true" authorize-add="false">
+                                        <label gumga-translate-tag="cashcheckin.defaulttransfer">Init Change </label>
+                                        <strong class="fa fa-question-circle" style="cursor: pointer; position: absolute;" uib-popover="Todo o valor movimentado será transferido para a conta selecionada."></strong>
+                                        <gumga-many-to-one value="defaultTransfer" tab-seq="3" class="gmd" search-method="getDefaultTransfer(param)" field="name"
+                                            async="true" authorize-add="false">
                                         </gumga-many-to-one>
                                     </div>
                                 </div>
-                                <div class="row m-t" ng-class="!$first ? 'm-t' : angular.noop"
-                                     ng-repeat="value in entity.values track by $index"
-                                     ng-show="showAccountsWithoutMovement(value)">
+                                <div class="row m-t" ng-class="!$first ? 'm-t' : angular.noop" ng-repeat="value in entity.values track by $index" ng-show="showAccountsWithoutMovement(value)">
                                     <div class="col-md-12">
                                         <div class="col-md-4">
                                             <label>
                                                 <span>{{value.financeUnit.name}}</span>
                                             </label>
-                                            <strong class="fa fa-question-circle"
-                                                    style="cursor: pointer; position: absolute;"
-                                                    uib-popover="Confira suas movimentações e confirme o valor aqui."></strong>
-                                            <input type="number" class="form-control"
-                                                   ng-model="value.informedValue">
+                                            <strong class="fa fa-question-circle" style="cursor: pointer; position: absolute;" uib-popover="Confira suas movimentações e confirme o valor aqui."></strong>
+                                            <input type="text" class="form-control" mobiage-money-mask data-prefix="R$ " data-decimal="," data-allow-negative="true"
+                                                data-thousands="." ng-model="value.informedValue">
                                         </div>
                                         <div class="col-md-4">
                                             <label>
                                                 <span gumga-translate-tag="cashcheckin.expectedvalue">Expected value</span>
                                             </label>
-                                            <strong class="fa fa-question-circle"
-                                                    style="cursor: pointer; position: absolute;"
-                                                    uib-popover="Valor que deve existir no seu caixa"></strong>
-                                            <input type="text" class="form-control"
-                                                   ng-model="value.movementedValue"
-                                                   disabled ui-money-mask>
+                                            <strong class="fa fa-question-circle" style="cursor: pointer; position: absolute;" uib-popover="Valor que deve existir no seu caixa"></strong>
+                                            <input type="text" class="form-control" ng-model="value.movementedValue" disabled ui-money-mask>
                                         </div>
                                         <div class="col-md-3">
                                             <label gumga-translate-tag="cashcheckin.difference"></label>
                                             <br>
-                                            <label class="form-control">{{(value.informedValue - value.movementedValue)
-                                                * -1|currency:'R$'}}</label>
+                                            <label class="form-control">{{(value.informedValue - value.movementedValue) * -1|currency:'R$'}}</label>
                                         </div>
                                         <div class="col-md-1 m-t">
-                                            <button type="button"
-                                                    class="inline-block btn-link btn-xs text-primary"
-                                                    ng-click="showMovements(value.financeUnit)">
+                                            <button type="button" class="inline-block btn-link btn-xs text-primary" ng-click="showMovements(value.financeUnit)">
                                                 <i class="material-icons">search</i>
                                             </button>
                                         </div>
@@ -74,10 +57,8 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-5">
-                                        <a ng-click="showWithoutMovement = !showWithoutMovement"
-                                           style="font-size: 16px;">
-                                            <i class="glyphicon glyphicon-chevron-up text-primary m-r-xs"
-                                               ng-class="{'glyphicon-chevron-up': showWithoutMovement, 'glyphicon-chevron-down': !showWithoutMovement}"></i>
+                                        <a ng-click="showWithoutMovement = !showWithoutMovement" style="font-size: 16px;">
+                                            <i class="glyphicon glyphicon-chevron-up text-primary m-r-xs" ng-class="{'glyphicon-chevron-up': showWithoutMovement, 'glyphicon-chevron-down': !showWithoutMovement}"></i>
                                             Contas sem movimentação</a>
                                     </div>
                                 </div>
@@ -86,8 +67,7 @@
                                         <div class="col-md-4">
                                             <label gumga-translate-tag="cashcheckin.leftchange">Left Change
                                             </label>
-                                            <input type="text" class="form-control" ng-model="change"
-                                                   ui-money-mask>
+                                            <input type="text" class="form-control" ng-model="change" ui-money-mask>
                                         </div>
                                     </div>
                                 </div>
@@ -97,10 +77,9 @@
                                     <div class="col-md-12">
                                         <div class="col-md-12">
                                             <h5 class="text-danger">
-                                                Este usuário não possui um caixa aberto.<a
-                                                    style="text-decoration: underline; color:blue"
-                                                    ui-sref="app.cashcheckin.checkin"> Clique aqui</a> para abrir um
-                                                novo caixa.
+                                                Este usuário não possui um caixa aberto.
+                                                <a style="text-decoration: underline; color:blue"
+                                                    ui-sref="app.cashcheckin.checkin"> Clique aqui</a> para abrir um novo caixa.
                                             </h5>
                                         </div>
                                     </div>
@@ -114,8 +93,8 @@
     </div>
 </form>
 <gmd-fab force-click="false" fixed>
-    <button ng-class="{'gmd-disabled' : disabledCloseCash() }" class="bg-accent gmd-ripple"
-            ng-disabled="disabledCloseCash()" ng-click="close(entity)">
+    <button ng-class="{'gmd-disabled' : disabledCloseCash() }" class="bg-accent gmd-ripple" ng-disabled="disabledCloseCash()"
+        ng-click="close(entity)">
         <span class="fa fa-power-off"></span>
     </button>
     <ul class="open">
