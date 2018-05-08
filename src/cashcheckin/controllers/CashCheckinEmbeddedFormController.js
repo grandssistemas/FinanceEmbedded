@@ -6,11 +6,11 @@ CashCheckinEmbeddedFormController.$inject = ['$scope',
     '$timeout'];
 
 function CashCheckinEmbeddedFormController($scope,
-                                           CashCheckinEmbeddedService,
-                                           FinanceUnitGroupService,
-                                           FinanceUnitService,
-                                           $filter,
-                                           $timeout) {
+    CashCheckinEmbeddedService,
+    FinanceUnitGroupService,
+    FinanceUnitService,
+    $filter,
+    $timeout) {
     this.$onInit = function () {
         $scope.changeOriginTooltip = 'Informe a conta de onde o valor do troco será retirado.';
         $scope.changeDestinyTooltip = 'Informe a conta onde o valor do troco será incluído.';
@@ -25,7 +25,6 @@ function CashCheckinEmbeddedFormController($scope,
         $scope.getGroups = function (param) {
             return FinanceUnitGroupService.getSearch('name', param || '').then(function (data) {
                 return $scope.groups = data.data.values;
-
             })
         };
 
@@ -38,7 +37,7 @@ function CashCheckinEmbeddedFormController($scope,
         $scope.open = function (entity) {
             entity.status = 'NORMAL';
             CashCheckinEmbeddedService.update(entity).then(function (data) {
-                $scope.$ctrl.onGoHome({data});
+                $scope.$ctrl.onGoHome({ data });
             })
         };
 
@@ -46,46 +45,78 @@ function CashCheckinEmbeddedFormController($scope,
             return $filter('date')(new Date(date), 'dd/MM/yyyy HH:mm:ss');
         };
 
-        $scope.onSelectGroup = onSelectGroup;
-        $scope.onDeselectGroup = function (value) {
-            onSelectGroup(value);
-        };
+        $scope.onSelectGroup = (value) => {
+            FinanceUnitGroupService.getById(value.id).then((data) => {
+                $scope.financeUnits = data.data.financeUnits
+            });
 
-        function onSelectGroup(value) {
-            if (value.id) {
-                FinanceUnitGroupService.getById(value.id).then(function (data) {
-                    $scope.financeUnits = data.data.financeUnits;
-                })
-            } else {
+            if (!value.id) {
                 $scope.financeUnits = null;
             }
             $scope.entity.change = 0;
-            $scope.entity.originChange = null;
+            $scope.entity.originChange = undefined;
             $scope.entity.destinyChange = undefined;
         }
 
+       
+ 
+
         $scope.getChangeOrigin = function (param) {
-            return FinanceUnitService.getSearch('name', param)
-                .then(function (data) {
-                    return data.data.values;
-                })
+
+            if (!$scope.entity.originChange && !$scope.entity.destinyChange) {
+                return FinanceUnitService.getSearch('name', param)
+                    .then(function (data) {
+                        return data.data.values;
+                    });
+            }
+            if (!$scope.entity.originChange && $scope.entity.destinyChange) {
+                return  FinanceUnitService.getSearch('name').then(function (data) {
+                    return data.data.values.filter((data)=> {
+                        return data.id != $scope.entity.destinyChange.id;
+                    });
+                });
+            }
+            if ($scope.entity.originChange && !$scope.entity.destinyChange) {
+                return  FinanceUnitService.getSearch('name').then(function (data) {
+                    return data.data.values.filter((data)=> {
+                        return data.id != $scope.entity.originChange.id;
+                    });
+                });
+            }
+            if ($scope.entity.originChange && $scope.entity.destinyChange) {
+                return  FinanceUnitService.getSearch('name').then(function (data) {
+                    return data.data.values.filter((data)=> {
+                        return data.id != $scope.entity.originChange.id && data.id != $scope.entity.destinyChange.id;
+                    });
+                });
+            }
+            // if (!$scope.entity.originChange && !$scope.entity.destinyChange) {
+            //     return FinanceUnitService.getSearch('name', param)
+            //         .then(function (data) {
+            //             return data.data.values;
+            //         });
+            // }
+            // if ($scope.entity.originChange) {
+            // }
+
+
         };
 
-        $scope.onSelectOrigin = function () {
-            isUnitsValids('originChange')
-        };
-        $scope.onSelectDestiny = function () {
-            isUnitsValids('destinyChange')
-        };
+        // $scope.onSelectOrigin = function () {
+        //     isUnitsValids('originChange');
+        // };
+        // $scope.onSelectDestiny = function () {
+        //     isUnitsValids('destinyChange')
+        // };
 
-        function isUnitsValids(attribute) {
-            $timeout(function () {
-                if (!!$scope.entity.originChange && !!$scope.entity.destinyChange &&
-                    $scope.entity.originChange.id === $scope.entity.destinyChange.id) {
-                    $scope.entity[attribute] = null;
-                }
-            })
-        }
+        // function isUnitsValids(attribute) {
+        //     $timeout(function () {
+        //         if (!!$scope.entity.originChange && !!$scope.entity.destinyChange &&
+        //             $scope.entity.originChange.id === $scope.entity.destinyChange.id) {
+        //             $scope.entity[attribute] = null;
+        //         }
+        //     })
+        // }
 
         $scope.disabledOpenCash = function (entity) {
             return $scope.disableOpening || entity.employee == null || (entity.group == null || entity.group.id == null) ||
