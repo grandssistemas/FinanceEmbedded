@@ -26,6 +26,76 @@ function TitleListEmbeddedController(
     $scope.$ctrl.$onInit = () => {
         $scope.titleType = $scope.$ctrl.titleType;
         $scope.title.methods.get($scope.currentPage);
+
+        $scope.tableConf = {
+            columns: 'titleType, issuedAt,documentNumber, participationsFormatted, expiration, docname, value, btns',
+            materialTheme: true,
+            title: $scope.titleType === "pay" ? 'Listagem de Contas a Pagar' : 'Listagem de Contas a Receber',
+            columnsConfig: [
+                {
+                    name: 'titleType',
+                    title: '<span gumga-translate-tag="title.titleType"></span>',
+                    content: '<span style="">{{$value.titleType == \'PAY\' ? \'A PAGAR\' : \'A RECEBER\'}}</span>',
+                    size: 'col-md-2 col-lg-1'
+    
+                }, {
+                    name: 'issuedAt',
+                    title: '<span gumga-translate-tag="title.issuedAt"></span>',
+                    content: '<span>{{$value.emissionDate | date: \'dd/MM/yyyy\' }}</span>'
+    
+                }, {
+                    name: 'documentNumber',
+                    title: '<span gumga-translate-tag="title.documentNumberAdapted"></span>',
+                    content: '<span>{{$value.documentNumber}}</span>'
+    
+                }, {
+                    name: 'participationsFormatted',
+                    title: '<span gumga-translate-tag="title.participationsFormatted"></span>',
+                    content: '<div uib-tooltip="{{$value.participationsFormatted}}" ng-class="{\'text-overflow-list\':$value.participations.length == 1, \'text-align-center\':$value.participations.length > 1}">' +
+                    '<i class=" glyphicon glyphicon-user"></i><i class=" glyphicon glyphicon-user" ng-if="$value.participations.length > 1"></i>' +
+                    '&nbsp;<span ng-if="$value.participations.length == 1">{{$value.participationsFormatted}}</span></div>'
+    
+                }, {
+                    name: 'expiration',
+                    title: '<span gumga-translate-tag="title.expiration"></span>',
+                    content: '<span>{{$parent.$parent.getNextParcelExpiration($value.parcel) | date: \'dd/MM/yyyy\'}}</span>'
+    
+                }, {
+                    name: 'docname',
+                    title: '<span gumga-translate-tag="title.documentType"></span>',
+                    content: '<span>{{$value.documentType.name}}</span>'
+    
+                }, {
+                    name: 'value',
+                    title: '<span gumga-translate-tag="title.value"></span>',
+                    content: '<span>{{$value.value | currency}}</span>'
+    
+                }, {
+                    name: 'btns',
+                    title: ' ',
+                    content: `
+                    <div style="display:inline-block;">
+                        <span>
+                            &nbsp;&nbsp;
+                            <a uib-tooltip="Renegociar" 
+                               ng-show="!$value.fullPaid && $value.isRenegotiate" 
+                               class="btn btn-primary btn-sm" 
+                               ng-disabled="$value.replacedBy || $value.fullPaid" 
+                               ng-click="$parent.$parent.replacement($value, $value.fullPaid)">
+                                <i class="fa fa-share-square-o"></i>
+                            </a>
+                        </span>                                                                         
+                    </div>
+                    <span ng-if="!$value.isReversed && $value.replacedBy" class="label label-warning">Renegociado</span>
+                    <span ng-if="$value.isReversed" class="label label-danger">Estornado</span>
+                    <span ng-if="!$value.isReversed && $value.hasPayment && !$value.fullPaid" class="label label-info">Parcial</span>                    
+                    <span ng-if="!$value.isReversed && $value.fullPaid && $value.titleType == \'RECEIVE\'" class="label label-success">Recebido</span>
+                    <span ng-if="!$value.isReversed && $value.fullPaid && $value.titleType == \'PAY\'" class="label label-success">Pago</span>
+                    <span ng-if="!$value.isReversed && !$value.hasRatio" class="glyphicon glyphicon-info-sign pull-right" uib-tooltip=\'Sem Rateio\' tooltip-placement=\'left\'></span>`,
+                    size: 'col-md-3'
+                }]
+        };
+
     }
 
     $scope.title.on('deleteSuccess', function () {
@@ -101,74 +171,7 @@ function TitleListEmbeddedController(
 
     $scope.titleList = [];
 
-    $scope.tableConf = {
-        columns: 'titleType, issuedAt,documentNumber, participationsFormatted, expiration, docname, value, btns',
-        materialTheme: true,
-        title: $scope.titleType === "pay" ? 'Listagem de Contas a Pagar' : 'Listagem de Contas a Receber',
-        columnsConfig: [
-            {
-                name: 'titleType',
-                title: '<span gumga-translate-tag="title.titleType"></span>',
-                content: '<span style="">{{$value.titleType == \'PAY\' ? \'A PAGAR\' : \'A RECEBER\'}}</span>',
-                size: 'col-md-2 col-lg-1'
-
-            }, {
-                name: 'issuedAt',
-                title: '<span gumga-translate-tag="title.issuedAt"></span>',
-                content: '<span>{{$value.emissionDate | date: \'dd/MM/yyyy\' }}</span>'
-
-            }, {
-                name: 'documentNumber',
-                title: '<span gumga-translate-tag="title.documentNumberAdapted"></span>',
-                content: '<span>{{$value.documentNumber}}</span>'
-
-            }, {
-                name: 'participationsFormatted',
-                title: '<span gumga-translate-tag="title.participationsFormatted"></span>',
-                content: '<div uib-tooltip="{{$value.participationsFormatted}}" ng-class="{\'text-overflow-list\':$value.participations.length == 1, \'text-align-center\':$value.participations.length > 1}">' +
-                '<i class=" glyphicon glyphicon-user"></i><i class=" glyphicon glyphicon-user" ng-if="$value.participations.length > 1"></i>' +
-                '&nbsp;<span ng-if="$value.participations.length == 1">{{$value.participationsFormatted}}</span></div>'
-
-            }, {
-                name: 'expiration',
-                title: '<span gumga-translate-tag="title.expiration"></span>',
-                content: '<span>{{$parent.$parent.getNextParcelExpiration($value.parcel) | date: \'dd/MM/yyyy\'}}</span>'
-
-            }, {
-                name: 'docname',
-                title: '<span gumga-translate-tag="title.documentType"></span>',
-                content: '<span>{{$value.documentType.name}}</span>'
-
-            }, {
-                name: 'value',
-                title: '<span gumga-translate-tag="title.value"></span>',
-                content: '<span>{{$value.value | currency}}</span>'
-
-            }, {
-                name: 'btns',
-                title: ' ',
-                content: `
-                <div style="display:inline-block;">
-                    <span>
-                        &nbsp;&nbsp;
-                        <a uib-tooltip="Renegociar" 
-                           ng-show="!$value.fullPaid && $value.isRenegotiate" 
-                           class="btn btn-primary btn-sm" 
-                           ng-disabled="$value.replacedBy || $value.fullPaid" 
-                           ng-click="$parent.$parent.replacement($value, $value.fullPaid)">
-                            <i class="fa fa-share-square-o"></i>
-                        </a>
-                    </span>                                                                         
-                </div>
-                <span ng-if="!$value.isReversed && $value.replacedBy" class="label label-warning">Renegociado</span>
-                <span ng-if="$value.isReversed" class="label label-danger">Estornado</span>
-                <span ng-if="!$value.isReversed && $value.hasPayment && !$value.fullPaid" class="label label-info">Parcial</span>                    
-                <span ng-if="!$value.isReversed && $value.fullPaid && $value.titleType == \'RECEIVE\'" class="label label-success">Recebido</span>
-                <span ng-if="!$value.isReversed && $value.fullPaid && $value.titleType == \'PAY\'" class="label label-success">Pago</span>
-                <span ng-if="!$value.isReversed && !$value.hasRatio" class="glyphicon glyphicon-info-sign pull-right" uib-tooltip=\'Sem Rateio\' tooltip-placement=\'left\'></span>`,
-                size: 'col-md-3'
-            }]
-    };
+    
 
     $scope.openPrintings = function(id){
         $uibModal.open({
