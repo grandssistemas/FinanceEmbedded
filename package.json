@@ -1,6 +1,6 @@
 {
   "name": "@mobiage/finance-embedded",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Financeiro embutido",
   "main": "app.js",
   "author": "Augusto Cesar",
@@ -15,7 +15,6 @@
   },
   "devDependencies": {
     "@mobiage/eslint-config": "^1.0.0",
-    "eslint": "^4.19.1",
     "angular": "^1.6.5",
     "angular-sanitize": "^1.6.5",
     "babel-core": "^6.25.0",
@@ -23,6 +22,7 @@
     "babel-preset-env": "^1.6.0",
     "babel-preset-es2015": "^6.24.1",
     "css-loader": "^0.28.4",
+    "eslint": "^4.19.1",
     "extract-text-webpack-plugin": "^2.1.2",
     "file-loader": "^0.11.2",
     "html-loader": "^0.4.5",
