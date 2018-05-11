@@ -1,0 +1,5 @@
+{
+	"extends": [
+		"@mobiage/eslint-config"
+	]
+}
