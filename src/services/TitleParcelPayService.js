@@ -66,14 +66,14 @@ function TitleParcelPayService(GumgaRest, $http, FinanceEmbeddedService) {
                 gQuery = gQuery.and(new Criteria('individual.id', ComparisonOperator.EQUAL, individual.id));
             }
 
-        // .join(new Join('obj.individual as individual', JoinType.INNER));
+            // .join(new Join('obj.individual as individual', JoinType.INNER));
 
             gQuery = gQuery.and(new Criteria('title.titleType', ComparisonOperator.EQUAL, type))
                 .and(new Criteria('title.isReversed', ComparisonOperator.EQUAL, false))
                 .and(new GQuery(new Criteria('obj.fullPaid', ComparisonOperator.EQUAL, paidOut)));
 
-        // .or(new Criteria('obj.fullPaid', ComparisonOperator.IS, new CriteriaField("null")))
-        // ABERTO ISSUE NA GUMGA
+            // .or(new Criteria('obj.fullPaid', ComparisonOperator.IS, new CriteriaField("null")))
+            // ABERTO ISSUE NA GUMGA
         } else {
             gQuery = gQuery.and(new Criteria('title.isReversed', ComparisonOperator.EQUAL, false));
         }
@@ -93,13 +93,13 @@ function TitleParcelPayService(GumgaRest, $http, FinanceEmbeddedService) {
 
         if (sortField) {
             qo.sortField = sortField,
-            qo.sortDir = sortDir
+                qo.sortDir = sortDir
         }
 
         return Service.sendQueryObject(qo);
     }
 
-    Service.getPaymentsByParcel = function (id){
+    Service.getPaymentsByParcel = function (id) {
         return Service.extend('get', `/getpaymentsbyparcel/${id}`);
     };
 
@@ -107,5 +107,3 @@ function TitleParcelPayService(GumgaRest, $http, FinanceEmbeddedService) {
 }
 
 module.exports = TitleParcelPayService;
-
-

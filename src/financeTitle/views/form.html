@@ -1,669 +1,732 @@
 <div class="ma-container">
-    <div class="container-fluid">
-        <div class="ma-page">
-            <div ng-if="renegotiation">
-                <h2>Parcelas a serem renegociadas</h2>
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-md-8">
-                                <h3 class="page-header">Parcelas</h3>
-                                <gumga-list class="table-striped table-condensed" data="parcels"
-                                            configuration="tableConfigListParcels"></gumga-list>
-                            </div>
-                            <div class="col-md-4">
-                                <h3 class="page-header">Renegociação</h3>
-                                <form class="form-horizontal">
-                                    <div class="">
-                                        <label class="col-md-3 control-label">Parcelas</label>
-                                        <div class="col-md-7">
-                                            ng-if="renegotiation"<label class="form-control">
-                                            {{parcels.length}}
-                                        </label>
-                                        </div>
-                                    </div>
-
-                                    <div class="">
-                                        <label class="col-md-3 control-label">Valor</label>
-                                        <div class="col-md-7">
-                                            <label class="form-control">
-                                                {{value | currency: 'R$ '}}
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="">
-                                        <label class="col-md-3 control-label">Juros</label>
-                                        <div class="col-md-7">
-                                            <input class="form-control" ng-model="title.data.parcelinterest"
-                                                   ui-percentage-mask>
-                                        </div>
-                                    </div>
-                                    <div class="">
-                                        <label class="col-md-3 control-label">Multa</label>
-                                        <div class="col-md-7">
-                                            <input class="form-control" ng-model="title.data.parcelpenalty"
-                                                   ui-percentage-mask>
-                                        </div>
-                                    </div>
-                                    <div class="">
-                                        <label class="col-md-3 control-label">Desconto</label>
-                                        <div class="col-md-7">
-                                            <input class="form-control" ng-model="title.data.discount"
-                                                   ui-money-mask="2">
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+  <div class="container-fluid">
+    <div class="ma-page">
+      <div ng-if="renegotiation">
+        <h2>Parcelas a serem renegociadas</h2>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-md-8">
+                <h3 class="page-header">Parcelas</h3>
+                <gumga-list class="table-striped table-condensed"
+                            data="parcels"
+                            configuration="tableConfigListParcels"></gumga-list>
+              </div>
+              <div class="col-md-4">
+                <h3 class="page-header">Renegociação</h3>
+                <form class="form-horizontal">
+                  <div class="">
+                    <label class="col-md-3 control-label">Parcelas</label>
+                    <div class="col-md-7">
+                      ng-if="renegotiation"
+                      <label class="form-control">
+                        {{parcels.length}}
+                      </label>
                     </div>
-                </div>
+                  </div>
+
+                  <div class="">
+                    <label class="col-md-3 control-label">Valor</label>
+                    <div class="col-md-7">
+                      <label class="form-control">
+                        {{value | currency: 'R$ '}}
+                      </label>
+                    </div>
+                  </div>
+                  <div class="">
+                    <label class="col-md-3 control-label">Juros</label>
+                    <div class="col-md-7">
+                      <input class="form-control"
+                             ng-model="title.data.parcelinterest"
+                             ui-percentage-mask>
+                    </div>
+                  </div>
+                  <div class="">
+                    <label class="col-md-3 control-label">Multa</label>
+                    <div class="col-md-7">
+                      <input class="form-control"
+                             ng-model="title.data.parcelpenalty"
+                             ui-percentage-mask>
+                    </div>
+                  </div>
+                  <div class="">
+                    <label class="col-md-3 control-label">Desconto</label>
+                    <div class="col-md-7">
+                      <input class="form-control"
+                             ng-model="title.data.discount"
+                             ui-money-mask="2">
+                    </div>
+                  </div>
+                </form>
+              </div>
             </div>
-            <form name="TitleForm" gumga-form novalidate>
-                <div class="row">
-                    <div>
-                        <div class="ma-form-title ma-title">
-                            <label ng-class="{'modal-title': inModal}">Títulos a {{titleType =='pay' || titleType =='editpay' ? "PAGAR" :
-                                "RECEBER"}}</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="">
-                    <!--Inputs dos dados-->
-                    <div class="row">
-                        <div class="col-md-6 ma-pad-right-panel">
-                            <div class="panel gmd ma-panel" id="panel1">
-                                <div class="panel-heading">
-                                    <label class="cl-light-primary title-b-u">Dados do Título</label>
-                                </div>
-                                <div class="panel-body ma-pad-panel">
-                                    <div class="row">
-                                        <div class="col-md-12" ng-show="showBarCodeTitle()">
-                                            <div gumga-form-class="barcode">
-                                                <gmd-input>
-                                                    <input type="text" name="barcode" class="form-control gmd"
-                                                           id="barcode"
-                                                           ng-model="title.data.barcode"
-                                                           ng-keydown="keyEnter($event)"
-                                                           gumga-error
-                                                           gumga-max-length="60" autofocus="true" tabindex="1"
-                                                           ng-disabled="disable"/>
-                                                    <span class="bar"></span>
-                                                    <label for="barcode"
-                                                           gumga-translate-tag="title.barcode">barcode</label>
-                                                </gmd-input>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div gumga-form-class="documentNumber">
-                                                <gmd-input>
-                                                    <input type="text" name="documentNumber"
-                                                           class="form-control gmd"
-                                                           id="numberdoc"
-                                                           ng-model="title.data.documentNumber" gumga-error required
-                                                           gumga-max-length="60"
-                                                           tabindex="2" ng-disabled="disable"/>
-                                                    <span class="bar"></span>
-                                                    <label style="white-space: nowrap;" for="numberdoc"
-                                                           gumga-translate-tag="title.docnumber">nrodoc</label>
-                                                </gmd-input>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="reset-height">
-                                                <label ng-if="titleType == 'pay'     || titleType == 'editpay'"
-                                                       gumga-translate-tag="title.provider"></label>
-                                                <label ng-if="titleType == 'receive' || titleType == 'editreceive'"
-                                                       gumga-translate-tag="title.client"></label>
-                                                <gumga-many-to-one
-                                                        value="title.data.assignedIndividual"
-                                                        required
-                                                        list="individuals"
-                                                        search-method="individual.methods.asyncSearch('name',param)"
-                                                        field="name"
-                                                        class="gmd"
-                                                        authorize-add="false"
-                                                        tab-seq="3"
-                                                        modal-fields="id,name"
-                                                        disabled="disable">
-                                                    <match>
-                                                        <div>{{match.model.id}} - {{match.model.name}}</div>
-                                                    </match>
-                                                </gumga-many-to-one>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div ng-if="titleType == 'receive' || titleType == 'editreceive'"
-                                         class="row">
-                                        <div class="col-md-12">
-                                            <div class="reset-height">
-                                                <label gumga-translate-tag="title.wallet"></label>
-                                                <gumga-many-to-one
-                                                        value="title.data.walletTitle"
-                                                        list="wallets"
-                                                        required
-                                                        search-method="wallet.methods.asyncSearch('name',param)"
-                                                        field="name"
-                                                        required
-                                                        authorize-add="false"
-                                                        tab-seq="4"
-                                                        class="gmd"
-                                                        on-select="selected(value)"
-                                                        display-info="false"
-                                                        disabled="disable">
-                                                </gumga-many-to-one>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <br>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <label gumga-translate-tag="title.documenttype"></label>
-                                            <div class="reset-height">
-                                            <!--async="false"-->
-                                            <gumga-many-to-one
-                                                    display-info="false"
-                                                    value="title.data.documentType"
-                                                    list="documents"
-                                                    required
-                                                    class="gmd"
-                                                    search-method="documentType.methods.asyncSearch('name',param)"
-                                                    field="name"
-                                                    tab-seq="5"
-                                                    post-method="postDocType(value)"
-                                                    authorize-add="true"
-                                                    display-info="false"
-                                                    disabled="disable">
-                                            </gumga-many-to-one>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <label gumga-translate-tag="title.emissiondate">emissiondate</label>
-                                            <gumga-date ng-model="title.data.emissionDate" id="emissiondate"
-                                                        name="emissiondate"
-                                                        ng-disabled="disable"></gumga-date>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div gumga-form-class="parcelinterest">
-                                                <label ng-if="interestActive"
-                                                       gumga-translate-tag="title.parcelinterest"></label>
-                                                <label ng-if="!interestActive">Mora</label>
-                                                <div class="input-group">
-                                                    <input type="text" ng-if="interestActive" name="parcelinterest"
-                                                           ng-model="title.data.parcelinterest"
-                                                           class="form-control text-right"
-                                                           gumga-error
-                                                           ui-percentage-mask tabindex="7" ng-disabled="disable"/>
-                                                    <input type="text" ng-if="!interestActive" name="parcelinterest"
-                                                           ng-model="title.data.mora"
-                                                           class="form-control text-right" gumga-error ui-mon
-                                                           ey-mask="2"
-                                                           tabindex="7"
-                                                           ng-disabled="disable"/>
-                                                    <span class="input-group-btn">
-                                        <button class="btn btn-default" ng-click="calculatedInterest()"><i
-                                                class="glyphicon glyphicon-sort"></i></button>
-                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div gumga-form-class="parcelpenalty">
-                                                <gmd-input>
-                                                    <input type="text" class="form-control text-right gmd"
-                                                           name="parcelpenalty"
-                                                           ng-model="title.data.parcelpenalty" gumga-error
-                                                           ui-percentage-mask
-                                                           tabindex="8"
-                                                           ng-disabled="disable"/>
-                                                    <span class="bar"></span>
-                                                    <label gumga-translate-tag="title.parcelpenalty"></label>
-                                                </gmd-input>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div gumga-form-class="value">
-                                                <gmd-input>
-                                                    <input type="text" name="value"
-                                                           class="form-control text-right gmd"
-                                                           id="valueParcel"
-                                                           ng-model="title.data.value" ng-blur="calculateParcels()"
-                                                           ng-disabled="title.data.billetCollection >= 2 || disable"
-                                                           gumga-error
-                                                           ui-money-mask="2"
-                                                           required tabindex="9"/>
-                                                    <span class="bar"></span>
-                                                    <label gumga-translate-tag="title.valueparcel"
-                                                           ng-show="titleType == 'pay' || titleType== 'editpay'">valueparcel</label>
-                                                    <label gumga-translate-tag="title.valueparcelReceive"
-                                                           ng-show="titleType == 'receive' || renegotiation || titleType== 'editreceive'">valueparcel</label>
-
-                                                </gmd-input>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 ">
-                                            <div gumga-form-class="numberParcel">
-                                                <gmd-input>
-                                                    <input type="number" min="1"
-                                                           ng-disabled="!title.data.expiration || title.data.billetCollection >= 2 || disable"
-                                                           ng-blur="change()" name="numberParcel"
-                                                           class="form-control gmd"
-                                                           id="numberParcel"
-                                                           max="300"
-                                                           ng-model="title.data.numberParcel" tabindex="10"
-                                                           gumga-error
-                                                           required/>
-                                                    <span class="bar"></span>
-                                                    <label for="numberParcel"
-                                                           gumga-translate-tag="title.numberParcels">numberParcel</label>
-                                                    <p class="text-danger" ng-if="TitleForm.$error.max">Max de 300
-                                                        parcelas</p>
-                                                </gmd-input>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label ng-show="title.data.numberParcel <= 1 || title.data.numberParcel == undefined"
-                                                   gumga-translate-tag="title.expiration">expiration</label>
-                                            <label ng-show="title.data.numberParcel > 1"
-                                                   gumga-translate-tag="title.expirations">expiration</label>
-                                            <gumga-date ng-model="title.data.expiration" tabindex="11"
-                                                        name="expiration"
-                                                        ng-blur="change()" required
-                                                        ng-disabled="disable"></gumga-date>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div gumga-form-class="labels">
-                                                <label for="labels"
-                                                       gumga-translate-tag="title.labels">Marcadores</label>
-                                                <ui-select multiple tagging="labelTransform" tagging-tokens=",|/"
-                                                           id="labels"
-                                                           ng-model="title.data.labels" theme="bootstrap"
-                                                           tabindex="13"
-                                                           name="labels"
-                                                           title="Escolhe um marcador" ng-disabled="disable">
-                                                    <ui-select-match placeholder="Selecione os marcadores...">
-                                                        {{$item.value}}
-                                                    </ui-select-match>
-                                                    <ui-select-choices repeat="label in labels">
-                                                        <div ng-if="label.isTag">{{label.value +' (novo)'}}</div>
-                                                        <div ng-if="!label.isTag">{{label.value + label.isTag}}
-                                                        </div>
-                                                    </ui-select-choices>
-                                                </ui-select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div gumga-form-class="historic">
-                                                <label for="historic"
-                                                       gumga-translate-tag="title.historic">historic</label>
-                                                <textarea type="text" name="historic" class="form-control"
-                                                          id="historic"
-                                                          min="1"
-                                                          max="60"
-                                                          ng-model="title.data.memo" tabindex="12" gumga-error
-                                                          ng-disabled="disable">
-                                            </textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 ma-pad-left-panel">
-                            <div class="panel gmd ma-panel" id="panel2">
-                                <div class="panel-heading">
-                                    <ul class="nav nav-tabs cl-light-primary title-b-u gmd" style="margin-top: -8px;">
-                                        <li class="uib-tab" heading="parcels"
-                                            ng-class="step == 1 ? 'cl-light-primary title-b-u':''"
-                                            ng-if="step == 1">
-                                            <a ng-click="changeStep(1)">
-                                                <label class="h2-margin" gumga-translate-tag="title.parcels"></label>
-                                            </a>
-                                        </li>
-                                        <li class="uib-tab" heading="parcels"
-                                            ng-class="step == 1 ? 'cl-light-primary title-b-u':''"
-                                            ng-if="step == 2">
-                                            <a ng-click="changeStep(1)">Parcelas</a>
-                                        </li>
-                                        <li class="uib-tab" heading="rateio"
-                                            ng-class="step == 2 ? 'cl-light-primary title-b-u':''"
-                                            ng-if="step == 1">
-                                            <a ng-click="changeStep(2)">Rateio</a>
-                                        </li>
-                                        <li class="uib-tab" heading="rateio"
-                                            ng-class="step == 2 ? 'cl-light-primary title-b-u':''"
-                                            ng-if="step == 2">
-                                            <a ng-click="changeStep(2)">
-                                                <label class="h2-margin">Rateio</label>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="panel-body ma-pad-panel">
-                                    <div class="tab-content"
-                                         ng-class="title.data.parcel.length >= 1 ? 'tabs-content' : ''">
-                                        <!-- Parcelas -->
-                                        <div class="tab-pane" ng-class="step == 1 ? 'active': ''">
-                                            <div ng-if="title.data.parcel.length > 0 && title.data.numberParcel">
-                                                <div class="row ">
-                                                    <div class="col-md-3 text-center">
-                                                        <label gumga-translate-tag="title.numberparcel"></label>
-                                                    </div>
-                                                    <div class="col-md-3 text-center">
-                                                        <label gumga-translate-tag="title.expiration"></label>
-                                                    </div>
-                                                    <div class="col-md-3 text-center">
-                                                        <label gumga-translate-tag="title.value"></label>
-                                                    </div>
-                                                </div>
-                                                <div id="scrollParcels">
-                                                    <div class="row grid-parcels parcel-row" style="margin-bottom: 0px"
-                                                         ng-repeat="parcel in title.data.parcel">
-                                                        <div class="col-md-3"
-                                                             style="margin-left: 28px;margin-right: -30px;">
-                                                            <gmd-input>
-                                                                <input type="text"
-                                                                       class="form-control number-parcel gmd"
-                                                                       name="number"
-                                                                       ng-model="parcel.number" id="number"
-                                                                       readonly="true"
-                                                                       style="padding: 0;text-align: center; border-bottom:1px solid #333 !important"/>
-                                                                <span class="bar"></span>
-                                                            </gmd-input>
-                                                        </div>
-                                                        <div class="col-md-4" style="margin-top: 20px">
-                                                            <gumga-date ng-model="parcel.expiration"
-                                                                        name="expirationParcel{{$index}}"
-                                                                        ng-disabled="disableParcel(parcel)"
-                                                                        ng-keyup="verifyParcelDate(parcel)"></gumga-date>
-                                                        </div>
-                                                        <div class="col-md-3" style="margin-left: -30px;">
-                                                            <gmd-input>
-                                                                <input type="text"
-                                                                       class="form-control text-right inputParcel gmd"
-                                                                       name="value"
-                                                                       ng-model="parcel.value" gumga-error
-                                                                       ui-money-mask="2"
-                                                                       ng-focus="oldValueParcel = parcel.value"
-                                                                       ng-blur="changeValueParcel(parcel, oldValueParcel)"
-                                                                       style="padding:0"
-                                                                       ng-disabled="disableParcel(parcel)"/>
-                                                                <span class="bar"></span>
-                                                            </gmd-input>
-                                                        </div>
-                                                        <div class="col-md-1"
-                                                             ng-show="parcel.parcelPayments && parcel.parcelPayments.length">
-                                                            <button type="button"
-                                                                    class="inline-block btn-link btn-xs text-primary"
-                                                                    ng-click="showPayments(parcel)"><i
-                                                                    class="material-icons">search</i></button>
-                                                        </div>
-                                                        <div class=" col-md-1">
-                                                                <span ng-if="parcel.fullPaid"
-                                                                      class="label label-success">Pago</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-offset-7 col-md-5">
-                                                    <label ng-if="title.data.parcel.length > 0 && title.data.numberParcel"
-                                                           class="pull-right"
-                                                           style="margin-top: 1%;margin-right: 4%;">
-                                                        <span style="font-size: 20px">Total {{sumParcels(title.data.parcel) | currency: 'R$ '}}</span>
-                                                    </label>
-                                                    <label ng-if="title.data.parcel.length > 0 && title.data.numberParcel && titleType == 'editpay' && paymentRest > 0"
-                                                           class="pull-right" style="margin-right:4%">
-                                                        <span>Restante a pagar {{paymentRest | currency: "R$"}}</span>
-                                                    </label>
-                                                    <label ng-if="title.data.parcel.length > 0 && title.data.numberParcel && titleType == 'editreceive' && paymentRest > 0"
-                                                           class="pull-right" style="margin-right:4%">
-                                                        <span>Restante a receber {{paymentRest | currency: "R$"}}</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Rateio -->
-                                        <div class="tab-pane" ng-class="step == 2 ? 'active':''"
-                                             ng-mouseover="(title.data.hasPayment == false || title.data.hasRatio == false) ? TitleForm.$valid = true : ''">
-                                            <div class="row">
-                                                <div class="col-md-8">
-                                                    <label gumga-translate-tag="title.ratioPlan">ratioPlan</label>
-                                                    <!--search-method="ratioPlan.methods.asyncSearch('label',param)"-->
-                                                    <gumga-many-to-one
-                                                            value="title.data.ratioPlan"
-                                                            on-select="automaticRatio(value)"
-                                                            list="individuals"
-                                                            search-method="ratioPlanSearch(param)"
-                                                            field="name"
-                                                            class="gmd"
-                                                            description="plan.name"
-                                                            authorize-add="false">
-                                                        <match>
-                                                            <div>{{match.model.id}} - {{match.model.name}}</div>
-                                                        </match>
-                                                    </gumga-many-to-one>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <label ng-if="title.data.parcel.length > 0 && title.data.numberParcel"
-                                                           class="pull-right"
-                                                           style="margin-top: 1%;margin-right: 4%;">
-                                                        <span class="" style="font-size: 20px">Total {{sumParcels(title.data.parcel) | currency: 'R$ '}}</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="row" ng-if="title.data.ratioPlan" style="margin-left: 0;">
-                                                <div class="col-md-12">
-                                                    <ul class="list-group" ng-repeat="plan in planTree">
-                                                        <h4>{{plan.name}}</h4>
-                                                        <div class="row">
-                                                            <div class="col-md-12">
-                                                                <div>
-                                                                    <label gumga-translate-tag="title.planleaf"></label>
-                                                                    <ui-select multiple multiple
-                                                                               tagging="newPlanLeaf"
-                                                                               tagging-tokens=",|/"
-                                                                               ng-model="title.data.planLeafs[$index]"
-                                                                               on-select="selectedRatio($item, plan.type, $index)">
-                                                                        <ui-select-match placeholder="Contas">
-                                                                            <span ng-bind="$item.name"></span>
-                                                                        </ui-select-match>
-                                                                        <ui-select-choices repeat="item in selectArrays[plan.type.id]"
-                                                                                           refresh="buscaLeafs(plan,$select.search)">
-                                                                            <span>
-                                                                                {{item.name}}
-                                                                                <span class="pull-right">
-                                                                                    <i class="glyphicon glyphicon-info-sign"
-                                                                                       tooltip-append-to-body="true"
-                                                                                       tooltip-placement="left"
-                                                                                       uib-tooltip="{{item.completeName}}">
-                                                                                    </i>
-                                                                                </span>
-                                                                            </span>
-                                                                            <div ng-if="item.isTag">
-                                                                                {{item.value+' (novo)'}}
-                                                                            </div>
-                                                                        </ui-select-choices>
-                                                                    </ui-select>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <li class="list-group-item"
-                                                            ng-repeat="account in title.data.planLeafs[$index]">
-                                                            <div class="row" style="margin-bottom: 10px">
-                                                                <div class="col-md-8">
-                                                                    <h4>{{account.name}}</h4>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <gmd-input>
-                                                                        <input type="text" placeholder="Valor"
-                                                                               ng-focus="valores($index, account)"
-                                                                               name="value{{::$index}}"
-                                                                               ng-model="account.value"
-                                                                               ng-disabled="account.subPlanLeafs.length > 0"
-                                                                               gumga-error
-                                                                               ui-money-mask="2"
-                                                                               class="form-control text-right gmd"/>
-                                                                        <span class="bar"></span>
-                                                                    </gmd-input>
-                                                                </div>
-                                                                <p class="text-danger text-right"
-                                                                   ng-if="account.value > sumParcels(title.data.parcel) ">
-                                                                    Valor deve
-                                                                    ser
-                                                                    menor
-                                                                    que o valor total das parcelas</p>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div ng-show="plan.planChild.length > 0"
-                                                                     ng-init="checkSubPlanLeafs(account)">
-                                                                    <div class="col-md-6">
-                                                                        <ui-select ng-model="account.leaf"
-                                                                                   ng-disabled="invalidAddLeaf(account) || !account.value">
-                                                                            <ui-select-match
-                                                                                    placeholder="Unidade Rateio">
-                                                                                <span ng-bind="$select.selected.name"></span>
-                                                                            </ui-select-match>
-                                                                            <ui-select-choices
-                                                                                    repeat="item in selectArray"
-                                                                                    refresh="buscaSubLeafs(plan.planChild[0],$select.search)">
-                                                                                <span ng-bind="item.name"></span>
-                                                                            </ui-select-choices>
-                                                                        </ui-select>
-                                                                    </div>
-                                                                    <div class="col-md-3">
-                                                                        <gmd-input>
-                                                                            <input type="text"
-                                                                                   placeholder="Valor Unidade"
-                                                                                   ng-disabled="invalidAddLeaf(account) || !account.value"
-                                                                                   name="leafValue{{::$index}}"
-                                                                                   ng-model="account.valueLeaf"
-                                                                                   gumga-error ui-money-mask="2"
-                                                                                   class="form-control text-right gmd"/>
-                                                                            <span class="bar"></span>
-                                                                        </gmd-input>
-                                                                    </div>
-                                                                    <div class="col-md-3">
-                                                                        <button type="button"
-                                                                                class="btn btn-block btn-primary gmd raised"
-                                                                                ng-disabled="validAddLeaf(account) || invalidAddLeaf(account)"
-                                                                                ng-click="addLeaf(account, $index)">
-                                                                            <span class="glyphicon glyphicon-plus"></span>
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <ul class="list-group" ng-if="account.subPlanLeafs"
-                                                                style="margin-top:10px">
-                                                                <li class="list-group-item"
-                                                                    ng-repeat="leaf in account.subPlanLeafs">
-                                                                    <div class="row">
-                                                                        <div class="col-md-6">{{leaf.name}}</div>
-                                                                        <div class="col-md-3 text-right">
-                                                                            {{leaf.value |
-                                                                            currency:
-                                                                            'R$ '}}
-                                                                        </div>
-                                                                        <div class="col-md-3">
-                                                                            <a type="button"
-                                                                               class="text-danger pull-right"
-                                                                               ng-click="removeLeaf(account, $index)">
-                                                                                <span class="glyphicon glyphicon-remove"></span>
-                                                                            </a>
-                                                                        </div>
-                                                                    </div>
-                                                                </li>
-                                                            </ul>
-                                                            <br/>
-                                                            <p class="text-danger"
-                                                               ng-show="pL.value != subLeafs[$index] && plan.planChild.length>0">
-                                                                Valor
-                                                                dos
-                                                                rateios deve ser igual o valor da conta</p>
-                                                            <p class="text-danger"
-                                                               ng-show="pL.sub.planLeaf.value > pL.value ">Valor
-                                                                do
-                                                                rateio
-                                                                filho deve ser menor que o valor do rateio pai</p>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>  <!--Final Rateio-->
-                                    </div>      <!--Final dos nav-tab-->
-                                </div>          <!--Final parcela/rateio-->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!--<div style="margin-top:2%" ng-if="titleType == 'pay' || titleType == 'editpay' ">-->
-                <!--<button type="button" ng-click="back('listpay')" class="btn btn-default pull-right gmd raised">Cancelar-->
-                <!--</button>-->
-                <!--<div class="btn-group pull-right" uib-dropdown style="padding-right: 1%;">-->
-                <!--<button id="split-buttonPay" type="button" ng-click="save(title.data)" ng-disabled="!TitleForm.$valid"-->
-                <!--class="btn btn-primary gmd raised">Salvar-->
-                <!--</button>-->
-                <!--<button type="button" class="btn btn-primary gmd raised" uib-dropdown-toggle-->
-                <!--ng-disabled="!TitleForm.$valid">-->
-                <!--<span class="caret"></span>-->
-                <!--</button>-->
-                <!--<ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="split-button">-->
-                <!--<li role="menuitem"><a href ng-click="launchPaid()">Lançar Pago</a></li>-->
-                <!--</ul>-->
-                <!--</div>-->
-                <!--</div>-->
-                <!--<div style="margin-top:2%" ng-if="titleType == 'receive' || titleType == 'editreceive' || renegotiation ">-->
-                <!--<button type="button" ng-click="back('listreceive')" class="btn btn-default pull-right gmd raised">-->
-                <!--Cancelar-->
-                <!--</button>-->
-
-                <!--<div class="btn-group pull-right" uib-dropdown style="padding-right: 1%;">-->
-                <!--<button id="split-buttonReceive" type="button" ng-click="save(title.data)"-->
-                <!--ng-disabled="!TitleForm.$valid"-->
-                <!--class="btn btn-primary gmd raised">Salvar-->
-                <!--</button>-->
-
-                <!--<button type="button" class="btn btn-primary gmd raised" uib-dropdown-toggle-->
-                <!--ng-disabled="!TitleForm.$valid">-->
-                <!--<span class="caret"></span>-->
-                <!--</button>-->
-                <!--<ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="split-button">-->
-                <!--<li role="menuitem"><a href ng-click="launchPaid()">Lançar Pago</a></li>-->
-                <!--</ul>-->
-                <!--</div>-->
-                <!--</div>-->
-                <gmd-fab force-click="false" fixed opened="!fabs">
-                    <button class="bg-accent gmd-ripple"
-                            type="button"
-                            gumga-button
-                            ng-class="{ 'gmd-disabled' : blockBtnSave(TitleForm.$invalid || dateNull)}"
-                            ng-click="update(blockBtnSave(TitleForm.$invalid || dateNull), title.data)">
-                        <span class="material-icons">check</span>
-                    </button>
-                    <ul>
-                        <li class="bg-primary" ng-click="backToList()">
-                            <span>Voltar</span>
-                            <i class="material-icons gmd-ripple">keyboard_backspace</i>
-                        </li>
-                        <!--<li class="info bg-accent"-->
-                            <!--ng-class="{ 'gmd-disabled' : blockBtnSave(TitleForm.$invalid || dateNull)}"-->
-                            <!--ng-click="updatePaid(blockBtnSave(TitleForm.$invalid))">-->
-                            <!--<span>Lançar Pago</span>-->
-                            <!--<i class="material-icons gmd-ripple">save</i>-->
-                        <!--</li>-->
-                    </ul>
-                </gmd-fab>
-            </form>
+          </div>
         </div>
+      </div>
+      <form name="TitleForm"
+            gumga-form
+            novalidate>
+        <div class="row">
+          <div>
+            <div class="ma-form-title ma-title">
+              <label ng-class="{'modal-title': inModal}">Títulos a {{titleType =='pay' || titleType =='editpay' ? "PAGAR" : "RECEBER"}}
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="">
+          <!--Inputs dos dados-->
+          <div class="row">
+            <div class="col-md-6 ma-pad-right-panel">
+              <div class="panel gmd ma-panel"
+                   id="panel1">
+                <div class="panel-heading">
+                  <label class="cl-light-primary title-b-u">Dados do Título</label>
+                </div>
+                <div class="panel-body ma-pad-panel">
+                  <div class="row">
+                    <div class="col-md-12"
+                         ng-show="showBarCodeTitle()">
+                      <div gumga-form-class="barcode">
+                        <gmd-input>
+                          <input type="text"
+                                 name="barcode"
+                                 class="form-control gmd"
+                                 id="barcode"
+                                 ng-model="title.data.barcode"
+                                 ng-keydown="keyEnter($event)"
+                                 gumga-error
+                                 gumga-max-length="60"
+                                 autofocus="true"
+                                 tabindex="1"
+                                 ng-disabled="disable" />
+                          <span class="bar"></span>
+                          <label for="barcode"
+                                 gumga-translate-tag="title.barcode">barcode</label>
+                        </gmd-input>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div gumga-form-class="documentNumber">
+                        <gmd-input>
+                          <input type="text"
+                                 name="documentNumber"
+                                 class="form-control gmd"
+                                 id="numberdoc"
+                                 ng-model="title.data.documentNumber"
+                                 gumga-error
+                                 required
+                                 gumga-max-length="60"
+                                 tabindex="2"
+                                 ng-disabled="disable" />
+                          <span class="bar"></span>
+                          <label style="white-space: nowrap;"
+                                 for="numberdoc"
+                                 gumga-translate-tag="title.docnumber">nrodoc</label>
+                        </gmd-input>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="reset-height">
+                        <label ng-if="titleType == 'pay'     || titleType == 'editpay'"
+                               gumga-translate-tag="title.provider"></label>
+                        <label ng-if="titleType == 'receive' || titleType == 'editreceive'"
+                               gumga-translate-tag="title.client"></label>
+                        <gumga-many-to-one value="title.data.assignedIndividual"
+                                           required
+                                           list="individuals"
+                                           search-method="individual.methods.asyncSearch('name',param)"
+                                           field="name"
+                                           class="gmd"
+                                           authorize-add="false"
+                                           tab-seq="3"
+                                           modal-fields="id,name"
+                                           disabled="disable">
+                          <match>
+                            <div>{{match.model.id}} - {{match.model.name}}</div>
+                          </match>
+                        </gumga-many-to-one>
+                      </div>
+                    </div>
+                  </div>
+                  <div ng-if="titleType == 'receive' || titleType == 'editreceive'"
+                       class="row">
+                    <div class="col-md-12">
+                      <div class="reset-height">
+                        <label gumga-translate-tag="title.wallet"></label>
+                        <gumga-many-to-one value="title.data.walletTitle"
+                                           list="wallets"
+                                           required
+                                           search-method="wallet.methods.asyncSearch('name',param)"
+                                           field="name"
+                                           required
+                                           authorize-add="false"
+                                           tab-seq="4"
+                                           class="gmd"
+                                           on-select="selected(value)"
+                                           display-info="false"
+                                           disabled="disable">
+                        </gumga-many-to-one>
+                      </div>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <label gumga-translate-tag="title.documenttype"></label>
+                      <div class="reset-height">
+                        <!--async="false"-->
+                        <gumga-many-to-one display-info="false"
+                                           value="title.data.documentType"
+                                           list="documents"
+                                           required
+                                           class="gmd"
+                                           search-method="documentType.methods.asyncSearch('name',param)"
+                                           field="name"
+                                           tab-seq="5"
+                                           post-method="postDocType(value)"
+                                           authorize-add="true"
+                                           display-info="false"
+                                           disabled="disable">
+                        </gumga-many-to-one>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label gumga-translate-tag="title.emissiondate">emissiondate</label>
+                      <gumga-date ng-model="title.data.emissionDate"
+                                  id="emissiondate"
+                                  name="emissiondate"
+                                  ng-disabled="disable"></gumga-date>
+                    </div>
+                    <div class="col-md-4">
+                      <div gumga-form-class="parcelinterest">
+                        <label ng-if="interestActive"
+                               gumga-translate-tag="title.parcelinterest"></label>
+                        <label ng-if="!interestActive">Mora</label>
+                        <div class="input-group">
+                          <input type="text"
+                                 ng-if="interestActive"
+                                 name="parcelinterest"
+                                 ng-model="title.data.parcelinterest"
+                                 class="form-control text-right"
+                                 gumga-error
+                                 ui-percentage-mask
+                                 tabindex="7"
+                                 ng-disabled="disable" />
+                          <input type="text"
+                                 ng-if="!interestActive"
+                                 name="parcelinterest"
+                                 ng-model="title.data.mora"
+                                 class="form-control text-right"
+                                 gumga-error
+                                 ui-mon
+                                 ey-mask="2"
+                                 tabindex="7"
+                                 ng-disabled="disable" />
+                          <span class="input-group-btn">
+                            <button class="btn btn-default"
+                                    ng-click="calculatedInterest()">
+                              <i class="glyphicon glyphicon-sort"></i>
+                            </button>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div gumga-form-class="parcelpenalty">
+                        <gmd-input>
+                          <input type="text"
+                                 class="form-control text-right gmd"
+                                 name="parcelpenalty"
+                                 ng-model="title.data.parcelpenalty"
+                                 gumga-error
+                                 ui-percentage-mask
+                                 tabindex="8"
+                                 ng-disabled="disable" />
+                          <span class="bar"></span>
+                          <label gumga-translate-tag="title.parcelpenalty"></label>
+                        </gmd-input>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div gumga-form-class="value">
+                        <gmd-input>
+                          <input type="text"
+                                 name="value"
+                                 class="form-control text-right gmd"
+                                 id="valueParcel"
+                                 ng-model="title.data.value"
+                                 ng-blur="calculateParcels()"
+                                 ng-disabled="title.data.billetCollection >= 2 || disable"
+                                 gumga-error
+                                 ui-money-mask="2"
+                                 required
+                                 tabindex="9" />
+                          <span class="bar"></span>
+                          <label gumga-translate-tag="title.valueparcel"
+                                 ng-show="titleType == 'pay' || titleType== 'editpay'">valueparcel</label>
+                          <label gumga-translate-tag="title.valueparcelReceive"
+                                 ng-show="titleType == 'receive' || renegotiation || titleType== 'editreceive'">valueparcel</label>
+
+                        </gmd-input>
+                      </div>
+                    </div>
+                    <div class="col-md-4 ">
+                      <div gumga-form-class="numberParcel">
+                        <gmd-input>
+                          <input type="number"
+                                 min="1"
+                                 ng-disabled="!title.data.expiration || title.data.billetCollection >= 2 || disable"
+                                 ng-blur="change()"
+                                 name="numberParcel"
+                                 class="form-control gmd"
+                                 id="numberParcel"
+                                 max="300"
+                                 ng-model="title.data.numberParcel"
+                                 tabindex="10"
+                                 gumga-error
+                                 required/>
+                          <span class="bar"></span>
+                          <label for="numberParcel"
+                                 gumga-translate-tag="title.numberParcels">numberParcel</label>
+                          <p class="text-danger"
+                             ng-if="TitleForm.$error.max">Max de 300 parcelas
+                          </p>
+                        </gmd-input>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <label ng-show="title.data.numberParcel <= 1 || title.data.numberParcel == undefined"
+                             gumga-translate-tag="title.expiration">expiration</label>
+                      <label ng-show="title.data.numberParcel > 1"
+                             gumga-translate-tag="title.expirations">expiration</label>
+                      <gumga-date ng-model="title.data.expiration"
+                                  tabindex="11"
+                                  name="expiration"
+                                  ng-blur="change()"
+                                  required
+                                  ng-disabled="disable"></gumga-date>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div gumga-form-class="labels">
+                        <label for="labels"
+                               gumga-translate-tag="title.labels">Marcadores</label>
+                        <ui-select multiple
+                                   tagging="labelTransform"
+                                   tagging-tokens=",|/"
+                                   id="labels"
+                                   ng-model="title.data.labels"
+                                   theme="bootstrap"
+                                   tabindex="13"
+                                   name="labels"
+                                   title="Escolhe um marcador"
+                                   ng-disabled="disable">
+                          <ui-select-match placeholder="Selecione os marcadores...">
+                            {{$item.value}}
+                          </ui-select-match>
+                          <ui-select-choices repeat="label in labels">
+                            <div ng-if="label.isTag">{{label.value +' (novo)'}}</div>
+                            <div ng-if="!label.isTag">{{label.value + label.isTag}}
+                            </div>
+                          </ui-select-choices>
+                        </ui-select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div gumga-form-class="historic">
+                        <label for="historic"
+                               gumga-translate-tag="title.historic">historic</label>
+                        <textarea type="text"
+                                  name="historic"
+                                  class="form-control"
+                                  id="historic"
+                                  min="1"
+                                  max="60"
+                                  ng-model="title.data.memo"
+                                  tabindex="12"
+                                  gumga-error
+                                  ng-disabled="disable">
+                                            </textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 ma-pad-left-panel">
+              <div class="panel gmd ma-panel"
+                   id="panel2">
+                <div class="panel-heading">
+                  <ul class="nav nav-tabs cl-light-primary title-b-u gmd"
+                      style="margin-top: -8px;">
+                    <li class="uib-tab"
+                        heading="parcels"
+                        ng-class="step == 1 ? 'cl-light-primary title-b-u':''"
+                        ng-if="step == 1">
+                      <a ng-click="changeStep(1)">
+                        <label class="h2-margin"
+                               gumga-translate-tag="title.parcels"></label>
+                      </a>
+                    </li>
+                    <li class="uib-tab"
+                        heading="parcels"
+                        ng-class="step == 1 ? 'cl-light-primary title-b-u':''"
+                        ng-if="step == 2">
+                      <a ng-click="changeStep(1)">Parcelas</a>
+                    </li>
+                    <li class="uib-tab"
+                        heading="rateio"
+                        ng-class="step == 2 ? 'cl-light-primary title-b-u':''"
+                        ng-if="step == 1">
+                      <a ng-click="changeStep(2)">Rateio</a>
+                    </li>
+                    <li class="uib-tab"
+                        heading="rateio"
+                        ng-class="step == 2 ? 'cl-light-primary title-b-u':''"
+                        ng-if="step == 2">
+                      <a ng-click="changeStep(2)">
+                        <label class="h2-margin">Rateio</label>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="panel-body ma-pad-panel">
+                  <div class="tab-content"
+                       ng-class="title.data.parcel.length >= 1 ? '' : ''">
+                    <!-- Parcelas -->
+                    <div class="tab-pane"
+                         ng-class="step == 1 ? 'active': ''">
+                      <div ng-if="title.data.parcel.length > 0 && title.data.numberParcel">
+                        <div class="row reset-height">
+                          <div class="col-md-2 ma-no-pad-right text-center">
+                            <label gumga-translate-tag="title.numberparcel"></label>
+                          </div>
+                          <div class="col-md-4 ma-no-pad-all text-center">
+                            <label gumga-translate-tag="title.expiration"></label>
+                          </div>
+                          <div class="col-md-3 ma-no-pad-left text-center">
+                            <label gumga-translate-tag="title.value"></label>
+                          </div>
+                          <div class="col-md-2 text-center">
+                            <label>Status</label>
+                          </div>
+                        </div>
+                        <div class="row parcel-row reset-height"
+                             id="scrollParcels"
+                             ng-repeat="parcel in title.data.parcel">
+                          <div class="col-md-2 ma-no-pad-right">
+                            <gmd-input>
+                              <input type="text"
+                                     class="form-control number-parcel gmd text-center"
+                                     name="number"
+                                     ng-model="parcel.number"
+                                     id="number"
+                                     readonly="true" />
+                              <!-- style="padding: 0;text-align: center; border-bottom:1px solid #333 !important" -->
+                              <span class="bar"></span>
+                            </gmd-input>
+                          </div>
+                          <div class="col-md-4 ma-no-pad-all gmd-date-center"
+                               style="margin-top: 10px">
+                            <gumga-date ng-model="parcel.expiration"
+                                        name="expirationParcel{{$index}}"
+                                        ng-disabled="disableParcel(parcel)"
+                                        ng-keyup="verifyParcelDate(parcel)"></gumga-date>
+                          </div>
+                          <div class="col-md-3 ma-no-pad-left">
+                            <gmd-input>
+                              <input type="text"
+                                     class="form-control text-right inputParcel gmd"
+                                     name="value"
+                                     ng-model="parcel.value"
+                                     gumga-error
+                                     ui-money-mask="2"
+                                     ng-focus="oldValueParcel = parcel.value"
+                                     ng-blur="changeValueParcel(parcel, oldValueParcel)"
+                                     style="padding:0"
+                                     ng-disabled="disableParcel(parcel)" />
+                              <span class="bar"></span>
+                            </gmd-input>
+                          </div>
+                          <div class="col-md-2 text-center" style="margin-top: 18px;">
+                            <label ng-if="parcel.fullPaid"
+                                   class="label label-success" style="color:#fff;">Pago</label>
+                          </div>
+                          <div class="col-md-1 ma-no-pad-all"
+                               ng-show="parcel.parcelPayments && parcel.parcelPayments.length">
+                            <button type="button" style="margin-top: 12px;"
+                                    class="inline-block btn-link btn-xs text-primary"
+                                    ng-click="showPayments(parcel)">
+                              <i class="material-icons">search</i>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="col-md-offset-7 col-md-5">
+                          <label ng-if="title.data.parcel.length > 0 && title.data.numberParcel"
+                                 class="pull-right"
+                                 style="margin-top: 1%;margin-right: 4%;">
+                            <span style="font-size: 20px">Total {{sumParcels(title.data.parcel) | currency: 'R$ '}}</span>
+                          </label>
+                          <label ng-if="title.data.parcel.length > 0 && title.data.numberParcel && titleType == 'editpay' && paymentRest > 0"
+                                 class="pull-right"
+                                 style="margin-right:4%">
+                            <span>Restante a pagar {{paymentRest | currency: "R$"}}</span>
+                          </label>
+                          <label ng-if="title.data.parcel.length > 0 && title.data.numberParcel && titleType == 'editreceive' && paymentRest > 0"
+                                 class="pull-right"
+                                 style="margin-right:4%">
+                            <span>Restante a receber {{paymentRest | currency: "R$"}}</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Rateio -->
+                    <div class="tab-pane"
+                         ng-class="step == 2 ? 'active':''"
+                         ng-mouseover="(title.data.hasPayment == false || title.data.hasRatio == false) ? TitleForm.$valid = true : ''">
+                      <div class="row">
+                        <div class="col-md-8">
+                          <label gumga-translate-tag="title.ratioPlan">ratioPlan</label>
+                          <!--search-method="ratioPlan.methods.asyncSearch('label',param)"-->
+                          <gumga-many-to-one value="title.data.ratioPlan"
+                                             on-select="automaticRatio(value)"
+                                             list="individuals"
+                                             search-method="ratioPlanSearch(param)"
+                                             field="name"
+                                             class="gmd"
+                                             description="plan.name"
+                                             authorize-add="false">
+                            <match>
+                              <div>{{match.model.id}} - {{match.model.name}}</div>
+                            </match>
+                          </gumga-many-to-one>
+                        </div>
+                        <div class="col-md-4">
+                          <label ng-if="title.data.parcel.length > 0 && title.data.numberParcel"
+                                 class="pull-right"
+                                 style="margin-top: 1%;margin-right: 4%;">
+                            <span class=""
+                                  style="font-size: 20px">Total {{sumParcels(title.data.parcel) | currency: 'R$ '}}</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="row"
+                           ng-if="title.data.ratioPlan"
+                           style="margin-left: 0;">
+                        <div class="col-md-12">
+                          <ul class="list-group"
+                              ng-repeat="plan in planTree">
+                            <h4>{{plan.name}}</h4>
+                            <div class="row">
+                              <div class="col-md-12">
+                                <div>
+                                  <label gumga-translate-tag="title.planleaf"></label>
+                                  <ui-select multiple
+                                             multiple
+                                             tagging="newPlanLeaf"
+                                             tagging-tokens=",|/"
+                                             ng-model="title.data.planLeafs[$index]"
+                                             on-select="selectedRatio($item, plan.type, $index)">
+                                    <ui-select-match placeholder="Contas">
+                                      <span ng-bind="$item.name"></span>
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="item in selectArrays[plan.type.id]"
+                                                       refresh="buscaLeafs(plan,$select.search)">
+                                      <span>
+                                        {{item.name}}
+                                        <span class="pull-right">
+                                          <i class="glyphicon glyphicon-info-sign"
+                                             tooltip-append-to-body="true"
+                                             tooltip-placement="left"
+                                             uib-tooltip="{{item.completeName}}">
+                                          </i>
+                                        </span>
+                                      </span>
+                                      <div ng-if="item.isTag">
+                                        {{item.value+' (novo)'}}
+                                      </div>
+                                    </ui-select-choices>
+                                  </ui-select>
+                                </div>
+                              </div>
+                            </div>
+                            <li class="list-group-item"
+                                ng-repeat="account in title.data.planLeafs[$index]">
+                              <div class="row"
+                                   style="margin-bottom: 10px">
+                                <div class="col-md-8">
+                                  <h4>{{account.name}}</h4>
+                                </div>
+                                <div class="col-md-4">
+                                  <gmd-input>
+                                    <input type="text"
+                                           placeholder="Valor"
+                                           ng-focus="valores($index, account)"
+                                           name="value{{::$index}}"
+                                           ng-model="account.value"
+                                           ng-disabled="account.subPlanLeafs.length > 0"
+                                           gumga-error
+                                           ui-money-mask="2"
+                                           class="form-control text-right gmd" />
+                                    <span class="bar"></span>
+                                  </gmd-input>
+                                </div>
+                                <p class="text-danger text-right"
+                                   ng-if="account.value > sumParcels(title.data.parcel) ">
+                                  Valor deve ser menor que o valor total das parcelas</p>
+                              </div>
+                              <div class="row">
+                                <div ng-show="plan.planChild.length > 0"
+                                     ng-init="checkSubPlanLeafs(account)">
+                                  <div class="col-md-6">
+                                    <ui-select ng-model="account.leaf"
+                                               ng-disabled="invalidAddLeaf(account) || !account.value">
+                                      <ui-select-match placeholder="Unidade Rateio">
+                                        <span ng-bind="$select.selected.name"></span>
+                                      </ui-select-match>
+                                      <ui-select-choices repeat="item in selectArray"
+                                                         refresh="buscaSubLeafs(plan.planChild[0],$select.search)">
+                                        <span ng-bind="item.name"></span>
+                                      </ui-select-choices>
+                                    </ui-select>
+                                  </div>
+                                  <div class="col-md-3">
+                                    <gmd-input>
+                                      <input type="text"
+                                             placeholder="Valor Unidade"
+                                             ng-disabled="invalidAddLeaf(account) || !account.value"
+                                             name="leafValue{{::$index}}"
+                                             ng-model="account.valueLeaf"
+                                             gumga-error
+                                             ui-money-mask="2"
+                                             class="form-control text-right gmd" />
+                                      <span class="bar"></span>
+                                    </gmd-input>
+                                  </div>
+                                  <div class="col-md-3">
+                                    <button type="button"
+                                            class="btn btn-block btn-primary gmd raised"
+                                            ng-disabled="validAddLeaf(account) || invalidAddLeaf(account)"
+                                            ng-click="addLeaf(account, $index)">
+                                      <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                              <ul class="list-group"
+                                  ng-if="account.subPlanLeafs"
+                                  style="margin-top:10px">
+                                <li class="list-group-item"
+                                    ng-repeat="leaf in account.subPlanLeafs">
+                                  <div class="row">
+                                    <div class="col-md-6">{{leaf.name}}</div>
+                                    <div class="col-md-3 text-right">
+                                      {{leaf.value | currency: 'R$ '}}
+                                    </div>
+                                    <div class="col-md-3">
+                                      <a type="button"
+                                         class="text-danger pull-right"
+                                         ng-click="removeLeaf(account, $index)">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                      </a>
+                                    </div>
+                                  </div>
+                                </li>
+                              </ul>
+                              <br/>
+                              <p class="text-danger"
+                                 ng-show="pL.value != subLeafs[$index] && plan.planChild.length>0">
+                                Valor dos rateios deve ser igual o valor da conta</p>
+                              <p class="text-danger"
+                                 ng-show="pL.sub.planLeaf.value > pL.value ">Valor do rateio filho deve ser menor que o valor do rateio pai</p>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <!--Final Rateio-->
+                  </div>
+                  <!--Final dos nav-tab-->
+                </div>
+                <!--Final parcela/rateio-->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--<div style="margin-top:2%" ng-if="titleType == 'pay' || titleType == 'editpay' ">-->
+        <!--<button type="button" ng-click="back('listpay')" class="btn btn-default pull-right gmd raised">Cancelar-->
+        <!--</button>-->
+        <!--<div class="btn-group pull-right" uib-dropdown style="padding-right: 1%;">-->
+        <!--<button id="split-buttonPay" type="button" ng-click="save(title.data)" ng-disabled="!TitleForm.$valid"-->
+        <!--class="btn btn-primary gmd raised">Salvar-->
+        <!--</button>-->
+        <!--<button type="button" class="btn btn-primary gmd raised" uib-dropdown-toggle-->
+        <!--ng-disabled="!TitleForm.$valid">-->
+        <!--<span class="caret"></span>-->
+        <!--</button>-->
+        <!--<ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="split-button">-->
+        <!--<li role="menuitem"><a href ng-click="launchPaid()">Lançar Pago</a></li>-->
+        <!--</ul>-->
+        <!--</div>-->
+        <!--</div>-->
+        <!--<div style="margin-top:2%" ng-if="titleType == 'receive' || titleType == 'editreceive' || renegotiation ">-->
+        <!--<button type="button" ng-click="back('listreceive')" class="btn btn-default pull-right gmd raised">-->
+        <!--Cancelar-->
+        <!--</button>-->
+
+        <!--<div class="btn-group pull-right" uib-dropdown style="padding-right: 1%;">-->
+        <!--<button id="split-buttonReceive" type="button" ng-click="save(title.data)"-->
+        <!--ng-disabled="!TitleForm.$valid"-->
+        <!--class="btn btn-primary gmd raised">Salvar-->
+        <!--</button>-->
+
+        <!--<button type="button" class="btn btn-primary gmd raised" uib-dropdown-toggle-->
+        <!--ng-disabled="!TitleForm.$valid">-->
+        <!--<span class="caret"></span>-->
+        <!--</button>-->
+        <!--<ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="split-button">-->
+        <!--<li role="menuitem"><a href ng-click="launchPaid()">Lançar Pago</a></li>-->
+        <!--</ul>-->
+        <!--</div>-->
+        <!--</div>-->
+        <gmd-fab force-click="false"
+                 fixed
+                 opened="!fabs">
+          <button class="bg-accent gmd-ripple"
+                  type="button"
+                  gumga-button
+                  ng-class="{ 'gmd-disabled' : blockBtnSave(TitleForm.$invalid || dateNull)}"
+                  ng-click="update(blockBtnSave(TitleForm.$invalid || dateNull), title.data)">
+            <span class="material-icons">check</span>
+          </button>
+          <ul>
+            <li class="bg-primary"
+                ng-click="backToList()">
+              <span>Voltar</span>
+              <i class="material-icons gmd-ripple">keyboard_backspace</i>
+            </li>
+            <!--<li class="info bg-accent"-->
+            <!--ng-class="{ 'gmd-disabled' : blockBtnSave(TitleForm.$invalid || dateNull)}"-->
+            <!--ng-click="updatePaid(blockBtnSave(TitleForm.$invalid))">-->
+            <!--<span>Lançar Pago</span>-->
+            <!--<i class="material-icons gmd-ripple">save</i>-->
+            <!--</li>-->
+          </ul>
+        </gmd-fab>
+      </form>
     </div>
+  </div>
 </div>

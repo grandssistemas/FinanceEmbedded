@@ -1,6 +1,7 @@
 let template = require('./../views/receiptPrint.html');
 
 PayReceiveEmbeddedController.$inject = [
+    'SweetAlert',
     'FinanceConfigurationService',
     '$scope',
     '$timeout',
@@ -23,7 +24,8 @@ PayReceiveEmbeddedController.$inject = [
     'PercentageFinanceUtilsService',
     'FinanceReportService'];
 
-function PayReceiveEmbeddedController(FinanceConfigurationService,
+function PayReceiveEmbeddedController(SweetAlert,
+                                      FinanceConfigurationService,
                                       $scope,
                                       $timeout,
                                       IndividualCreditService,
@@ -445,10 +447,41 @@ function PayReceiveEmbeddedController(FinanceConfigurationService,
 
     $scope.makePayment = function (payment) {
         $scope.post = payment;
+
+        $scope.teste = () => {
+
+        }
+
         PaymentService.receive(payment)
-            .then(function () {
+            .then(function (resp) {
+                console.log(resp);
+                let baseState = 'titleparcelreceive.list';
+                SweetAlert.swal({
+                        title: 'Confirmação',
+                        text: 'Deseja imprimir o recibo deste título?',
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: '#DD6B55', confirmButtonText: "Sim",
+                        cancelButtonText: 'Não',
+                        closeOnConfirm: true,
+                        closeOnCancel: true
+                    },
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            let variables = [];
+                            variables.push(FinanceReportService.mountVariable('', 'idPayment', resp.data.id));
+
+                            FinanceReportService.openModalViewer('RECEIPTTITLE', [], variables, $scope.teste(), baseState).then((resp) => {
+                            });
+                        }
+                    }
+                );
                 $scope.$ctrl.onMakePayment();
-            })
+            });
+
+
+
+
     }
 
     $scope.setarfocusPayment = function (value) {

@@ -19,36 +19,36 @@ TitleFormEmbeddedController.$inject = [
     '$state'];
 
 function TitleFormEmbeddedController(TitleService,
-                                                    $uibModal,
-                                                    $scope,
-                                                    gumgaController,
-                                                    $timeout,
-                                                    IndividualEmbeddedService,
-                                                    DocumentTypeService,
-                                                    RatioPlanService,
-                                                    PlanLeafService,
-                                                    WalletService,
-                                                    FinanceUnitService,
-                                                    SweetAlert,
-                                                    MoneyUtils,
-                                                    TitleParcelPayService,
-                                                    $state){
+                                     $uibModal,
+                                     $scope,
+                                     gumgaController,
+                                     $timeout,
+                                     IndividualEmbeddedService,
+                                     DocumentTypeService,
+                                     RatioPlanService,
+                                     PlanLeafService,
+                                     WalletService,
+                                     FinanceUnitService,
+                                     SweetAlert,
+                                     MoneyUtils,
+                                     TitleParcelPayService,
+                                     $state) {
     let ctrl = this;
 
     ctrl.$onInit = () => {
-         $scope.entity = angular.copy(ctrl.entity) || {
-             data: {
-                 parcel: []
-             }
-         }
+        $scope.entity = angular.copy(ctrl.entity) || {
+            data: {
+                parcel: []
+            }
+        }
 
-         $scope.entity.data.parcel.sort((a, b) => {
-             return a.number - b.number;
-         });
+        $scope.entity.data.parcel.sort((a, b) => {
+            return a.number - b.number;
+        });
         createMethods();
     }
 
-    function createMethods(){
+    function createMethods() {
         gumgaController.createRestMethods($scope, DocumentTypeService, 'documentType');
         gumgaController.createRestMethods($scope, FinanceUnitService, 'financeunit');
         gumgaController.createRestMethods($scope, IndividualEmbeddedService, 'individual');
@@ -291,7 +291,7 @@ function TitleFormEmbeddedController(TitleService,
             if (barcode) {
                 $scope.title.data.billetCollection++;
                 TitleService.readBarCode(barcode).then(function (response) {
-                    $scope.title.data.documentType = {"name": response.data.classe};
+                    $scope.title.data.documentType = { "name": response.data.classe };
                     if (response.data.individual.length > 0) {
                         $scope.title.data.assignedIndividual = response.data.individual[0];
                         if (response.data.individual[0].preferentialRatioPlan !== null) {
@@ -306,7 +306,7 @@ function TitleFormEmbeddedController(TitleService,
                     } else {
                         $scope.title.data.expiration = new Date(response.data.expirationDate)
                     }
-                    var itemLabel = {value: response.data.classe, isTag: true};
+                    var itemLabel = { value: response.data.classe, isTag: true };
                     $scope.title.data.labels = [itemLabel];
                     $scope.addParcel();
                 }, function (error) {
@@ -378,7 +378,7 @@ function TitleFormEmbeddedController(TitleService,
         };
 
         $scope.back = function (rote) {
-            $scope.$ctrl.onBackClick({rote: rote});
+            $scope.$ctrl.onBackClick({ rote: rote });
         };
 
         //Adicionar folha no rateio
@@ -604,7 +604,7 @@ function TitleFormEmbeddedController(TitleService,
         $scope.totalSumParcel = $scope.sumParcels($scope.title.data.parcel);
 
         $scope.changeValueParcel = function (payment, oldValue) {
-            if (!angular.equals(oldValue, payment.value) && $scope.title.data.parcel.length > 1 && $scope.title.data.id != null  && $scope.title.data.titleType == "RECEIVE") {
+            if (!angular.equals(oldValue, payment.value) && $scope.title.data.parcel.length > 1 && $scope.title.data.id != null && $scope.title.data.titleType == "RECEIVE") {
                 SweetAlert.swal({
                         title: "Valor",
                         text: "Deseja alterar o valor das demais parcelas?",
@@ -718,21 +718,17 @@ function TitleFormEmbeddedController(TitleService,
                 SweetAlert.swal("Nenhum pagamento encontrado", "Nenhum pagamento foi realizado para a parcela selecionada.", "warning");
                 return;
             }
-
-            TitleParcelPayService.getPaymentsByParcel(parcel.id).then((data) => {
-                let payments = data.data;
-                $uibModal.open({
-                    animation: true,
-                    templateUrl: templatePayments,
-                    controller: 'PaymentsModalController',
-                    backdrop: 'static',
-                    size: 'md',
-                    resolve: {
-                        payments: function () {
-                            return payments;
-                        }
+            $uibModal.open({
+                animation: true,
+                templateUrl: templatePayments,
+                controller: 'PaymentsModalController',
+                backdrop: 'static',
+                size: 'md',
+                resolve: {
+                    parcelPayments: function () {
+                        return parcel.parcelPayments;
                     }
-                });
+                }
             });
         }
     }
@@ -740,4 +736,3 @@ function TitleFormEmbeddedController(TitleService,
 }
 
 export default TitleFormEmbeddedController;
-
