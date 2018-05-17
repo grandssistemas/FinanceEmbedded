@@ -49,10 +49,10 @@ function FinanceReportService(GumgaRest, $uibModal,  FinanceEmbeddedService) {
         return variable;
     };
 
-    service.openModalViewer = function (type,filters,variables,noReport) {
+    service.openModalViewer = function (type,filters,variables,noReport,baseState) {
         service.getDefault(type).then((response) => {
             if (response.data) {
-                $uibModal.open({
+                const modal = $uibModal.open({
                     templateUrl: modalTemplate,
                     controller: 'ViewerEmbeddedController',
                     backdrop: 'static',
@@ -68,10 +68,14 @@ function FinanceReportService(GumgaRest, $uibModal,  FinanceEmbeddedService) {
                             return variables;
                         },
                         backState: function () {
-                            return '';
+                            return baseState;
                         }
                     }
                 });
+                modal.result.then(() => {
+                }, () => {
+                    $state.go(baseState)
+                })
             } else {
                 noReport();
             }

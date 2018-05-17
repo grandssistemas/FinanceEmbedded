@@ -454,6 +454,7 @@ function PayReceiveEmbeddedController(SweetAlert,
 
         PaymentService.receive(payment)
             .then(function (resp) {
+                console.log(resp);
                 let baseState = 'titleparcelreceive.list';
                 SweetAlert.swal({
                         title: 'Confirmação',
@@ -467,21 +468,20 @@ function PayReceiveEmbeddedController(SweetAlert,
                     },
                     function (isConfirm) {
                         if (isConfirm) {
-                            FinanceReportService.openModalViewer('RECEIPTTITLE', [], [], $scope.teste(), baseState).then((resp) => {
-                                console.log('Má Foi ...');
+                            let variables = [];
+                            variables.push(FinanceReportService.mountVariable('', 'idPayment', resp.data.id));
+
+                            FinanceReportService.openModalViewer('RECEIPTTITLE', [], variables, $scope.teste(), baseState).then((resp) => {
                             });
                         }
                     }
                 );
-                // $scope.$ctrl.onMakePayment();
+                $scope.$ctrl.onMakePayment();
             });
 
 
 
-        // PaymentService.receive(payment)
-        //     .then(function () {
-        //         $scope.$ctrl.onMakePayment();
-        //     })
+
     }
 
     $scope.setarfocusPayment = function (value) {
