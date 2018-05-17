@@ -1,31 +1,50 @@
+<div class="col-md-12">
 
-
-<div class="row">
-    <div class="col-md-12">
-
-        <div class="panel gmd">
-            <div class="panel-heading modal-title">
-                Pagamentos
-            </div>
-            <div class="panel-body">
-
-                <gumga-list
-                        configuration="tableConfig"
+    <div style="box-shadow: none;"
+         class="panel gmd">
+        <div class="panel-heading modal-title">
+            {{ messageLoading ? messageLoading : (paymentDetails ? 'Pagamento do dia ' + (paymentDetails.momment | date: 'dd/MM/yyyy' ) : 'Pagamentos') }}
+        </div>
+        <div class="panel-body"
+             ng-show="!messageLoading && !paymentDetails">
+            <gumga-list configuration="tableConfig"
                         data="payments"
                         name="payments-modal-list"
+                        on-click="searchEntrys($value)"
                         max-height="50vh">
-                </gumga-list>
-            </div>
-            <div class="panel-footer">
-                <div class="row">
-                    <div class="pull-right m-r-sm">
-                        <button type="button" class="btn gmd raised btn-warning" ng-click="close()">
-                            <i class="material-icons" style="vertical-align: middle">close</i>
-                            Fechar
-                        </button>
-                    </div>
+            </gumga-list>
+        </div>
+        <div class="panel-body"
+             ng-if="paymentDetails">
+            <gumga-list configuration="tableEntryConfig"
+                        data="paymentDetails.entrys"
+                        name="payments-modal-list"
+                        max-height="50vh">
+            </gumga-list>
+        </div>
+        <div class="panel-footer"
+             ng-show="!messageLoading">
+            <div class="row">
+                <div class="pull-right m-r-sm">
+                    <button type="button"
+                            ng-if="!paymentDetails"
+                            class="btn gmd raised btn-warning"
+                            ng-click="close()">
+                        <i class="material-icons"
+                           style="vertical-align: middle">close</i>
+                        Fechar
+                    </button>
+                    <button type="button"
+                            ng-if="paymentDetails"
+                            class="btn gmd raised btn-warning"
+                            ng-click="back()">
+                        <i class="material-icons"
+                           style="vertical-align: middle">keyboard_arrow_left</i>
+                        Voltar
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+
 </div>

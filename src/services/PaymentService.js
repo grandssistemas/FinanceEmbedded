@@ -11,6 +11,8 @@ function PaymentService(GumgaRest, FinanceEmbeddedService) {
         return Service.extend('post', '/receive', payment);
     };
 
+    Service.getById = (id) => Service.extend('get', '/' + id);
+
     return Service;
 }
 
