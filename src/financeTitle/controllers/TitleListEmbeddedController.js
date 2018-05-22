@@ -2,6 +2,7 @@
 let modalTemplate = require('../views/receiveTitlePrintModal.html');
 TitleListEmbeddedController.$inject = [
     '$scope',
+    '$state',
     'TitleService',
     'FinanceReportService',
     'SweetAlert',
@@ -9,6 +10,7 @@ TitleListEmbeddedController.$inject = [
     'gumgaController'];
 function TitleListEmbeddedController(
     $scope,
+    $state,
     TitleService,
     FinanceReportService,
     SweetAlert,
@@ -26,76 +28,6 @@ function TitleListEmbeddedController(
     $scope.$ctrl.$onInit = () => {
         $scope.titleType = $scope.$ctrl.titleType;
         $scope.title.methods.get($scope.currentPage);
-
-        $scope.tableConf = {
-            columns: 'titleType, issuedAt,documentNumber, participationsFormatted, expiration, docname, value, btns',
-            materialTheme: true,
-            title: $scope.titleType === "pay" ? 'Listagem de Contas a Pagar' : 'Listagem de Contas a Receber',
-            columnsConfig: [
-                {
-                    name: 'titleType',
-                    title: '<span gumga-translate-tag="title.titleType"></span>',
-                    content: '<span style="">{{$value.titleType == \'PAY\' ? \'A PAGAR\' : \'A RECEBER\'}}</span>',
-                    size: 'col-md-2 col-lg-1'
-    
-                }, {
-                    name: 'issuedAt',
-                    title: '<span gumga-translate-tag="title.issuedAt"></span>',
-                    content: '<span>{{$value.emissionDate | date: \'dd/MM/yyyy\' }}</span>'
-    
-                }, {
-                    name: 'documentNumber',
-                    title: '<span gumga-translate-tag="title.documentNumberAdapted"></span>',
-                    content: '<span>{{$value.documentNumber}}</span>'
-    
-                }, {
-                    name: 'participationsFormatted',
-                    title: '<span gumga-translate-tag="title.participationsFormatted"></span>',
-                    content: '<div uib-tooltip="{{$value.participationsFormatted}}" ng-class="{\'text-overflow-list\':$value.participations.length == 1, \'text-align-center\':$value.participations.length > 1}">' +
-                    '<i class=" glyphicon glyphicon-user"></i><i class=" glyphicon glyphicon-user" ng-if="$value.participations.length > 1"></i>' +
-                    '&nbsp;<span ng-if="$value.participations.length == 1">{{$value.participationsFormatted}}</span></div>'
-    
-                }, {
-                    name: 'expiration',
-                    title: '<span gumga-translate-tag="title.expiration"></span>',
-                    content: '<span>{{$parent.$parent.getNextParcelExpiration($value.parcel) | date: \'dd/MM/yyyy\'}}</span>'
-    
-                }, {
-                    name: 'docname',
-                    title: '<span gumga-translate-tag="title.documentType"></span>',
-                    content: '<span>{{$value.documentType.name}}</span>'
-    
-                }, {
-                    name: 'value',
-                    title: '<span gumga-translate-tag="title.value"></span>',
-                    content: '<span>{{$value.value | currency}}</span>'
-    
-                }, {
-                    name: 'btns',
-                    title: ' ',
-                    content: `
-                    <div style="display:inline-block;">
-                        <span>
-                            &nbsp;&nbsp;
-                            <a uib-tooltip="Renegociar" 
-                               ng-show="!$value.fullPaid && $value.isRenegotiate" 
-                               class="btn btn-primary btn-sm" 
-                               ng-disabled="$value.replacedBy || $value.fullPaid" 
-                               ng-click="$parent.$parent.replacement($value, $value.fullPaid)">
-                                <i class="fa fa-share-square-o"></i>
-                            </a>
-                        </span>                                                                         
-                    </div>
-                    <span ng-if="!$value.isReversed && $value.replacedBy" class="label label-warning">Renegociado</span>
-                    <span ng-if="$value.isReversed" class="label label-danger">Estornado</span>
-                    <span ng-if="!$value.isReversed && $value.hasPayment && !$value.fullPaid" class="label label-info">Parcial</span>                    
-                    <span ng-if="!$value.isReversed && $value.fullPaid && $value.titleType == \'RECEIVE\'" class="label label-success">Recebido</span>
-                    <span ng-if="!$value.isReversed && $value.fullPaid && $value.titleType == \'PAY\'" class="label label-success">Pago</span>
-                    <span ng-if="!$value.isReversed && !$value.hasRatio" class="glyphicon glyphicon-info-sign pull-right" uib-tooltip=\'Sem Rateio\' tooltip-placement=\'left\'></span>`,
-                    size: 'col-md-3'
-                }]
-        };
-
     }
 
     $scope.title.on('deleteSuccess', function () {
@@ -108,7 +40,7 @@ function TitleListEmbeddedController(
 
     $scope.title.methods.get = function (page) {
         $scope.currentPage = page;
-        TitleService.findTitleWithParticipations(($scope.titleType||"").toUpperCase(), page).then(function (response) {
+        TitleService.findTitleWithParticipations(($scope.titleType || "").toUpperCase(), page).then(function (response) {
             $scope.title.data = response.data.values;
             $scope.title.count = response.data.count;
             $scope.title.pageSize = response.data.pageSize;
@@ -116,13 +48,13 @@ function TitleListEmbeddedController(
     };
 
     $scope.simpleSearch = function (field, param) {
-        if (param === ""){
+        if (param === "") {
             $scope.title.methods.get(1);
             return;
         }
 
         var aq = "obj." + field + " like '" + param + "'";
-        TitleService.findTitleWithParticipations(($scope.titleType||"").toUpperCase(), 1, aq).then(function (data) {
+        TitleService.findTitleWithParticipations(($scope.titleType || "").toUpperCase(), 1, aq).then(function (data) {
             $scope.title.data = data.data.values;
             $scope.title.count = data.data.count;
             $scope.title.pageSize = data.data.pageSize;
@@ -140,14 +72,20 @@ function TitleListEmbeddedController(
         })
     };
 
-    $scope.selected = {};
-    $scope.labels = [];
-    TitleService.getLabels()
-        .then(function (response) {
-            $scope.labels = response.data.values;
-        }, function (error) {
-            console.error(error.data);
-        });
+
+    const initialize = () => {
+        $scope.titleType = $scope.titleType || $state.$current.data.type;
+        $scope.selected = {};
+        $scope.labels = [];
+        TitleService.getLabels()
+            .then(function (response) {
+                $scope.labels = response.data.values;
+            }, function (error) {
+                console.error(error.data);
+            });
+    }
+
+    initialize();
 
     $scope.buscaTag = function (param) {
         var search = "searchFields=value&q=" + param;
@@ -160,7 +98,7 @@ function TitleListEmbeddedController(
         $scope.selected.labels.clear();
         $scope.selected.labels[0] = label;
 
-        TitleService.searchTags(label.value, ($scope.titleType||"").toUpperCase()).then(function (response) {
+        TitleService.searchTags(label.value, ($scope.titleType || "").toUpperCase()).then(function (response) {
             $scope.title.data = response.data.values
         })
     };
@@ -171,9 +109,76 @@ function TitleListEmbeddedController(
 
     $scope.titleList = [];
 
-    
+    $scope.tableConf = {
+        columns: 'titleType, issuedAt,documentNumber, participationsFormatted, expiration, docname, value, btns',
+        materialTheme: true,
+        title: ($scope.titleType || '').toLowerCase() === 'pay' ? 'Listagem de Contas a Pagar' : 'Listagem de Contas a Receber',
+        columnsConfig: [
+            {
+                name: 'titleType',
+                title: '<span gumga-translate-tag="title.titleType"></span>',
+                content: '<span style="">{{$value.titleType == \'PAY\' ? \'A PAGAR\' : \'A RECEBER\'}}</span>',
+                size: 'col-md-2 col-lg-1'
 
-    $scope.openPrintings = function(id){
+            }, {
+                name: 'issuedAt',
+                title: '<span gumga-translate-tag="title.issuedAt"></span>',
+                content: '<span>{{$value.emissionDate | date: \'dd/MM/yyyy\' }}</span>'
+
+            }, {
+                name: 'documentNumber',
+                title: '<span gumga-translate-tag="title.documentNumberAdapted"></span>',
+                content: '<span>{{$value.documentNumber}}</span>'
+
+            }, {
+                name: 'participationsFormatted',
+                title: '<span gumga-translate-tag="title.participationsFormatted"></span>',
+                content: '<div uib-tooltip="{{$value.participationsFormatted}}" ng-class="{\'text-overflow-list\':$value.participations.length == 1, \'text-align-center\':$value.participations.length > 1}">' +
+                    '<i class=" glyphicon glyphicon-user"></i><i class=" glyphicon glyphicon-user" ng-if="$value.participations.length > 1"></i>' +
+                    '&nbsp;<span ng-if="$value.participations.length == 1">{{$value.participationsFormatted}}</span></div>'
+
+            }, {
+                name: 'expiration',
+                title: '<span gumga-translate-tag="title.expiration"></span>',
+                content: '<span>{{$parent.$parent.getNextParcelExpiration($value.parcel) | date: \'dd/MM/yyyy\'}}</span>'
+
+            }, {
+                name: 'docname',
+                title: '<span gumga-translate-tag="title.documentType"></span>',
+                content: '<span>{{$value.documentType.name}}</span>'
+
+            }, {
+                name: 'value',
+                title: '<span gumga-translate-tag="title.value"></span>',
+                content: '<span>{{$value.value | currency}}</span>'
+
+            }, {
+                name: 'btns',
+                title: ' ',
+                content: `
+                <div style="display:inline-block;">
+                    <span>
+                        &nbsp;&nbsp;
+                        <a uib-tooltip="Renegociar" 
+                           ng-show="!$value.fullPaid && $value.isRenegotiate" 
+                           class="btn btn-primary btn-sm" 
+                           ng-disabled="$value.replacedBy || $value.fullPaid" 
+                           ng-click="$parent.$parent.replacement($value, $value.fullPaid)">
+                            <i class="fa fa-share-square-o"></i>
+                        </a>
+                    </span>                                                                         
+                </div>
+                <span ng-if="!$value.isReversed && $value.replacedBy" class="label label-warning">Renegociado</span>
+                <span ng-if="$value.isReversed" class="label label-danger">Estornado</span>
+                <span ng-if="!$value.isReversed && $value.hasPayment && !$value.fullPaid" class="label label-info">Parcial</span>                    
+                <span ng-if="!$value.isReversed && $value.fullPaid && $value.titleType == \'RECEIVE\'" class="label label-success">Recebido</span>
+                <span ng-if="!$value.isReversed && $value.fullPaid && $value.titleType == \'PAY\'" class="label label-success">Pago</span>
+                <span ng-if="!$value.isReversed && !$value.hasRatio" class="glyphicon glyphicon-info-sign pull-right" uib-tooltip=\'Sem Rateio\' tooltip-placement=\'left\'></span>`,
+                size: 'col-md-3'
+            }]
+    };
+
+    $scope.openPrintings = function (id) {
         $uibModal.open({
             templateUrl: modalTemplate,
             controller: 'ReceiveTitlePrintModalController',
@@ -188,15 +193,15 @@ function TitleListEmbeddedController(
     };
 
     $scope.goInsert = function () {
-        $scope.$ctrl.onNewTitle({type: $scope.$ctrl.titleType});
+        $scope.$ctrl.onNewTitle({ type: $scope.$ctrl.titleType });
     };
 
     $scope.goEdit = function (type, id, fullPaid) {
-        $scope.$ctrl.onEditTitle({type: type, id: id, fullPaid: fullPaid});
+        $scope.$ctrl.onEditTitle({ type: type, id: id, fullPaid: fullPaid });
     };
 
     $scope.replacement = function (value, fullPaid) {
-        $scope.$ctrl.onReplacement({value: value, fullPaid: fullPaid});
+        $scope.$ctrl.onReplacement({ value: value, fullPaid: fullPaid });
     };
 
     function convertDate(date) {
@@ -222,48 +227,48 @@ function TitleListEmbeddedController(
         return (title === "PAY") ? "A pagar" : "A receber";
     }
 
-    $scope.getNextParcelExpiration = function(parcels){
+    $scope.getNextParcelExpiration = function (parcels) {
         let result;
 
-        if (parcels.length < 1){
+        if (parcels.length < 1) {
             return null;
         }
 
         parcels.forEach(function (parcel) {
 
-            if(!result && !parcel.fullPaid){
+            if (!result && !parcel.fullPaid) {
                 result = parcel;
-            }else if(!parcel.fullPaid){
+            } else if (!parcel.fullPaid) {
                 let dateIndex = new Date(parcel);
                 let dateResult = new Date(result);
-                if(dateResult > dateIndex){
+                if (dateResult > dateIndex) {
                     result = dateIndex;
                 }
             }
         });
 
-        if(!result) {
-	        parcels.forEach(function (parcel) {
-		        if (!result) {
-			        result = parcel;
-		        } else {
-			        let dateIndex = new Date(parcel);
-			        let dateResult = new Date(result);
-			        if (dateResult > dateIndex) {
-				        result = dateIndex;
-			        }
-		        }
-	        });
+        if (!result) {
+            parcels.forEach(function (parcel) {
+                if (!result) {
+                    result = parcel;
+                } else {
+                    let dateIndex = new Date(parcel);
+                    let dateResult = new Date(result);
+                    if (dateResult > dateIndex) {
+                        result = dateIndex;
+                    }
+                }
+            });
         }
         return result.expiration;
     };
 
-    $scope.print = function(type){
-        var typePrint = type === 'receive'? 'RECEIVE_BILL':null;
-        FinanceReportService.openModalViewer(typePrint,'',[],()=>{
+    $scope.print = function (type) {
+        var typePrint = type === 'receive' ? 'RECEIVE_BILL' : null;
+        FinanceReportService.openModalViewer(typePrint, '', [], () => {
             SweetAlert.swal("Falta de Relatorio de contas a receber", "Você esta sem o relátorio de contas a receber contate o suporte.", "warning");
         })
     };
 }
 
-module.exports =  TitleListEmbeddedController;
+module.exports = TitleListEmbeddedController;
