@@ -52,7 +52,6 @@ function TitleListEmbeddedController(
             $scope.title.methods.get(1);
             return;
         }
-
         var aq = "obj." + field + " like '" + param + "'";
         TitleService.findTitleWithParticipations(($scope.titleType || "").toUpperCase(), 1, aq).then(function (data) {
             $scope.title.data = data.data.values;
@@ -61,7 +60,18 @@ function TitleListEmbeddedController(
         })
     };
 
-
+    // title.methods.advancedSearch(param)
+    $scope.advancedSearch = (param) => {
+        let filterType = new GQuery(new Criteria('obj.titleType', ComparisonOperator.EQUAL, $scope.titleType.toUpperCase()));
+        if (!param || !param.and) {
+            param = filterType;
+        } else {
+            param = param.and(filterType);
+        }
+        $scope.title.methods.asyncSearchWithGQuery(param).then((values) => {
+            $scope.title.data = values;
+        });
+    }
 
     $scope.buscaParticipations = function (participation) {
         if (participation === "") {
@@ -230,12 +240,11 @@ function TitleListEmbeddedController(
     $scope.getNextParcelExpiration = function (parcels) {
         let result;
 
-        if (parcels.length < 1) {
+        if (!parcels || parcels.length < 1) {
             return null;
         }
 
         parcels.forEach(function (parcel) {
-
             if (!result && !parcel.fullPaid) {
                 result = parcel;
             } else if (!parcel.fullPaid) {

@@ -72,10 +72,6 @@ function FinanceReportService(GumgaRest, $uibModal,  FinanceEmbeddedService) {
                         }
                     }
                 });
-                modal.result.then(() => {
-                }, () => {
-                    $state.go(baseState)
-                })
             } else {
                 noReport();
             }

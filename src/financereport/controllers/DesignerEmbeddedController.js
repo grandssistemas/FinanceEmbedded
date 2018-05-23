@@ -29,7 +29,7 @@ function DesignerEmbeddedController($scope,
         var designer = new $window.Stimulsoft.Designer.StiDesigner(options, 'StiDesigner', false);
         var report = new $window.Stimulsoft.Report.StiReport();
 
-        if ($scope.entity.id) {
+        if ($scope.entity && $scope.entity.id) {
             report.load($scope.entity.report.definition);
         } else {
             report.dictionary.databases.clear();

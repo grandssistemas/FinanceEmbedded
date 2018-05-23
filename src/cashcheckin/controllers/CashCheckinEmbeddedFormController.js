@@ -16,7 +16,9 @@ function CashCheckinEmbeddedFormController($scope,
         $scope.changeDestinyTooltip = 'Informe a conta onde o valor do troco será incluído.';
         $scope.entity = {};
 
-
+        $scope.isFinance = () => {
+            return window.APILocation.apiLocation.endsWith('finance-api');
+        }
 
         $scope.entity.employee = angular.copy($scope.$ctrl.employee);
         $scope.entity.date = new Date();

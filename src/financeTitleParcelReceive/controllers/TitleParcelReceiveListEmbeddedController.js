@@ -7,15 +7,15 @@ TitleParcelReceiveListEmbeddedController.$inject = [
     'TitleParcelPayService',
     'gumgaController',
     '$timeout',
-    'IndividualEmbeddedService','FinanceReportService'];
+    'IndividualEmbeddedService', 'FinanceReportService'];
 
 function TitleParcelReceiveListEmbeddedController(TitleService,
-                                                  FinanceConfigurationService,
-                                                  $scope,
-                                                  TitleParcelPayService,
-                                                  gumgaController,
-                                                  $timeout,
-                                                  IndividualEmbeddedService,FinanceReportService) {
+    FinanceConfigurationService,
+    $scope,
+    TitleParcelPayService,
+    gumgaController,
+    $timeout,
+    IndividualEmbeddedService, FinanceReportService) {
 
     let dateStart = null;
     let dateEnd = new Date();
@@ -32,20 +32,26 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
     TitleParcelPayService.resetDefaultState();
     IndividualEmbeddedService.resetDefaultState();
 
-	$scope.startDate = new Date();
-	$scope.endDate = new Date();
+    $scope.startDate = new Date();
+    $scope.endDate = new Date();
     $scope.containsReplaced = false;
     $scope.containsFullPaid = false;
     $scope.paidOut = false;
     $scope.lastClicked = null;
     $scope.gQueryFilters = null;
     $scope.hideOthers = true;
-	$scope.increase = 0;
-	$scope.total = 0;
+    $scope.increase = 0;
+    $scope.total = 0;
 
     $scope.$watch('individualSearch', function (individual) {
         $scope.individualSearch = individual;
         $scope.filter($scope.lastClicked, $scope.paidOut);
+    });
+
+    $scope.$watch('selectedValues', (values) => {
+        if (values) {
+            $scope.totalize();
+        }
     });
 
     $scope.totalize = function () {
@@ -56,7 +62,6 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
                 total += o.remaining;
                 increase += o.calculedInterest + o.calculedPenalty;
             });
-
             var qtd = 0;
             var qtdPaid = 0;
             $scope.selectedValues.forEach(function (e) {
@@ -67,11 +72,8 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
                     qtdPaid++
                 }
             });
-
             $scope.containsReplaced = qtd > 0;
-
             $scope.containsFullPaid = qtdPaid > 0;
-
             $scope.increase = increase;
             $scope.total = total;
         });
@@ -81,10 +83,10 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
         const variables = [];
         const sql = ' in ('.concat(items.parcels.reduce((final, current) => {
             return `${final},${current.id}`
-        },'')).concat(')').replace('\(\,','\(');
-        variables.push(FinanceReportService.mountVariable('', 'parcelIds',sql));
-        variables.push(FinanceReportService.mountVariable('', 'orgName',JSON.parse(window.sessionStorage.getItem('user')).organization))
-        FinanceReportService.openModalViewer('RECEIPT','',variables,()=>{
+        }, '')).concat(')').replace('\(\,', '\(');
+        variables.push(FinanceReportService.mountVariable('', 'parcelIds', sql));
+        variables.push(FinanceReportService.mountVariable('', 'orgName', JSON.parse(window.sessionStorage.getItem('user')).organization))
+        FinanceReportService.openModalViewer('RECEIPT', '', variables, () => {
             SweetAlert.swal("Falta de Recibos", "Você esta sem o recibo configurado contate o suporte.", "warning");
         })
     };
@@ -95,7 +97,7 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
             $scope.selectedValues.forEach(function (data) {
                 totalValue += data.totalpayed;
             });
-            $scope.recibo = {value: totalValue};
+            $scope.recibo = { value: totalValue };
             $scope.recibo.parcels = $scope.selectedValues;
             $scope.printPaid($scope.recibo);
         } else {
@@ -112,7 +114,7 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
                 TitleParcelPayService.setInstallmentsPayable(parcels);
                 $scope.$ctrl.onSameIndividual();
             } else {
-                $scope.errorMessage = hasReversed ? 'Foram selecionados títulos já estornados. Não é possível fazer a movimentação desses títulos.': 'Foram selecionadas parcelas de fornecedores diferentes, altere sua seleção.';
+                $scope.errorMessage = hasReversed ? 'Foram selecionados títulos já estornados. Não é possível fazer a movimentação desses títulos.' : 'Foram selecionadas parcelas de fornecedores diferentes, altere sua seleção.';
                 $timeout(function () {
                     delete $scope.errorMessage;
                 }, 5000);
@@ -179,10 +181,10 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
                 name: 'status',
                 title: '<span>Status</span>',
                 content: '<span ng-if="!$value.titleData.reversed && $value.totalpayed == 0 && !$value.isReplaced" class="label label-info">Aberta</span>' +
-                '<span ng-if="!$value.titleData.reversed && $value.fullPaid" class="label label-danger">Recebido</span>' +
-                '<span ng-if="$value.titleData.reversed" class="label label-danger">Estornado</span>' +
-                '<span ng-if="!$value.titleData.reversed && $value.isReplaced" class="label label-warning">Renegociada</span>' +
-                '<span ng-if="!$value.titleData.reversed && ($value.totalpayed > 0) && !$value.fullPaid" class="label label-warning">Amortizado</span>'
+                    '<span ng-if="!$value.titleData.reversed && $value.fullPaid" class="label label-danger">Recebido</span>' +
+                    '<span ng-if="$value.titleData.reversed" class="label label-danger">Estornado</span>' +
+                    '<span ng-if="!$value.titleData.reversed && $value.isReplaced" class="label label-warning">Renegociada</span>' +
+                    '<span ng-if="!$value.titleData.reversed && ($value.totalpayed > 0) && !$value.fullPaid" class="label label-warning">Amortizado</span>'
             }
         ]
     };
@@ -205,7 +207,7 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
         $scope.selectedSubType = newType;
     };
 
-	$scope.configData = () => $scope.filter('custom', $scope.paidOut);
+    $scope.configData = () => $scope.filter('custom', $scope.paidOut);
 
 
     $scope.getByGQuery = (page, pageSize) => {
@@ -257,7 +259,7 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
                 break;
         }
 
-        if (startDate && endDate){
+        if (startDate && endDate) {
             gQuery = gQuery.and(new Criteria('obj.expiration', ComparisonOperator.BETWEEN, [startDate, endDate]));
         }
 
@@ -275,9 +277,9 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
         $scope.changeSubTypeButton(whichFilter);
     };
 
-	$scope.changeSubTypeButton('all');
-	$scope.buttonSubTypeClass();
-	$scope.filter($scope.selectedSubType, $scope.paidOut);
+    $scope.changeSubTypeButton('all');
+    $scope.buttonSubTypeClass();
+    $scope.filter($scope.selectedSubType, $scope.paidOut);
 }
 
 module.exports = TitleParcelReceiveListEmbeddedController;
