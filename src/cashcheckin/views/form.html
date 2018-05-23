@@ -10,7 +10,11 @@
                                 <h5 class="text-danger">
                                     Este usuário já possui um caixa aberto.
                                     <a style="text-decoration: underline; color:blue"
-                                        ui-sref="app.cashcheckout.checkout"> Clique aqui</a> para fechar o caixa aberto.
+                                        ng-if="!isFinance()"
+                                        ui-sref="app.cashcheckout.checkout"> Clique aqui</a> 
+                                    <a style="text-decoration: underline; color:blue"
+                                        ng-if="isFinance()"
+                                        ui-sref="app.cashcheckin.checkout"> Clique aqui</a> para fechar o caixa aberto.
                                 </h5>
                             </div>
                             <div ng-hide="disableOpening">

@@ -34,7 +34,6 @@ function TitleFormEmbeddedController(TitleService,
                                      TitleParcelPayService,
                                      $state) {
     let ctrl = this;
-
     ctrl.$onInit = () => {
         $scope.entity = angular.copy(ctrl.entity) || {
             data: {
