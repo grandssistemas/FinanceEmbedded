@@ -11,7 +11,6 @@ require('./providers/module');
 
 // DEPENDENCIAS
 require('./Utils/GroupDependencies');
-
 // UTILS
 import ngDynamicController from './Utils/DynamicController'
 import bindHtmlCompile from './Utils/bindHtmlCompile'
