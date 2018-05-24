@@ -9,7 +9,6 @@ require('./financeTitleParcelReceive/module');
 require('./services/module');
 require('./providers/module');
 
-
 // DEPENDENCIAS
 require('./Utils/GroupDependencies');
 

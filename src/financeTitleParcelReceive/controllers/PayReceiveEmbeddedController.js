@@ -68,7 +68,7 @@ function PayReceiveEmbeddedController(SweetAlert,
 
 
 	$scope.hasLimit = (creditValue, payment) => {
-		return ((creditValue * -1) > payment.value);
+		return ((creditValue * -1) >= payment.value);
 	};
 
 	FinanceConfigurationService.get().then(function (response) {
