@@ -56,11 +56,12 @@ function TitleFormEmbeddedController(TitleService,
         gumgaController.createRestMethods($scope, WalletService, 'wallet');
         gumgaController.createRestMethods($scope, TitleService, 'title');
 
-
+        $scope.searchIndividual = (param) => {
+            return IndividualEmbeddedService.searchIndividual(param);
+        }
 
         $scope.documentType.methods.search('name', '');
         $scope.financeunit.methods.search('name', '');
-        $scope.individual.methods.search('name', '');
         $scope.ratioPlan.methods.search('label', '');
 
         $scope.titleType = $scope.$ctrl.typeTitle; //Tipo de lançamento podendo vir: pay para pagamento ou receive para receber.
