@@ -244,11 +244,20 @@
 							<div class="col-md-1 m-t-md">
 								<label style="height: 0;">&nbsp;</label>
 								<button class="btn gmd fab btn-success btn-sm"
+												ng-disabled="checkExpired(payment.check.validUntil)"
 								        ng-click="addReceiveCheck(payment)">
 									<i class="material-icons">add</i>
 								</button>
 							</div>
 						</div>
+						<div class="row"
+						     ng-if="payment.method == 'thirdCheck'">
+							<div class="col-md-12"
+							     ng-show="checkExpired(payment.check.validUntil)">
+								<label class="text-danger">O vencimento não pode ser menor que a data atual.</label>
+							</div>
+						</div>
+
 						<!--</editor-fold>-->
 
 						<!--<editor-fold desc="TOC TED">-->
@@ -366,7 +375,7 @@
 									                   on-select="onSelectPaymentCredit(value)"
 									                   on-deselect="onDeselectPaymentCredit(value)"
 									                   list="financeunit.data"
-									                   search-method="getPersonalCredits(params)"
+									                   search-method="getPersonalCredits(param)"
 									                   add-method="individual.methods.asyncPost(value,'name')"
 									                   on-new-value-added="checkType()"
 									                   description="type"
@@ -508,7 +517,7 @@
 		</div>
 	</div>
 	<button type="button"
-				ui-sref="app.titleparcelreceive.list"
+	        ui-sref="app.titleparcelreceive.list"
 	        class="btn btn-warning pull-right gmd raised">
 		Cancelar
 	</button>

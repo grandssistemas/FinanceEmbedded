@@ -77,9 +77,10 @@ function PayReceiveEmbeddedController(SweetAlert,
 
 	$scope.showMenuPersonalCredit = true;
 
-
 	$scope.getPersonalCredits = function (params) {
-		return IndividualCreditService.getSearch('name', params).then(function (data) {
+		if (!$scope || !$scope.parcels || $scope.parcels.length == 0) return;
+		const aq = `obj.name like '%${params ? params : ''}%' and obj.individual.id = ${$scope.parcels[0].individual.id}`;
+		return IndividualCreditService.getAdvancedSearch(aq, 10, 0).then(function (data) {
 			if (!$scope.configuration.displayPersonalCredit) {
 				var toReturn = data.data.values;
 			} else {
@@ -87,7 +88,6 @@ function PayReceiveEmbeddedController(SweetAlert,
 					return elem.individual.id === $scope.parcels[0].individual.id
 				})
 			}
-			$scope.showMenuPersonalCredit = (toReturn.length > 0);
 			return toReturn
 		})
 	};
@@ -540,6 +540,11 @@ function PayReceiveEmbeddedController(SweetAlert,
 		});
 	};
 
+	$scope.checkExpired = (validUntil) => {
+		if (!validUntil) return false;
+		const dateToCompare = validUntil instanceof Date ? validUntil : new Date(validUntil);
+		return (dateToCompare && moment(validUntil).isBefore(new Date(), 'day'));
+	}
 }
 
 module.exports = PayReceiveEmbeddedController;

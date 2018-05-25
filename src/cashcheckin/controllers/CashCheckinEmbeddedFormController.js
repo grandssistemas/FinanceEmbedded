@@ -17,7 +17,7 @@ function CashCheckinEmbeddedFormController($scope,
         $scope.entity = {};
 
         $scope.isFinance = () => {
-            return window.APILocation.apiLocation.endsWith('finance-api');
+            return window.APILocation.apiLocation.indexOf('finance-api') !== -1;
         }
 
         $scope.entity.employee = angular.copy($scope.$ctrl.employee);

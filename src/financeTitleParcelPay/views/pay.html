@@ -45,12 +45,6 @@
                                        gumga-translate-tag="titleparcel.card"
                                        ng-click="setarfocusPayment('card')"
                                        ng-disabled="lastPayment <= 0">card</label>
-                                <label class="btn btn-info gmd raised" ng-model="payment.method"
-                                       uib-btn-radio="'credit'"
-                                       gumga-translate-tag="titleparcel.credit"
-                                       ng-if="showMenuPersonalCredit"
-                                       ng-click="setarfocusPayment('credit')"
-                                       ng-disabled="lastPayment <= 0">credit</label>
                             </div>
                         </div>
                         <hr style="margin: 10px 0 10px 0;"/>
@@ -324,44 +318,6 @@
                             </div>
                         </div>
                         <!-- CARTÃO -->
-
-                        <!-- CRÉDITO -->
-                        <div class="row" ng-show="payment.method == 'credit' && showMenuPersonalCredit === true">
-                            <div class="col-md-8">
-                                <div>
-                                    <label gumga-translate-tag="titleparcel.financeUnit">financeUnit</label><br/>
-                                    <gumga-many-to-one
-                                            tab-seq="1"
-                                            value="payment.credit.financeUnit"
-                                            list="financeunit.data"
-                                            search-method="getPersonalCredits(params)"
-                                            add-method="individual.methods.asyncPost(value,'name')"
-                                            on-new-value-added="checkType()"
-                                            description="type"
-                                            field="name"
-                                            authorize-add="false"
-                                            id="paymentCreditFinanceunit">
-                                    </gumga-many-to-one>
-                                </div>
-                            </div>
-                            <div class="col-md-3 m-t-md">
-                                <gmd-input>
-                                    <input id="valuecredit" type="text" name="value" ng-model="payment.value"
-                                           ng-focus="calcCheques('valuecredit')" ng-click="selectAllText('valuecredit')"
-                                           class="form-control text-right gmd" gumga-error ui-money-mask="2"
-                                           tabindex="2">
-                                    <span class="bar"></span>
-                                    <label gumga-translate-tag="titleparcel.value">value</label><br/>
-                                </gmd-input>
-                            </div>
-                            <div class="col-md-1 m-t-md">
-                                <label style="height: 0;">&nbsp;</label>
-                                <button class="btn gmd fab btn-success btn-sm" ng-click="addPaymentCredit(payment)"
-                                        ng-disabled="PaymentForm.$error.manyToOne">
-                                    <i class="material-icons">add</i>
-                                </button>
-                            </div>
-                        </div>
                         <div class="row" ng-if="payment.method || payment.methodPayment.length > 0">
                             <hr/>
                             <div class="col-md-12">
