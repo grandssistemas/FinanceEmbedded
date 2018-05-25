@@ -1,67 +1,73 @@
-IndividualEmbeddedService.$inject = ['GumgaRest', '$http', 'FinanceEmbeddedService', 'FinanceReportService']
+IndividualEmbeddedService.$inject = ['GumgaRest', '$http', 'FinanceEmbeddedService', 'FinanceReportService', 'apiFinanceLocation'];
 
-function IndividualEmbeddedService(GumgaRest, $http, FinanceEmbeddedService, FinanceReportService) {
-    var Service = new GumgaRest(FinanceEmbeddedService.getDefaultConfiguration().api + '/individual');
+function IndividualEmbeddedService(GumgaRest, $http, FinanceEmbeddedService, FinanceReportService, apiFinanceLocation) {
+	let Service = new GumgaRest(`${FinanceEmbeddedService.getDefaultConfiguration().api}/individual`);
+	let ServiceFinance = new GumgaRest(apiFinanceLocation.concat('/api/individual'));
 
-    Service.getLabels = function () {
-        return $http.get(FinanceEmbeddedService.getDefaultConfiguration().api + '/individuallabel');
-    };
+	Service.searchIndividual = (param) => {
+		let gQuery = new GQuery();
+		if (param) {
+			gQuery = gQuery.and(new Criteria("obj.name", ComparisonOperator.CONTAINS, param).addIgnoreCase(param).addTranslate());
+		}
+		return ServiceFinance.searchWithGQuery(gQuery);
+	};
 
-    Service.searchLabels = function (param) {
-        return $http.get(FinanceEmbeddedService.getDefaultConfiguration().api + '/individuallabel?' + param);
-    };
+	Service.getLabels = function () {
+		return $http.get(`${FinanceEmbeddedService.getDefaultConfiguration().api}/individuallabel`);
+	};
 
-    Service.getLogged = function(){
-        return Service.extend('get', '/getlogged');
-    };
+	Service.searchLabels = function (param) {
+		return $http.get(`${FinanceEmbeddedService.getDefaultConfiguration().api}/individuallabel?${param}`);
+	};
 
-    Service.getEmployees = function(){
-        return Service.extend('get', '/getemployees');
-    };
+	Service.getLogged = function () {
+		return Service.extend('get', '/getlogged');
+	};
 
-    Service.getCompany = function(){
-        return Service.extend('get', '/getcompany');
-    };
+	Service.getEmployees = function () {
+		return Service.extend('get', '/getemployees');
+	};
 
-    Service.variablesReport = () => {
-        return Service.getCompany().then((data) => {
-            return mountVariables(data.data);
-        })
-    };
+	Service.getCompany = function () {
+		return Service.extend('get', '/getcompany');
+	};
 
-    function mountVariables(company) {
-        let variables = [];
+	Service.variablesReport = () => Service.getCompany().then((data) => {
+		return mountVariables(data.data);
+	});
 
-        variables.add(FinanceReportService.mountVariable('Empresa', 'nome', company.name));
-        variables.add(FinanceReportService.mountVariable('Empresa', 'cnpj', company.primaryDocument));
-        variables.add(FinanceReportService.mountVariable('Empresa', 'ie', company.secondaryDocument));
-        if (company.addressList && company.addressList.length > 0) {
-            variables.add(FinanceReportService.mountVariable('Empresa', 'endereco', mountAddress(company.addressList[0].address)));
-            variables.add(FinanceReportService.mountVariable('Empresa', 'cidade', mountCity(company.addressList[0].address)));
-        }
-        if (company.phones && company.phones.length > 0 ) {
-            variables.add(FinanceReportService.mountVariable('Empresa', 'telefone', company.phonesList[0].phone));
-        }
-        if (company.emails && company.emails.length > 0) {
-            variables.add(FinanceReportService.mountVariable('Empresa', 'email', company.emailsList[0].email));
-        }
-        // if(company.file){
-        //     variables.add(FinanceReportService.mountVariable('Empresa', 'logo', StorageService.apiAmazonLocation + company.file.url));
-        // }
-        return variables;
-    }
+	function mountVariables(company) {
+		const variables = [];
 
-    function mountAddress(address) {
-        return address.premisseType + ' ' + address.premisse + ', ' + address.number + ' - ' + address.neighbourhood;
-    }
+		variables.add(FinanceReportService.mountVariable('Empresa', 'nome', company.name));
+		variables.add(FinanceReportService.mountVariable('Empresa', 'cnpj', company.primaryDocument));
+		variables.add(FinanceReportService.mountVariable('Empresa', 'ie', company.secondaryDocument));
+		if (company.addressList && company.addressList.length > 0) {
+			variables.add(FinanceReportService.mountVariable('Empresa', 'endereco', mountAddress(company.addressList[0].address)));
+			variables.add(FinanceReportService.mountVariable('Empresa', 'cidade', mountCity(company.addressList[0].address)));
+		}
+		if (company.phones && company.phones.length > 0) {
+			variables.add(FinanceReportService.mountVariable('Empresa', 'telefone', company.phonesList[0].phone));
+		}
+		if (company.emails && company.emails.length > 0) {
+			variables.add(FinanceReportService.mountVariable('Empresa', 'email', company.emailsList[0].email));
+		}
+		// if(company.file){
+		//     variables.add(FinanceReportService.mountVariable('Empresa', 'logo', StorageService.apiAmazonLocation + company.file.url));
+		// }
+		return variables;
+	}
 
-    function mountCity(address) {
-        return address.localization + ' - ' + address.state;
-    }
+	function mountAddress(address) {
+		return `${address.premisseType} ${address.premisse}, ${address.number} - ${address.neighbourhood}`;
+	}
+
+	function mountCity(address) {
+		return `${address.localization} - ${address.state}`;
+	}
 
 
-
-    return Service;
+	return Service;
 }
 
 module.exports = IndividualEmbeddedService;
