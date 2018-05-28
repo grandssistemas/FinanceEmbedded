@@ -128,7 +128,6 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
     $scope.tableConfig = {
         columns: 'documentNumber, parcel, individual, expiration, amount, calculedInterest, calculedPenalty, value, status',
         checkbox: true,
-        selection: 'multi',
         materialTheme: true,
         itemsPerPage: [5, 10, 25, 50, 100],
         columnsConfig: [
