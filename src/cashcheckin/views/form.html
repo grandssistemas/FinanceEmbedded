@@ -1,21 +1,22 @@
-<form name="forms" novalidate>
+<form name="forms"
+      novalidate>
     <div class="ma-container">
         <div class="ma-page">
-            <h1>felipe</h1>
             <mobiage-title label="Abertura de caixa"></mobiage-title>
             <div class="row">
                 <div class="col-md-12">
                     <div class="panel gmd ma-panel">
                         <div class="panel-body ma-pad-panel">
-                            <div class="row" ng-show="disableOpening">
+                            <div class="row"
+                                 ng-show="disableOpening">
                                 <h5 class="text-danger">
                                     Este usuário já possui um caixa aberto.
                                     <a style="text-decoration: underline; color:blue"
-                                        ng-if="!isFinance()"
-                                        ui-sref="app.cashcheckout.checkout"> Clique aqui</a> 
+                                       ng-if="!isFinance()"
+                                       ui-sref="app.cashcheckout.checkout"> Clique aqui</a>
                                     <a style="text-decoration: underline; color:blue"
-                                        ng-if="isFinance()"
-                                        ui-sref="app.cashcheckin.checkout"> Clique aqui</a> para fechar o caixa aberto.
+                                       ng-if="isFinance()"
+                                       ui-sref="app.cashcheckin.checkout"> Clique aqui</a> para fechar o caixa aberto.
                                 </h5>
                             </div>
                             <div ng-hide="disableOpening">
@@ -25,9 +26,16 @@
                                             <span gumga-translate-tag="cashcheckin.cash">Cash</span>
                                         </label>
 
-                                        <gumga-many-to-one value="entity.group" search-method="getGroups(param)" authorize-add="false" field="name" async="true"
-                                            class="gmd" display-info="false" data-disabled="disableOpening" on-select="onSelectGroup(value)"
-                                            on-deselect="onSelectGroup(value)">
+                                        <gumga-many-to-one value="entity.group"
+                                                           search-method="getGroups(param)"
+                                                           authorize-add="false"
+                                                           field="name"
+                                                           async="true"
+                                                           class="gmd"
+                                                           display-info="false"
+                                                           data-disabled="disableOpening"
+                                                           on-select="onSelectGroup(value)"
+                                                           on-deselect="onSelectGroup(value)">
                                             <match>
                                                 <div>{{match.model.name}}</div>
                                             </match>
@@ -38,7 +46,10 @@
                                     <div class="row m-t">
                                         <div class="col-md-6">
                                             <label gumga-translate-tag="cashcheckin.user">Operator</label>
-                                            <input type="text" ng-model="entity.employee.name" class="form-control" disabled/>
+                                            <input type="text"
+                                                   ng-model="entity.employee.name"
+                                                   class="form-control"
+                                                   disabled/>
                                         </div>
                                         <div class="col-md-6 m-t">
                                             <label gumga-translate-tag="cashcheckin.date">Date/Hour</label>
@@ -49,7 +60,11 @@
                                     <div class="row">
                                         <div class="col-md-4">
                                             <gmd-input>
-                                                <input type="text" class="gmd form-control" ui-money-mask ng-model="entity.change" ng-disabled="disableOpening">
+                                                <input type="text"
+                                                       class="gmd form-control"
+                                                       ui-money-mask
+                                                       ng-model="entity.change"
+                                                       ng-disabled="disableOpening">
                                                 <span class="bar"></span>
                                                 <label gumga-translate-tag="cashcheckin.changevalue">Change Value
                                                 </label>
@@ -58,14 +73,23 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div ng-show="entity.change" class="row">
+                                <div ng-show="entity.change"
+                                     class="row">
                                     <div class="col-md-6">
                                         <label gumga-translate-tag="cashcheckin.changeorigin">Change origin
                                         </label>
-                                        <strong class="fa fa-question-circle ng-scope" style="cursor: pointer" uib-popover={{changeOriginTooltip}}></strong>
+                                        <strong class="fa fa-question-circle ng-scope"
+                                                style="cursor: pointer"
+                                                uib-popover={{changeOriginTooltip}}></strong>
                                         <br/>
-                                        <gumga-many-to-one value="entity.originChange" search-method="getChangeOrigin(param)" authorize-add="false" field="name"
-                                            async="true" class="gmd" display-info="false" on-select="onSelectOrigin(value)">
+                                        <gumga-many-to-one value="entity.originChange"
+                                                           search-method="getChangeOrigin(param)"
+                                                           authorize-add="false"
+                                                           field="name"
+                                                           async="true"
+                                                           class="gmd"
+                                                           display-info="false"
+                                                           on-select="onSelectOrigin(value)">
                                             <match>
                                                 <div>{{match.model.name}}</div>
                                             </match>
@@ -74,11 +98,20 @@
                                     <div class="col-md-6">
                                         <label gumga-translate-tag="cashcheckin.changedestiny">Change destiny
                                         </label>
-                                        <strong class="fa fa-question-circle ng-scope" style="cursor: pointer" uib-popover={{changeDestinyTooltip}}></strong>
+                                        <strong class="fa fa-question-circle ng-scope"
+                                                style="cursor: pointer"
+                                                uib-popover={{changeDestinyTooltip}}></strong>
                                         <br/>
 
-                                        <gumga-many-to-one value="entity.destinyChange" search-method="getChangeOrigin(param)" authorize-add="false" field="name"
-                                            async="true" class="gmd" display-info="false" data-disabled="disableOpening" on-select="onSelectDestiny(value)">
+                                        <gumga-many-to-one value="entity.destinyChange"
+                                                           search-method="getChangeOrigin(param)"
+                                                           authorize-add="false"
+                                                           field="name"
+                                                           async="true"
+                                                           class="gmd"
+                                                           display-info="false"
+                                                           data-disabled="disableOpening"
+                                                           on-select="onSelectDestiny(value)">
                                             <match>
                                                 <div>{{match.model.name}}</div>
                                             </match>
@@ -93,9 +126,12 @@
             </div>
         </div>
     </div>
-    <gmd-fab force-click="false" fixed>
-        <button ng-class="{'gmd-disabled' : disabledOpenCash(entity) }" class="bg-accent gmd-ripple" ng-disabled="disabledOpenCash(entity)"
-            ng-click="open(entity, cashCheckout.change)">
+    <gmd-fab force-click="false"
+             fixed>
+        <button ng-class="{'gmd-disabled' : disabledOpenCash(entity) }"
+                class="bg-accent gmd-ripple"
+                ng-disabled="disabledOpenCash(entity)"
+                ng-click="open(entity, cashCheckout.change)">
             <span class="fa fa-key"></span>
         </button>
         <ul></ul>
