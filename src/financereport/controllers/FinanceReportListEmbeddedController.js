@@ -164,13 +164,13 @@ function FinanceReportListEmbeddedController($scope,
                 name: 'isdefault',
                 size: 'col-md-1',
                 title: '<strong>Padrão</strong>',
-                content: '<div class="checkbox" style="margin-top: 0%;margin-bottom: 0%;margin-left: 40%;"><label ng-click="$parent.$parent.changeDefault($value)"><input type="checkbox" class="gmd" ng-disabled="!$value.oi || !$value.oi.value" data-ng-model="$value.isDefault"><span class="box"></span></label></div>'
+                content: '<div class="checkbox" ng-if="!(!$value.oi || !$value.oi.value)" style="margin-top: 0%;margin-bottom: 0%;margin-left: 40%;"><label ng-click="$parent.$parent.changeDefault($value)"><input type="checkbox" class="gmd" ng-disabled="!$value.oi || !$value.oi.value" data-ng-model="$value.isDefault"><span class="box"></span></label></div>'
             },
             {
                 name: 'buttons',
                 size: 'col-md-1',
                 title: '  ',
-                content: '<button style="display:inline-block" type="button" ng-click="$parent.$parent.editReport($value)" uib-tooltip="Editar" class="btn-link center-block text-primary"><i class="fa fa-pencil-square-o"></i></button>' +
+                content: '<button style="display:inline-block" type="button" ng-if="!(!$value.oi || !$value.oi.value)" ng-click="$parent.$parent.editReport($value)" uib-tooltip="Editar" class="btn-link center-block text-primary"><i class="fa fa-pencil-square-o"></i></button>' +
                 '<button style="display:inline-block" type="button" ng-click="$parent.$parent.viewReport($value)" uib-tooltip="Visualizar Relatório" class="btn-link btn-xs"><i class="fa fa-search"></i></button>' +
                 '<button style="display:inline-block" type="button" ng-click="$parent.$parent.copyReport($value)" uib-tooltip="Copiar Relatório" class="btn-link btn-xs text-navy"><i class="fa fa-plus"></i></button>' +
                 '<button style="display:inline-block" uib-tooltip="Relatório Público" type="button" class="btn-link btn-xs center-block " ng-show="!$value.oi || !$value.oi.value"><i class="fa fa-users"></i></button>'
