@@ -56,7 +56,7 @@
 								       gumga-translate-tag="titleparcel.credit"
 								       ng-if="showMenuPersonalCredit"
 								       ng-click="setarfocusPayment('credit')"
-								       ng-disabled="lastReceive <= 0">credit</label>
+											 ng-disabled="lastReceive <= 0 || isFinalConsumer">credit</label>
 							</div>
 							<div class="col-md-3">
 								<label gumga-translate-tag="titleparcelreceive.date">date</label>
