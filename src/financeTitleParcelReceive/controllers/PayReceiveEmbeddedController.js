@@ -1,6 +1,7 @@
-let template = require('./../views/receiptPrint.html');
+const template = require('./../views/receiptPrint.html');
 
 PayReceiveEmbeddedController.$inject = [
+	'PersonService',
 	'SweetAlert',
 	'FinanceConfigurationService',
 	'$scope',
@@ -24,7 +25,9 @@ PayReceiveEmbeddedController.$inject = [
 	'PercentageFinanceUtilsService',
 	'FinanceReportService'];
 
-function PayReceiveEmbeddedController(SweetAlert,
+function PayReceiveEmbeddedController(
+	PersonService,
+	SweetAlert,
 	FinanceConfigurationService,
 	$scope,
 	$timeout,
@@ -45,8 +48,8 @@ function PayReceiveEmbeddedController(SweetAlert,
 	FinanceUnitService,
 	MoneyUtilsService,
 	PercentageFinanceUtilsService,
-	FinanceReportService) {
-
+	FinanceReportService
+) {
 	gumgaController.createRestMethods($scope, FinanceConfigurationService, 'financeConfiguration');
 	gumgaController.createRestMethods($scope, CheckingAccountService, 'checkingaccount');
 	gumgaController.createRestMethods($scope, ChequePortfolioService, 'chequeportfolio');
@@ -57,7 +60,9 @@ function PayReceiveEmbeddedController(SweetAlert,
 	gumgaController.createRestMethods($scope, IndividualEmbeddedService, 'individual');
 	gumgaController.createRestMethods($scope, CreditCardAccountService, 'creditcardaccount');
 	gumgaController.createRestMethods($scope, BankService, 'bank');
+	gumgaController.createRestMethods($scope, PersonService, 'person');
 
+	$scope.existsFinalConsumer = false;
 	$scope.configuration = {};
 	$scope.checkingaccount.methods.search('name', '');
 	$scope.chequeportfolio.methods.search('name', '');
@@ -66,12 +71,9 @@ function PayReceiveEmbeddedController(SweetAlert,
 	$scope.creditcardaccount.methods.search('name', '');
 	$scope.bank.methods.search('name', '');
 
+	$scope.hasLimit = (creditValue, payment) => ((creditValue * -1) >= payment.value);
 
-	$scope.hasLimit = (creditValue, payment) => {
-		return ((creditValue * -1) >= payment.value);
-	};
-
-	FinanceConfigurationService.get().then(function (response) {
+	FinanceConfigurationService.get().then((response) => {
 		$scope.configuration = response.data.values[0];
 	});
 
@@ -79,29 +81,27 @@ function PayReceiveEmbeddedController(SweetAlert,
 
 	$scope.getPersonalCredits = function (params) {
 		if (!$scope || !$scope.parcels || $scope.parcels.length == 0) return;
-		const aq = `obj.name like '%${params ? params : ''}%' and obj.individual.id = ${$scope.parcels[0].individual.id}`;
-		return IndividualCreditService.getAdvancedSearch(aq, 10, 0).then(function (data) {
+		const aq = `obj.name like '%${params || ''}%' and obj.individual.id = ${$scope.parcels[0].individual.id}`;
+		return IndividualCreditService.getAdvancedSearch(aq, 10, 0).then((data) => {
 			if (!$scope.configuration.displayPersonalCredit) {
 				var toReturn = data.data.values;
 			} else {
-				var toReturn = data.data.values.filter(function (elem) {
-					return elem.individual.id === $scope.parcels[0].individual.id
-				})
+				var toReturn = data.data.values.filter((elem) => elem.individual.id === $scope.parcels[0].individual.id);
 			}
-			return toReturn
-		})
+			return toReturn;
+		});
 	};
 
-	$timeout(function () {
-		$scope.getPersonalCredits('')
+	$timeout(() => {
+		$scope.getPersonalCredits('');
 	});
 
 	$scope.valueThirdPartyChequeStatus = [
-		{ value: "AVAILABLE", label: "Em Carteira - Disponível" },
-		{ value: "UNAVAILABLE", label: "Em Carteira - Indisponível" },
-		{ value: "CASHED", label: "Compensado" },
-		{ value: "RETURNED", label: "Devolvido" },
-		{ value: "PASSED_ALONG", label: "Repassado" }
+		{ value: 'AVAILABLE', label: 'Em Carteira - Disponível' },
+		{ value: 'UNAVAILABLE', label: 'Em Carteira - Indisponível' },
+		{ value: 'CASHED', label: 'Compensado' },
+		{ value: 'RETURNED', label: 'Devolvido' },
+		{ value: 'PASSED_ALONG', label: 'Repassado' }
 	];
 
 	$scope.parcels = TitleParcelPayService.getInstallmentsPayable();
@@ -112,6 +112,25 @@ function PayReceiveEmbeddedController(SweetAlert,
 	$scope.payment.momment = new Date();
 	$scope.isTed = true;
 	$scope.receive = 0;
+
+	$scope.person.methods.createQuery()
+		.pageSize()
+		.page()
+		.send()
+		.then(
+			(resp) => {
+				resp.data.values.forEach((value) => {
+					if (value.id === $scope.parcels[0].individual.integrationValue.integrationId) {
+						if (value.finalConsumer === true) {
+							$scope.isFinalConsumer = true;
+						}
+					}
+				});
+			},
+			(err) => {
+				console.log(err);
+			}
+		);
 
 	$scope.openMomment = function () {
 		$scope.isDatePickerOpenMomment = !$scope.isDatePickerOpenMomment;
@@ -126,17 +145,13 @@ function PayReceiveEmbeddedController(SweetAlert,
 	};
 
 	$scope.totalize = function () {
-		return $scope.payment.parcels.reduce((sum, current) => {
-			return sum + current.value;
-		}, 0);
+		return $scope.payment.parcels.reduce((sum, current) => sum + current.value, 0);
 	};
 
 	function getInterestValue(value, expiredDays) {
 		const interest = value.interest.value;
 		if (expiredDays) {
-			return MoneyUtilsService.divideMoney(
-				MoneyUtilsService.multiplyMoney(
-					PercentageFinanceUtilsService.multiply6(interest, value.value), expiredDays), 30);
+			return MoneyUtilsService.divideMoney(MoneyUtilsService.multiplyMoney(PercentageFinanceUtilsService.multiply6(interest, value.value), expiredDays), 30);
 		}
 		return 0;
 	}
@@ -156,27 +171,29 @@ function PayReceiveEmbeddedController(SweetAlert,
 	}
 
 	$scope.getRemainingValue = (row) => {
-		let expiredDays = getExpiredDays(row.expiration);
-		let interestValue = getInterestValue(row, expiredDays);
-		let penaltyValue = getPenaltyValue(row, expiredDays);
-		let discountValue = getDiscountValue(row);
-		const value = MoneyUtilsService.sumMoney(row.value,
-			MoneyUtilsService.sumMoney(interestValue,
-				MoneyUtilsService.sumMoney(penaltyValue, -discountValue)));
+		const expiredDays = getExpiredDays(row.expiration);
+		const interestValue = getInterestValue(row, expiredDays);
+		const penaltyValue = getPenaltyValue(row, expiredDays);
+		const discountValue = getDiscountValue(row);
+		const value = MoneyUtilsService.sumMoney(
+			row.value,
+			MoneyUtilsService.sumMoney(
+				interestValue,
+				MoneyUtilsService.sumMoney(penaltyValue, -discountValue)
+			)
+		);
 		return MoneyUtilsService.sumMoney(value, -row.totalpayed);
-	}
+	};
 
 	$scope.totalizeRemaining = function () {
-		return $scope.payment.parcels.reduce((sum, current) => {
-			return sum + $scope.getRemainingValue(current);
-		}, 0);
+		return $scope.payment.parcels.reduce((sum, current) => sum + $scope.getRemainingValue(current), 0);
 	};
 
 	$scope.total = $scope.totalizeRemaining();
 
 	$scope.makePayment = function (payment) {
 		PaymentService.receive(payment)
-			.then(function () {
+			.then(() => {
 				$scope.$ctrl.onMakePayment();
 			});
 	};
@@ -187,7 +204,7 @@ function PayReceiveEmbeddedController(SweetAlert,
 
 	$scope.rowEdit = (row) => {
 		const fields = ['interest', 'penalty', 'discount'];
-		fields.forEach(field => {
+		fields.forEach((field) => {
 			if (typeof row[field] === 'string') {
 				const newObj = {
 					valueModifierOperation: (field === 'discount' ? 'DECREASE' : 'INCREASE'),
@@ -196,7 +213,7 @@ function PayReceiveEmbeddedController(SweetAlert,
 				};
 				row[field] = newObj;
 			}
-		})
+		});
 	};
 
 	$scope.tableConfig = {
@@ -271,7 +288,7 @@ function PayReceiveEmbeddedController(SweetAlert,
 	$scope.isExpired = getExpiredDays;
 
 	$scope.updateTotal = (value, interrest, penalty, discount) => {
-		let expiredDays = getExpiredDays(value.expiration);
+		const expiredDays = getExpiredDays(value.expiration);
 		value.interest.value = getInterestPerc(value, interrest, expiredDays);
 		value.penalty.value = getPenaltyPerc(value, penalty, expiredDays);
 		value.discount.value = getDiscountPerc(value, discount);
@@ -316,22 +333,22 @@ function PayReceiveEmbeddedController(SweetAlert,
 	};
 
 	$scope.addReceiveMoney = function (receive) {
-		var methodReceive = {
-			historic: "Dinheiro",
-			method: "money",
+		const methodReceive = {
+			historic: 'Dinheiro',
+			method: 'money',
 			value: receive.value,
 			destination: receive.money.financeUnit.name,
 			financeUnit: receive.money.financeUnit
 		};
-		$scope.addReceive(methodReceive, "money")
+		$scope.addReceive(methodReceive, 'money');
 	};
 
 	$scope.addReceiveCheck = function (receive) {
-		var methodReceive = {
-			historic: "Cheque",
-			method: "check",
+		const methodReceive = {
+			historic: 'Cheque',
+			method: 'check',
 			value: receive.value,
-			destination: "Banco: " + receive.check.bank + " Agência: " + receive.check.branch + " Conta: " + receive.check.account,
+			destination: `Banco: ${receive.check.bank} Agência: ${receive.check.branch} Conta: ${receive.check.account}`,
 			financeUnit: receive.check.portfolio,
 			bank: receive.check.bank,
 			availableIn: receive.check.validUntil,
@@ -341,75 +358,75 @@ function PayReceiveEmbeddedController(SweetAlert,
 			issuerName: receive.check.issuer.name,
 			issuerDocument: receive.check.issuer.document
 		};
-		$scope.addReceive(methodReceive, "check")
+		$scope.addReceive(methodReceive, 'check');
 	};
 
 	$scope.addReceiveBank = function (receive) {
-		var methodReceive = {
-			historic: $scope.isTed ? "Banco - op: TED" : "Banco - op: DOC",
-			type: $scope.isTed ? "TED" : "DOC",
-			method: "bank",
+		const methodReceive = {
+			historic: $scope.isTed ? 'Banco - op: TED' : 'Banco - op: DOC',
+			type: $scope.isTed ? 'TED' : 'DOC',
+			method: 'bank',
 			value: receive.value,
-			destination: "Conta Crédito: " + receive.docTed.financeUnit.name,
+			destination: `Conta Crédito: ${receive.docTed.financeUnit.name}`,
 			financeUnit: receive.docTed.financeUnit
 		};
-		$scope.addReceive(methodReceive, "docTed")
+		$scope.addReceive(methodReceive, 'docTed');
 	};
 
 	$scope.addReceiveCard = function (receive) {
-		var methodReceive = {
-			historic: "Cartão",
-			method: "card",
+		const methodReceive = {
+			historic: 'Cartão',
+			method: 'card',
 			value: receive.value,
-			destination: "Conta destino: " + receive.card.financeUnit.name,
+			destination: `Conta destino: ${receive.card.financeUnit.name}`,
 			financeUnit: receive.card.financeUnit
 		};
-		$scope.addReceive(methodReceive, "card")
+		$scope.addReceive(methodReceive, 'card');
 	};
 
 	$scope.addReceive = function (methodReceive, operation) {
 		$scope.payment.numberReceive++;
 		switch (operation) {
-			case "docTed":
+			case 'docTed':
 				$scope.payment.docTed = null;
-			case "money":
+			case 'money':
 				$scope.payment.money = null;
-			case "check":
+			case 'check':
 				$scope.payment.check = null;
-			case "card":
-				$scope.payment.card = null
+			case 'card':
+				$scope.payment.card = null;
 		}
 		$scope.payment.value = null;
 		$scope.payment.method = null;
 
 		if ($scope.payment.numberReceive === 1) {
-			$scope.payment.methodReceive[0] = methodReceive
+			$scope.payment.methodReceive[0] = methodReceive;
 		} else {
-			$scope.payment.methodReceive.push(methodReceive)
+			$scope.payment.methodReceive.push(methodReceive);
 		}
 		$scope.lastReceive = ($scope.totalizeRemaining() - $scope.totalReceive());
-		$scope.payment.value = $scope.lastPayment
+		$scope.payment.value = $scope.lastPayment;
 	};
 
 	// Adicionar pagamento de crédito
 	$scope.addReceiveCredit = function (payment) {
-		var methodPayment = {
-			historic: "Crédito",
-			method: "credit",
+		const methodPayment = {
+			historic: 'Crédito',
+			method: 'credit',
 			value: payment.value,
 			destination: payment.credit.financeUnit.name,
 			financeUnit: payment.credit.financeUnit
 		};
-		$scope.addReceive(methodPayment, "credit")
+		$scope.addReceive(methodPayment, 'credit');
 	};
 
 
 	$scope.calcCheques = function (id) {
 		if ($scope.payment.numberReceive >= 1) {
-			$scope.payment.value = $scope.lastReceive
+			$scope.payment.value = $scope.lastReceive;
 		} else {
-			var total = 0;
-			angular.forEach($scope.selectedValues, function (o) {
+			let total = 0;
+			angular.forEach($scope.selectedValues, (o) => {
 				total += o.value;
 			});
 			if (total !== 0) {
@@ -422,18 +439,16 @@ function PayReceiveEmbeddedController(SweetAlert,
 	};
 
 	$scope.totalReceive = function () {
-		return $scope.payment.methodReceive.reduce((sum, current) => {
-			return sum + current.value;
-		}, 0);
+		return $scope.payment.methodReceive.reduce((sum, current) => sum + current.value, 0);
 	};
 
 	$scope.removeLeaf = function (method, index) {
 		method.splice(index, 1);
-		$scope.lastReceive = ($scope.totalizeRemaining() - $scope.totalReceive())
+		$scope.lastReceive = ($scope.totalizeRemaining() - $scope.totalReceive());
 	};
 
 	$scope.printReceipt = function () {
-		var value = $scope.totalReceive().toString();
+		let value = $scope.totalReceive().toString();
 		value = value.replace('.', ',');
 		$scope.payment.numberInWords = $filter('gumgaNumberInWords')(value, true);
 		$scope.payment.value = $scope.totalReceive().toFixed(2);
@@ -442,11 +457,11 @@ function PayReceiveEmbeddedController(SweetAlert,
 
 	$scope.printPaid = function (items) {
 		const variables = [];
-		variables.push('', 'parcelIds', items.map(item => item.id));
-		variables.push('', 'orgName', JSON.parse(window.sessionStorage.getItem('user')).organization)
+		variables.push('', 'parcelIds', items.map((item) => item.id));
+		variables.push('', 'orgName', JSON.parse(window.sessionStorage.getItem('user')).organization);
 		FinanceReportService.openModalViewer('RECEIPT', '', variables, () => {
-			SweetAlert.swal("Falta de Recibos", "Você esta sem o recibo configurado contate o suporte.", "warning");
-		})
+			SweetAlert.swal('Falta de Recibos', 'Você esta sem o recibo configurado contate o suporte.', 'warning');
+		});
 	};
 
 	$scope.makePayment = function (payment) {
@@ -454,25 +469,26 @@ function PayReceiveEmbeddedController(SweetAlert,
 
 		$scope.teste = () => {
 
-		}
+		};
 
 		PaymentService.receive(payment)
-			.then(function (resp) {
-				console.log(resp);
-				let baseState = 'titleparcelreceive.list';
-				SweetAlert.swal({
-					title: 'Confirmação',
-					text: 'Deseja imprimir o recibo deste título?',
-					type: "warning",
-					showCancelButton: true,
-					confirmButtonColor: '#DD6B55', confirmButtonText: "Sim",
-					cancelButtonText: 'Não',
-					closeOnConfirm: true,
-					closeOnCancel: true
-				},
-					function (isConfirm) {
+			.then((resp) => {
+				const baseState = 'titleparcelreceive.list';
+				SweetAlert.swal(
+					{
+						title: 'Confirmação',
+						text: 'Deseja imprimir o recibo deste título?',
+						type: 'warning',
+						showCancelButton: true,
+						confirmButtonColor: '#DD6B55',
+						confirmButtonText: 'Sim',
+						cancelButtonText: 'Não',
+						closeOnConfirm: true,
+						closeOnCancel: true
+					},
+					(isConfirm) => {
 						if (isConfirm) {
-							let variables = [];
+							const variables = [];
 							variables.push(FinanceReportService.mountVariable('', 'idPayment', resp.data.id));
 
 							FinanceReportService.openModalViewer('RECEIPTTITLE', [], variables, $scope.teste(), baseState).then((resp) => {
@@ -482,35 +498,30 @@ function PayReceiveEmbeddedController(SweetAlert,
 				);
 				$scope.$ctrl.onMakePayment();
 			});
-
-
-
-
-	}
+	};
 
 	$scope.setarfocusPayment = function (value) {
 		switch (value) {
 			case 'money':
-				angular.element(document.getElementById("paymentMoneyFinanceunit"))
+				angular.element(document.getElementById('paymentMoneyFinanceunit'))
 					.find('input')[1].focus();
-				break
+				break;
 			case 'check':
-				document.getElementById("paymentCheckFinanceunit").focus();
-				break
+				document.getElementById('paymentCheckFinanceunit').focus();
+				break;
 			case 'bank':
-				angular.element(document.getElementById("paymentBankFinanceunit"))
+				angular.element(document.getElementById('paymentBankFinanceunit'))
 					.find('input')[1].focus();
-				break
+				break;
 			case 'card':
-				angular.element(document.getElementById("paymentCardFinanceunit"))
+				angular.element(document.getElementById('paymentCardFinanceunit'))
 					.find('input')[1].focus();
-				break
+				break;
 			case 'credit':
-				angular.element(document.getElementById("paymentCreditFinanceunit"))
+				angular.element(document.getElementById('paymentCreditFinanceunit'))
 					.find('input')[1].focus();
-				break
+				break;
 		}
-		;
 	};
 
 	$scope.selectAllText = function (id) {
@@ -520,7 +531,7 @@ function PayReceiveEmbeddedController(SweetAlert,
 
 	$scope.balanceFinanceUnit = 0;
 	$scope.onSelectPaymentCredit = function (financeUnit) {
-		FinanceUnitService.getFinanceUnitBalance(financeUnit.id).then(function (data) {
+		FinanceUnitService.getFinanceUnitBalance(financeUnit.id).then((data) => {
 			$scope.balanceFinanceUnit = data.data > 0 ? 0 : data.data;
 		});
 	};
@@ -533,18 +544,16 @@ function PayReceiveEmbeddedController(SweetAlert,
 		$scope.$ctrl.onMakePayment();
 	};
 
-	$scope.getFinanceUnits = (param, name) => {
-		return FinanceUnitService.findByOpenUnitGroup(name).then(data => {
-			$scope.financeunit.data = data.data.values;
-			return data.data.values;
-		});
-	};
+	$scope.getFinanceUnits = (param, name) => FinanceUnitService.findByOpenUnitGroup(name).then((data) => {
+		$scope.financeunit.data = data.data.values;
+		return data.data.values;
+	});
 
 	$scope.checkExpired = (validUntil) => {
 		if (!validUntil) return false;
 		const dateToCompare = validUntil instanceof Date ? validUntil : new Date(validUntil);
 		return (dateToCompare && moment(validUntil).isBefore(new Date(), 'day'));
-	}
+	};
 }
 
 module.exports = PayReceiveEmbeddedController;
