@@ -1,9 +1,11 @@
-let template = require('../views/pay.html');
+import template from '../views/pay.html';
 
-module.exports = {
-    templateUrl: template,
-    controller: 'PayReceiveEmbeddedController',
-    bindings:{
-        onMakePayment: '&'
-    }
+const component = {
+	template,
+	controller: 'PayReceiveEmbeddedController',
+	bindings: {
+		onMakePayment: '&'
+	}
 };
+
+export default component;

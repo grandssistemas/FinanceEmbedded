@@ -1,11 +1,13 @@
-let template = require('../views/list.html');
+import template from '../views/list.html';
 
-module.exports = {
-    templateUrl: template,
-    controller: 'FinanceReportListEmbeddedController',
-    bindings:{
-        viewReport: '&',
-        editReport: '&',
-        insertReport: '&'
-    }
+const component = {
+	template,
+	controller: 'FinanceReportListEmbeddedController',
+	bindings: {
+		viewReport: '&',
+		editReport: '&',
+		insertReport: '&'
+	}
 };
+
+export default component;

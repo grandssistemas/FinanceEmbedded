@@ -1,7 +1,11 @@
-module.exports = angular.module('finance.titleparcelreceive', ['finance.services', 'finance.titleparcel'])
-    .controller('TitleParcelReceiveListEmbeddedController', require('./controllers/TitleParcelReceiveListEmbeddedController'))
-    .controller('PayReceiveEmbeddedController', require('./controllers/PayReceiveEmbeddedController'))
-    .component('financeTitleParcelReceivePayment', require('./component/TitleParcelReceivePaymentEmbedded'))
-    .component('financeTitleParcelReceiveList', require('./component/TitleParcelReceiveListEmbedded'));
+import TitleParcelReceiveListEmbeddedController from './controllers/TitleParcelReceiveListEmbeddedController';
+import PayReceiveEmbeddedController from './controllers/PayReceiveEmbeddedController';
+import financeTitleParcelReceivePayment from './component/TitleParcelReceivePaymentEmbedded';
+import financeTitleParcelReceiveList from './component/TitleParcelReceiveListEmbedded';
 
+export default angular.module('finance.titleparcelreceive', ['finance.services', 'finance.titleparcel'])
+	.controller('TitleParcelReceiveListEmbeddedController', TitleParcelReceiveListEmbeddedController)
+	.controller('PayReceiveEmbeddedController', PayReceiveEmbeddedController)
+	.component('financeTitleParcelReceivePayment', financeTitleParcelReceivePayment)
+	.component('financeTitleParcelReceiveList', financeTitleParcelReceiveList);
 

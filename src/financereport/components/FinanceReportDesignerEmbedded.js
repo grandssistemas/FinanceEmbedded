@@ -1,11 +1,13 @@
-let template = require('../views/designer.html');
+import template from '../views/designer.html';
 
-module.exports = {
-    templateUrl: template,
-    controller: 'DesignerEmbeddedController',
-    bindings:{
-        backState: '&',
-        entity: '=',
-        variable: '='
-    }
+const component = {
+	template,
+	controller: 'DesignerEmbeddedController',
+	bindings: {
+		backState: '&',
+		entity: '=',
+		variable: '='
+	}
 };
+
+export default component;

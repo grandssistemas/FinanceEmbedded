@@ -1,9 +1,11 @@
-let template = require('../views/list.html');
+import template from '../views/list.html';
 
-module.exports = {
-    templateUrl: template,
-    controller: 'TitleParcelPayListEmbeddedController',
-    bindings:{
-        onSameIndividual: '&'
-    }
+const component = {
+	template,
+	controller: 'TitleParcelPayListEmbeddedController',
+	bindings: {
+		onSameIndividual: '&'
+	}
 };
+
+export default component;

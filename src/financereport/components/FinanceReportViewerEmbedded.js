@@ -1,12 +1,14 @@
-let template = require('../views/viewer.html');
+import template from '../views/viewer.html';
 
-module.exports = {
-    templateUrl: template,
-    controller: 'ViewerEmbeddedController',
-    bindings:{
-        entity: '=',
-        variable: '=',
-        filters: '=',
-        backState: '&'
-    }
+const component = {
+	template,
+	controller: 'ViewerEmbeddedController',
+	bindings: {
+		entity: '=',
+		variable: '=',
+		filters: '=',
+		backState: '&'
+	}
 };
+
+export default component;

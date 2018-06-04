@@ -1,7 +1,9 @@
+import './views/BalanceModal.html';
+import CashCheckoutEmbeddedFormController from './controllers/CashCheckoutEmbeddedFormController';
+import BalanceModalController from './controllers/BalanceModalController';
+import cashCheckoutEmbedded from './component/CashCheckoutEmbedded';
 
-require('./views/BalanceModal.html');
-
-module.exports = angular.module('finance.cashcheckoutembedded', [])
-    .controller('CashCheckoutEmbeddedFormController', require('./controllers/CashCheckoutEmbeddedFormController'))
-    .controller('BalanceModalController', require('./controllers/BalanceModalController'))
-    .component('cashCheckoutEmbedded', require('./component/CashCheckoutEmbedded'));
+export default angular.module('finance.cashcheckoutembedded', [])
+	.controller('CashCheckoutEmbeddedFormController', CashCheckoutEmbeddedFormController)
+	.controller('BalanceModalController', BalanceModalController)
+	.component('cashCheckoutEmbedded', cashCheckoutEmbedded);

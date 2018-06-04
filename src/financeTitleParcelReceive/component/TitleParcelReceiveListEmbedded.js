@@ -1,10 +1,12 @@
-let template = require('../views/list.html');
+import template from '../views/list.html';
 
-module.exports = {
-    templateUrl: template,
-    controller: 'TitleParcelReceiveListEmbeddedController',
-    bindings:{
-        onSameIndividual: '&',
-        onRenegotiation: '&'
-    }
+const component = {
+	template,
+	controller: 'TitleParcelReceiveListEmbeddedController',
+	bindings: {
+		onSameIndividual: '&',
+		onRenegotiation: '&'
+	}
 };
+
+export default component;

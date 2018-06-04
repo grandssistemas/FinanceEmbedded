@@ -1,11 +1,13 @@
-let template = require('../views/form.html');
+import template from '../views/form.html';
 
-module.exports = {
-    templateUrl: template,
-    controller: 'CashCheckinEmbeddedFormController',
-    bindings:{
-        employee: '=',
-        disableOpening: '=',
-        onGoHome: '&'
-    }
+const component = {
+	template,
+	controller: 'CashCheckinEmbeddedFormController',
+	bindings: {
+		employee: '=',
+		disableOpening: '=',
+		onGoHome: '&'
+	}
 };
+
+export default component;

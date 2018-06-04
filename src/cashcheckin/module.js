@@ -1,5 +1,7 @@
-module.exports = angular.module('finance.cashcheckinembedded', [])
-    .controller('CashCheckinEmbeddedFormController', require('./controllers/CashCheckinEmbeddedFormController'))
-    .component('cashCheckinEmbedded', require('./component/CashCheckinEmbedded'));
+import controller from './controllers/CashCheckinEmbeddedFormController';
+import component from './component/CashCheckinEmbedded';
 
+export default angular.module('finance.cashcheckinembedded', [])
+	.controller('CashCheckinEmbeddedFormController', controller)
+	.component('cashCheckinEmbedded', component);
 

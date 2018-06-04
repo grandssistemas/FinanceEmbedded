@@ -1,12 +1,14 @@
-let template = require('../views/list.html');
+import template from '../views/list.html';
 
-module.exports = {
-    templateUrl: template,
-    controller: 'TitleListEmbeddedController',
-    bindings:{
-        titleType: '@',
-        onNewTitle: '&',
-        onEditTitle: '&',
-        onReplacement: '&'
-    }
+const component = {
+	template,
+	controller: 'TitleListEmbeddedController',
+	bindings: {
+		titleType: '@',
+		onNewTitle: '&',
+		onEditTitle: '&',
+		onReplacement: '&'
+	}
 };
+
+export default component;

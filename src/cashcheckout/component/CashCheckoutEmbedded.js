@@ -1,10 +1,12 @@
-let template = require('../views/form.html');
+import template from '../views/form.html';
 
-module.exports = {
-    templateUrl: template,
-    controller: 'CashCheckoutEmbeddedFormController',
-    bindings:{
-        entity: '=',
-        onGoHome: '&'
-    }
+const component = {
+	template,
+	controller: 'CashCheckoutEmbeddedFormController',
+	bindings: {
+		entity: '=',
+		onGoHome: '&'
+	}
 };
+
+export default component;
