@@ -467,9 +467,7 @@ function PayReceiveEmbeddedController(
 	$scope.makePayment = function (payment) {
 		$scope.post = payment;
 
-		$scope.teste = () => {
-
-		};
+		$scope.defaultFunction = () => true;
 
 		PaymentService.receive(payment)
 			.then((resp) => {
@@ -491,8 +489,7 @@ function PayReceiveEmbeddedController(
 							const variables = [];
 							variables.push(FinanceReportService.mountVariable('', 'idPayment', resp.data.id));
 
-							FinanceReportService.openModalViewer('RECEIPTTITLE', [], variables, $scope.teste(), baseState).then((resp) => {
-							});
+							FinanceReportService.openModalViewer('RECEIPTTITLE', [], variables, $scope.defaultFunction(), baseState);
 						}
 					}
 				);
