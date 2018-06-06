@@ -158,9 +158,12 @@
                     <div class="col-md-12">
                       <div class="reset-height">
                         <label gumga-translate-tag="title.wallet"></label>
-                        <gumga-many-to-one value="title.data.walletTitle"
+                        <gumga-many-to-one 
+                                          name=wallet""
+                                          value="title.data.walletTitle"
                                            list="wallets"
                                            required
+                                           active-favorite="true"
                                            search-method="wallet.methods.asyncSearch('name',param)"
                                            field="name"
                                            required
@@ -180,9 +183,12 @@
                       <label gumga-translate-tag="title.documenttype"></label>
                       <div class="reset-height">
                         <!--async="false"-->
-                        <gumga-many-to-one display-info="false"
+                        <gumga-many-to-one
+                                          name="documentType"
+                                          display-info="false"
                                            value="title.data.documentType"
                                            list="documents"
+                                           active-favorite="true"
                                            required
                                            class="gmd"
                                            search-method="documentType.methods.asyncSearch('name',param)"
