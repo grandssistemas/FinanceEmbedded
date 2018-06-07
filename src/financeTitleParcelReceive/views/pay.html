@@ -113,7 +113,7 @@
 						<div class="row"
 						     ng-show="payment.method == 'thirdCheck'">
 							<div class="col-md-2 m-t-md">
-								<div gumga-form-class="bank">
+								<div>
 									<gmd-input>
 										<input gumga-error
 										       type="text"
@@ -129,7 +129,7 @@
 								</div>
 							</div>
 							<div class="col-md-2 m-t-md">
-								<div gumga-form-class="branch">
+								<div>
 									<gmd-input>
 										<input gumga-error
 										       type="text"
@@ -143,7 +143,7 @@
 								</div>
 							</div>
 							<div class="col-md-4 m-t-md">
-								<div gumga-form-class="account">
+								<div>
 									<gmd-input>
 										<input gumga-error
 										       type="text"
@@ -157,7 +157,7 @@
 								</div>
 							</div>
 							<div class="col-md-4 m-t-md">
-								<div gumga-form-class="chequeNumber">
+								<div>
 									<gmd-input>
 										<input gumga-error
 										       type="text"
@@ -174,11 +174,11 @@
 						<div class="row"
 						     ng-show="payment.method == 'thirdCheck'">
 							<div class="col-md-4 m-t-md">
-								<div gumga-form-class="issuer">
+								<div>
 									<gmd-input>
 										<input gumga-error
 										       type="text"
-										       name="issuer"
+										       name="issuerd"
 										       ng-model="payment.check.issuer.document"
 										       class="form-control gmd"
 										       ui-br-cpfcnpj-mask
@@ -189,11 +189,11 @@
 								</div>
 							</div>
 							<div class="col-md-8 m-t-md">
-								<div gumga-form-class="issuer">
+								<div>
 									<gmd-input>
 										<input gumga-error
 										       type="text"
-										       name="issuer"
+										       name="issuern"
 										       ng-model="payment.check.issuer.name"
 										       class="form-control gmd"
 										       tabindex="6" />
@@ -206,7 +206,7 @@
 						<div class="row"
 						     ng-show="payment.method == 'thirdCheck'">
 							<div class="col-md-4">
-								<div gumga-form-class="portfolio">
+								<div>
 									<label gumga-translate-tag="thirdpartycheque.portfolio">portfolio</label>
 									<gumga-many-to-one name="portfolio"
 									                   value="payment.check.portfolio"
@@ -218,7 +218,7 @@
 								</div>
 							</div>
 							<div class="col-md-4">
-								<div gumga-form-class="validUntil">
+								<div>
 									<label style="margin-bottom: 0"
 									       gumga-translate-tag="thirdpartycheque.validUntil">validUntil</label>
 									<gumga-date name="validUntil"
