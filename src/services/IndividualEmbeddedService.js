@@ -1,15 +1,14 @@
-IndividualEmbeddedService.$inject = ['GumgaRest', '$http', 'FinanceEmbeddedService', 'FinanceReportService', 'apiFinanceLocation'];
+IndividualEmbeddedService.$inject = ['GumgaRest', '$http', 'FinanceEmbeddedService', 'FinanceReportService'];
 
-function IndividualEmbeddedService(GumgaRest, $http, FinanceEmbeddedService, FinanceReportService, apiFinanceLocation) {
+function IndividualEmbeddedService(GumgaRest, $http, FinanceEmbeddedService, FinanceReportService) {
 	let Service = new GumgaRest(`${FinanceEmbeddedService.getDefaultConfiguration().api}/individual`);
-	let ServiceFinance = new GumgaRest(apiFinanceLocation.concat('/api/individual'));
 
 	Service.searchIndividual = (param) => {
 		let gQuery = new GQuery();
 		if (param) {
 			gQuery = gQuery.and(new Criteria("obj.name", ComparisonOperator.CONTAINS, param).addIgnoreCase(param).addTranslate());
 		}
-		return ServiceFinance.searchWithGQuery(gQuery);
+		return Service.searchWithGQuery(gQuery);
 	};
 
 	Service.getLabels = function () {
