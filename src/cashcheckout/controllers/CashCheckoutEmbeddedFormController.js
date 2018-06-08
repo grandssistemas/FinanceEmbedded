@@ -1,164 +1,165 @@
 CashCheckoutEmbeddedFormController.$inject = ['$scope',
-    'CashCheckinEmbeddedService',
-    'FinanceUnitService',
-    'SweetAlert',
-    'MoneyUtilsService',
-    '$filter',
-    '$uibModal'
+	'CashCheckinEmbeddedService',
+	'FinanceUnitService',
+	'SweetAlert',
+	'MoneyUtilsService',
+	'$filter',
+	'$uibModal'
 ];
 
-function CashCheckoutEmbeddedFormController($scope,
-                                            CashCheckinEmbeddedService,
-                                            FinanceUnitService,
-                                            SweetAlert,
-                                            MoneyUtilsService,
-                                            $filter,
-                                            $uibModal) {
-    $scope.entity = angular.copy($scope.$ctrl.entity);
-    $scope.noCheckin = !$scope.entity;
-    $scope.close = function (entity) {
-        if (validateDiference(entity) && !$scope.noCheckin) {
-            SweetAlert.swal({
-                    title: "Deseja realmente fechar o Caixa?",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55", confirmButtonText: "Sim!",
-                    cancelButtonText: "Não",
-                    closeOnConfirm: true,
-                    closeOnCancel: true
-                },
-                function (isConfirm) {
-                    if (isConfirm) {
-                        entity.cashCheckouts = entity.cashCheckouts || [];
-                        entity.cashCheckouts.push({
-                            date: new Date(),
-                            status: 'NORMAL',
-                            change: $scope.change,
-                            defaultTransfer: $scope.defaultTransfer
-                        });
-                        CashCheckinEmbeddedService.update(entity).then(function () {
-                            $scope.$ctrl.onGoHome();
-                        })
-                    }
-                });
-        }
-    };
+function CashCheckoutEmbeddedFormController(
+	$scope,
+	CashCheckinEmbeddedService,
+	FinanceUnitService,
+	SweetAlert,
+	MoneyUtilsService,
+	$filter,
+	$uibModal
+) {
+	$scope.$ctrl.$onInit = function () {
+		$scope.entity = angular.copy($scope.$ctrl.entity);
 
-    $scope.showWithoutMovement = false;
 
-    $scope.showAccountsWithoutMovement = function (cashAccount) {
-        if (cashAccount.movementedValue === null) {
-            return false;
-        }
-        return !$scope.showWithoutMovement ? cashAccount.movementedValue !== 0 : true;
-    };
+		$scope.noCheckin = !$scope.entity;
+		$scope.close = function (entity) {
+			if (validateDiference(entity) && !$scope.noCheckin) {
+				SweetAlert.swal(
+					{
+						title: 'Deseja realmente fechar o Caixa?',
+						type: 'warning',
+						showCancelButton: true,
+						confirmButtonColor: '#DD6B55',
+						confirmButtonText: 'Sim!',
+						cancelButtonText: 'Não',
+						closeOnConfirm: true,
+						closeOnCancel: true
+					},
+					(isConfirm) => {
+						if (isConfirm) {
+							entity.cashCheckouts = entity.cashCheckouts || [];
+							entity.cashCheckouts.push({
+								date: new Date(),
+								status: 'NORMAL',
+								change: $scope.change,
+								defaultTransfer: $scope.defaultTransfer
+							});
+							CashCheckinEmbeddedService.update(entity).then(() => {
+								$scope.$ctrl.onGoHome();
+							});
+						}
+					}
+				);
+			}
+		};
 
-    function calcMovement() {
-        if ($scope.entity && $scope.entity.date) {
-            CashCheckinEmbeddedService.getByCurrentCashCheckin($scope.entity.date)
-                .then(function (data) {
-                    $scope.entity.values = $scope.entity.group.financeUnits.map(function (financeUnit) {
-                        let movementedValue = data.data.filter(function (entry) {
-                            return financeUnit.id === entry.financeUnit.id;
-                        }).reduce(function (a, b) {
-                            return MoneyUtilsService.sumMoney(a , b.value);
-                        }, 0);
-                        return {financeUnit: financeUnit, movementedValue: movementedValue, informedValue: 0}
-                    });
+		$scope.showWithoutMovement = false;
 
-                    $scope.entity.values.sort(function (a, b) {
-                        return Math.abs(b.movementedValue) - Math.abs(a.movementedValue);
-                    });
-                });
-        }
-    }
+		$scope.showAccountsWithoutMovement = function (cashAccount) {
+			if (cashAccount.movementedValue === null) {
+				return false;
+			}
+			return !$scope.showWithoutMovement ? cashAccount.movementedValue !== 0 : true;
+		};
 
-    calcMovement();
+		function calcMovement() {
+			if ($scope.entity && $scope.entity.date) {
+				CashCheckinEmbeddedService.getByCurrentCashCheckin($scope.entity.date)
+					.then((data) => {
+						$scope.entity.values = $scope.entity.group.financeUnits.map((financeUnit) => {
+							const movementedValue = data.data.filter((entry) => financeUnit.id === entry.financeUnit.id).reduce((a, b) => MoneyUtilsService.sumMoney(a, b.value), 0);
+							return { financeUnit, movementedValue, informedValue: 0 };
+						});
 
-    function validateDiference(entity) {
-        for (let i = 0; i < entity.values.length; i++) {
-            if (!isComparationCorrect(entity.values[i], entity.destinyChange)) {
-                SweetAlert.swal("Diferença de Valores!", "A conta " + entity.values[i].financeUnit.name +
-                    " esta com diferença de valores, realize movimentações de caixa para corrigir antes de fechar.", "error");
-                return false;
-            }
-        }
-        return true;
-    }
+						$scope.entity.values.sort((a, b) => Math.abs(b.movementedValue) - Math.abs(a.movementedValue));
+					});
+			}
+		}
 
-    function isComparationCorrect(value, destiny) {
-        var change = 0;
-        if (destiny && destiny.id === value.financeUnit.id) {
-            change = $scope.change || 0;
-        }
-        return value.movementedValue === MoneyUtilsService.sumMoney(value.informedValue , change);
-    }
+		calcMovement();
 
-    $scope.formatDate = function (date) {
-        return $filter('date')(new Date(date), 'dd/MM/yyyy HH:mm:ss');
-    };
+		function validateDiference(entity) {
+			for (let i = 0; i < entity.values.length; i++) {
+				if (!isComparationCorrect(entity.values[i], entity.destinyChange)) {
+					SweetAlert.swal('Diferença de Valores!', `A conta ${entity.values[i].financeUnit.name
+					} esta com diferença de valores, realize movimentações de caixa para corrigir antes de fechar.`, 'error');
+					return false;
+				}
+			}
+			return true;
+		}
 
-    $scope.getDefaultTransfer = function (param) {
-        param = param || '';
-        var hql = "(SELECT count(gUnit) " +
-            "FROM FinanceUnitGroup groups inner join groups.financeUnits gUnit " +
-            "WHERE groups.id = " + $scope.entity.group.id + " AND gUnit = obj) = 0 AND " +
-            "lower(obj.name) like '%" + param + "%'";
-        return FinanceUnitService.getAdvancedSearch(hql).then(function (data) {
-            return data.data.values;
-        })
-    };
+		function isComparationCorrect(value, destiny) {
+			let change = 0;
+			if (destiny && destiny.id === value.financeUnit.id) {
+				change = $scope.change || 0;
+			}
+			return value.movementedValue === MoneyUtilsService.sumMoney(value.informedValue, change);
+		}
 
-    $scope.disabledCloseCash = function () {
-        return $scope.noCheckin || !transferAccountCorrect($scope.entity);
-    };
+		$scope.formatDate = function (date) {
+			return $filter('date')(new Date(date), 'dd/MM/yyyy HH:mm:ss');
+		};
 
-    function transferAccountCorrect(entity) {
-        return (entity.values && entity.values.reduce(function (a, b) {
-            return a && (b.financeUnit.defaultTransfer || !b.movementedValue);
-        }, true)) || !!$scope.defaultTransfer;
-    }
+		$scope.getDefaultTransfer = function (param) {
+			param = param || '';
+			let array = [];
+			const hql = `${'(SELECT count(gUnit) ' +
+				'FROM FinanceUnitGroup groups inner join groups.financeUnits gUnit ' +
+				'WHERE groups.id = '}${$scope.entity.group.id} AND gUnit = obj) = 0 AND ` +
+				`lower(obj.name) like '%${param}%'`;
+			return FinanceUnitService.getAdvancedSearch(hql).then((data) => array = data.data.values.filter((item) => item.type !== 'IndividualCredit'));
+		};
 
-    $scope.showMovements = (financeUnit) => {
-        $uibModal.open({
-            animation: true,
-            templateUrl: '/cashcheckout/views/BalanceModal.html',
-            controller: 'BalanceModalController',
-            backdrop: 'static',
-            size: 'larger',
-            resolve: {
-                entries: function () {
-                    return FinanceUnitService.getEntriesByFinanceUnitAndCheckin(financeUnit.id, $scope.entity.id);
-                },
-                config: function () {
-                    return {
-                        title: `Listagem de movimentações da conta ${financeUnit.name}`,
-                        type: 'FINANCEUNIT'
-                    }
-                },
-            }
-        });
-    }
+		$scope.disabledCloseCash = function () {
+			return $scope.noCheckin || !transferAccountCorrect($scope.entity);
+		};
 
-    $scope.showAllMovements = () => {
-        $uibModal.open({
-            animation: true,
-            templateUrl: '/cashcheckout/views/BalanceModal.html',
-            controller: 'BalanceModalController',
-            backdrop: 'static',
-            size: 'larger',
-            resolve: {
-                entries: function () {
-                    return FinanceUnitService.getEntriesByCheckin($scope.entity.id);
-                }, config: function () {
-                    return {
-                        title: `Listagem de movimentações nesta abertura`,
-                        type: 'ALL'
-                    }
-                },
-            }
-        });
-    }
+		function transferAccountCorrect(entity) {
+			return (entity.values && entity.values.reduce((a, b) => a && (b.financeUnit.defaultTransfer || !b.movementedValue), true)) || !!$scope.defaultTransfer;
+		}
+
+		$scope.showMovements = (financeUnit) => {
+			$uibModal.open({
+				animation: true,
+				templateUrl: '/cashcheckout/views/BalanceModal.html',
+				controller: 'BalanceModalController',
+				backdrop: 'static',
+				size: 'larger',
+				resolve: {
+					entries() {
+						return FinanceUnitService.getEntriesByFinanceUnitAndCheckin(financeUnit.id, $scope.entity.id);
+					},
+					config() {
+						return {
+							title: `Listagem de movimentações da conta ${financeUnit.name}`,
+							type: 'FINANCEUNIT'
+						};
+					}
+				}
+			});
+		};
+
+		$scope.showAllMovements = () => {
+			$uibModal.open({
+				animation: true,
+				templateUrl: '/cashcheckout/views/BalanceModal.html',
+				controller: 'BalanceModalController',
+				backdrop: 'static',
+				size: 'larger',
+				resolve: {
+					entries() {
+						return FinanceUnitService.getEntriesByCheckin($scope.entity.id);
+					},
+					config() {
+						return {
+							title: 'Listagem de movimentações nesta abertura',
+							type: 'ALL'
+						};
+					}
+				}
+			});
+		};
+	};
 }
 
 module.exports = CashCheckoutEmbeddedFormController;

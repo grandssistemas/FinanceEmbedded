@@ -33,8 +33,10 @@ function FinanceUnitGroupService(GumgaRest, FinanceEmbeddedService){
     };
 
     service.setGroup = function (value) {
-        sessionStorage.setItem('groupOpen', JSON.stringify(value));
-        group = value;
+        if (value) {
+            sessionStorage.setItem('groupOpen', JSON.stringify(value));
+            group = value;   
+        }
     };
 
     service.removeSessionGroup = function () {

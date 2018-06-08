@@ -1,8 +1,8 @@
 DocTedService.$inject = ['GumgaRest', 'FinanceEmbeddedService'];
 
 function DocTedService(GumgaRest, FinanceEmbeddedService) {
-    var Service = new GumgaRest(FinanceEmbeddedService.getDefaultConfiguration().api);
-
+    var Service = new GumgaRest(FinanceEmbeddedService.getDefaultConfiguration().api + '/entry');
+    var rootService = new GumgaRest(FinanceEmbeddedService.getDefaultConfiguration().api);
 
     Service.save = save;
     Service.getEntry = getEntry;
@@ -15,18 +15,18 @@ function DocTedService(GumgaRest, FinanceEmbeddedService) {
         return {
             ted: function () {
                 data.historic = '[TED] '.concat(transferTo);
-                return Service.extend('POST', '/ted', data)
+                return rootService.extend('POST', '/ted', data)
             },
             doc: function () {
                 data.historic = '[DOC] '.concat(transferTo);
-                return Service.extend('POST', '/doc', data);
+                return rootService.extend('POST', '/doc', data);
             }
         }
     }
 
     function getEntry(url, start) {
         start = start || 0;
-        return Service.extend('GET', '/entry', {
+        return Service.extend('GET', '/', {
             params: {
                 aq: url,
                 pageSize: 10,
