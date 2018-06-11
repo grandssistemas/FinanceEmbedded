@@ -1,6 +1,6 @@
 <div class="row">
-    <div class="col-md-12">
-        <!-- <div class="col-md-3">
+	<div class="col-md-12">
+		<!-- <div class="col-md-3">
             <a ng-click="print(titleType)"
                class="btn btn-default"
                ng-show="titleType == 'receive'">
@@ -8,94 +8,92 @@
                 <span gumga-translate-tag="formbuttons.printreport"> Print Report</span>
             </a>
         </div> -->
-        <div class="col-md-3">
-            <label for="group"
-                   class="control-label input-label margin-many">
-                <span>Pesquisar marcadores</span>
-            </label>
-            <ui-select multiple
-                       ng-model="selected.labels"
-                       theme="bootstrap"
-                       name="labels"
-                       on-select="selectLabel($item)"
-                       on-remove="reset()">
-                <ui-select-match>{{$item.value}}</ui-select-match>
-                <ui-select-choices repeat="label in labels"
-                                   refresh="buscaTag($select.search)">
-                    <div ng-if="!label.isTag">{{label.value + label.isTag}}</div>
-                </ui-select-choices>
-            </ui-select>
-        </div>
+		<div class="col-md-3">
+			<label for="group"
+			       class="control-label input-label margin-many">
+				<span>Pesquisar marcadores</span>
+			</label>
+			<ui-select multiple
+			           ng-model="selected.labels"
+			           theme="bootstrap"
+			           name="labels"
+			           on-select="selectLabel($item)"
+			           on-remove="reset()">
+				<ui-select-match>{{$item.value}}</ui-select-match>
+				<ui-select-choices repeat="label in labels"
+				                   refresh="buscaTag($select.search)">
+					<div ng-if="!label.isTag">{{label.value + label.isTag}}</div>
+				</ui-select-choices>
+			</ui-select>
+		</div>
 
-        <div class="col-md-6">
-            <div style="margin-top: 18px">
-                <gumga-query search="simpleSearch(field,param)"
-                             use-gquery="true"
-                             advanced-search="advancedSearch(param)">
-                    <search-field label="N° Documento"
-                                  field="documentNumber"></search-field>
-                    <advanced-search-field type="string"
-                                           label="Número do documento"
-                                           field="documentNumber"></advanced-search-field>
-                    <advanced-search-field type="number"
-                                           label="Valor Total"
-                                           field="value"></advanced-search-field>
-                    <advanced-search-field type="date"
-                                           label="Data de Emissão"
-                                           field="emissionDate"></advanced-search-field>
-                </gumga-query>
-            </div>
-        </div>
-    </div>
+		<div class="col-md-6">
+			<div style="margin-top: 18px">
+				<gumga-query search="simpleSearch(field,param)"
+				             use-gquery="true"
+				             advanced-search="advancedSearch(param)">
+					<search-field label="N° Documento"
+					              field="documentNumber"></search-field>
+					<advanced-search-field type="string"
+					                       label="Número do documento"
+					                       field="documentNumber"></advanced-search-field>
+					<advanced-search-field type="number"
+					                       label="Valor Total"
+					                       field="value"></advanced-search-field>
+					<advanced-search-field type="date"
+					                       label="Data de Emissão"
+					                       field="emissionDate"></advanced-search-field>
+				</gumga-query>
+			</div>
+		</div>
+	</div>
 </div>
 
 <div class="col-md-12"
      style="margin-top:1%">
-    <gumga-list class="table-striped"
-                data="title.data"
-                configuration="tableConf"
-                page-size="title.pageSize"
-                count="title.count"
-                page-model="title.page"
-                max-height="400px"
-                on-page-change="title.methods.get(page, pageSize)">
-    </gumga-list>
+	<gumga-list class="table-striped"
+	            data="title.data"
+	            configuration="tableConf"
+	            page-size="title.pageSize"
+	            count="title.count"
+	            page-model="title.page"
+	            max-height="400px"
+	            on-page-change="title.methods.get(page, pageSize)">
+	</gumga-list>
 </div>
 
 
 <gmd-fab force-click="false"
          fixed
          opened="selectedValues.length > 0">
-    <button class="bg-accent gmd-ripple"
-            ng-click="goInsert()"
-            ng-if="selectedValues.length == 0">
-        <span class="material-icons">add</span>
-    </button>
-    <button class="bg-accent"
-            ng-if="selectedValues.length > 0">
-        <span class="material-icons">menu</span>
-    </button>
-    <ul>
-        <li class="btn-info"
-            ng-click="openPrintings(selectedValues[0].id)"
-            ng-class="{'gmd-invisible' : selectedValues.length == 0}">
-            <span>Imprimir</span>
-            <i class="material-icons gmd-ripple">print</i>
-        </li>
-        <li class="btn-warning"
-            ng-click="goEdit(selectedValues[0].titleType, selectedValues[0].id, selectedValues[0].hasPayment)"
-            ng-class="{'gmd-invisible' : selectedValues.length == 0}">
-            <span>{{selectedValues[0].hasPayment || selectedValues[0].fullPaid || selectedValues[0].isReversed ? 'Visualizar' :
-                'Editar'}}
-            </span>
-            <i class="material-icons gmd-ripple">{{selectedValues[0].hasPayment || selectedValues[0].fullPaid || selectedValues[0].isReversed ? 'remove_red_eye'
-                : 'edit'}}</i>
-        </li>
-        <li class="btn-primary"
-            ui-sref="app.individual.insert"
-            ng-class="{'gmd-invisible' : selectedValues.length == 0}">
-            <span>Novo</span>
-            <i class="material-icons gmd-ripple">add</i>
-        </li>
-    </ul>
+	<button class="bg-accent gmd-ripple"
+	        ng-click="goInsert()"
+	        ng-if="selectedValues.length == 0">
+		<span class="material-icons">add</span>
+	</button>
+	<button class="bg-accent"
+	        ng-if="selectedValues.length > 0">
+		<span class="material-icons">menu</span>
+	</button>
+	<ul>
+		<li class="btn-info"
+		    ng-click="openPrintings(selectedValues[0].id)"
+		    ng-class="{'gmd-invisible' : selectedValues.length == 0}">
+			<span>Imprimir</span>
+			<i class="material-icons gmd-ripple">print</i>
+		</li>
+		<li class="btn-warning"
+		    ng-click="goEdit(selectedValues[0].titleType, selectedValues[0].id, selectedValues[0].hasPayment)"
+		    ng-class="{'gmd-invisible' : selectedValues.length == 0}">
+			<span>{{selectedValues[0].hasPayment || selectedValues[0].fullPaid || selectedValues[0].isReversed ? 'Visualizar' : 'Editar'}}
+			</span>
+			<i class="material-icons gmd-ripple">{{selectedValues[0].hasPayment || selectedValues[0].fullPaid || selectedValues[0].isReversed ? 'remove_red_eye' : 'edit'}}</i>
+		</li>
+		<li class="btn-primary"
+		    ui-sref="app.individual.insert"
+		    ng-class="{'gmd-invisible' : selectedValues.length == 0}">
+			<span>Novo</span>
+			<i class="material-icons gmd-ripple">add</i>
+		</li>
+	</ul>
 </gmd-fab>
