@@ -123,8 +123,10 @@
                                  ng-disabled="disable" />
                           <span class="bar"></span>
                           <label style="white-space: nowrap;"
-                                 for="numberdoc"
-                                 gumga-translate-tag="title.docnumber">nrodoc</label>
+                                 for="numberdoc">
+                            <span gumga-translate-tag="title.docnumber">nrodoc</span>
+                            <strong class="text-danger"> *</strong>
+                          </label>
                         </gmd-input>
                       </div>
                     </div>
@@ -132,10 +134,14 @@
                   <div class="row">
                     <div class="col-md-12">
                       <div class="reset-height">
-                        <label ng-if="titleType == 'pay'     || titleType == 'editpay'"
-                               gumga-translate-tag="title.provider"></label>
-                        <label ng-if="titleType == 'receive' || titleType == 'editreceive'"
-                               gumga-translate-tag="title.client"></label>
+                        <label ng-if="titleType == 'pay'     || titleType == 'editpay'">
+                          <span gumga-translate-tag="title.provider"></span>
+                          <strong class="text-danger"> *</strong>
+                        </label>
+                        <label ng-if="titleType == 'receive' || titleType == 'editreceive'">
+                          <span gumga-translate-tag="title.client"></span>
+                          <strong class="text-danger"> *</strong>
+                        </label>
                         <gumga-many-to-one value="title.data.assignedIndividual"
                                            required
                                            list="individuals"
@@ -157,10 +163,13 @@
                        class="row">
                     <div class="col-md-12">
                       <div class="reset-height">
-                        <label gumga-translate-tag="title.wallet"></label>
-                        <gumga-many-to-one 
-                                          name=wallet""
-                                          value="title.data.walletTitle"
+                        <label>
+                          <span gumga-translate-tag="title.wallet"></span>
+                          <strong class="text-danger"> *</strong>
+                        </label>
+                        <gumga-many-to-one name=wallet
+                                           ""
+                                           value="title.data.walletTitle"
                                            list="wallets"
                                            required
                                            active-favorite="true"
@@ -180,12 +189,14 @@
                   <br>
                   <div class="row">
                     <div class="col-md-12">
-                      <label gumga-translate-tag="title.documenttype"></label>
+                      <label>
+                        <span gumga-translate-tag="title.documenttype"></span>
+                        <strong class="text-danger"> *</strong>
+                      </label>
                       <div class="reset-height">
                         <!--async="false"-->
-                        <gumga-many-to-one
-                                          name="documentType"
-                                          display-info="false"
+                        <gumga-many-to-one name="documentType"
+                                           display-info="false"
                                            value="title.data.documentType"
                                            list="documents"
                                            active-favorite="true"
@@ -277,10 +288,14 @@
                                  required
                                  tabindex="9" />
                           <span class="bar"></span>
-                          <label gumga-translate-tag="title.valueparcel"
-                                 ng-show="titleType == 'pay' || titleType== 'editpay'">valueparcel</label>
-                          <label gumga-translate-tag="title.valueparcelReceive"
-                                 ng-show="titleType == 'receive' || renegotiation || titleType== 'editreceive'">valueparcel</label>
+                          <label ng-show="titleType == 'pay' || titleType== 'editpay'">
+                            <span gumga-translate-tag="title.valueparcel"> valueparcel </span>
+                            <strong class="text-danger"> *</strong>
+                          </label>
+                          <label ng-show="titleType == 'receive' || renegotiation || titleType== 'editreceive'">
+                            <span gumga-translate-tag="title.valueparcelReceive">valueparcel</span>
+                            <strong class="text-danger"> *</strong>
+                          </label>
 
                         </gmd-input>
                       </div>
@@ -301,8 +316,10 @@
                                  gumga-error
                                  required/>
                           <span class="bar"></span>
-                          <label for="numberParcel"
-                                 gumga-translate-tag="title.numberParcels">numberParcel</label>
+                          <label for="numberParcel">
+                            <span gumga-translate-tag="title.numberParcels"> numberParcel</span>
+                            <strong class="text-danger"> *</strong>
+                          </label>
                           <p class="text-danger"
                              ng-if="TitleForm.$error.max">Max de 300 parcelas
                           </p>
@@ -310,10 +327,14 @@
                       </div>
                     </div>
                     <div class="col-md-4">
-                      <label ng-show="title.data.numberParcel <= 1 || title.data.numberParcel == undefined"
-                             gumga-translate-tag="title.expiration">expiration</label>
-                      <label ng-show="title.data.numberParcel > 1"
-                             gumga-translate-tag="title.expirations">expiration</label>
+                      <label ng-show="title.data.numberParcel <= 1 || title.data.numberParcel == undefined">
+                        <span gumga-translate-tag="title.expiration">expiration</span>
+                        <strong class="text-danger"> *</strong>
+                      </label>
+                      <label ng-show="title.data.numberParcel > 1">
+                        <span gumga-translate-tag="title.expirations">expiration</span>
+                        <strong class="text-danger"> *</strong>
+                      </label>
                       <gumga-date ng-model="title.data.expiration"
                                   tabindex="11"
                                   name="expiration"
@@ -466,13 +487,16 @@
                               <span class="bar"></span>
                             </gmd-input>
                           </div>
-                          <div class="col-md-2 text-center" style="margin-top: 18px;">
+                          <div class="col-md-2 text-center"
+                               style="margin-top: 18px;">
                             <label ng-if="parcel.fullPaid"
-                                   class="label label-success" style="color:#fff;">Pago</label>
+                                   class="label label-success"
+                                   style="color:#fff;">Pago</label>
                           </div>
                           <div class="col-md-1 ma-no-pad-all"
                                ng-show="parcel.parcelPayments && parcel.parcelPayments.length">
-                            <button type="button" style="margin-top: 12px;"
+                            <button type="button"
+                                    style="margin-top: 12px;"
                                     class="inline-block btn-link btn-xs text-primary"
                                     ng-click="showPayments(parcel)">
                               <i class="material-icons">search</i>
