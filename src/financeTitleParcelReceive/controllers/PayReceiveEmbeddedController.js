@@ -422,19 +422,7 @@ function PayReceiveEmbeddedController(
 
 
 	$scope.calcCheques = function (id) {
-		if ($scope.payment.numberReceive >= 1) {
-			$scope.payment.value = $scope.lastReceive;
-		} else {
-			let total = 0;
-			angular.forEach($scope.selectedValues, (o) => {
-				total += o.value;
-			});
-			if (total !== 0) {
-				$scope.payment.value = total;
-			} else {
-				$scope.payment.value = $scope.total;
-			}
-		}
+		$scope.payment.value = angular.copy($scope.total);
 		document.getElementById(id).select();
 	};
 
@@ -467,9 +455,15 @@ function PayReceiveEmbeddedController(
 	$scope.makePayment = function (payment) {
 		$scope.post = payment;
 
-		$scope.defaultFunction = () => true;
+		const paymentDTO = angular.copy(payment);
 
-		PaymentService.receive(payment)
+		paymentDTO.parcels.forEach((parcel, index) => {
+			paymentDTO.parcels[index].discount.value = paymentDTO.parcels[index].discount.value * 100;
+			paymentDTO.parcels[index].interest.value = paymentDTO.parcels[index].interest.value * 100;
+			paymentDTO.parcels[index].penalty.value = paymentDTO.parcels[index].penalty.value * 100;
+		});
+
+		PaymentService.receive(paymentDTO)
 			.then((resp) => {
 				const baseState = 'titleparcelreceive.list';
 				SweetAlert.swal(
@@ -489,7 +483,7 @@ function PayReceiveEmbeddedController(
 							const variables = [];
 							variables.push(FinanceReportService.mountVariable('', 'idPayment', resp.data.id));
 
-							FinanceReportService.openModalViewer('RECEIPTTITLE', [], variables, $scope.defaultFunction(), baseState);
+							FinanceReportService.openModalViewer('RECEIPTTITLE', [], variables, () => true, baseState);
 						}
 					}
 				);

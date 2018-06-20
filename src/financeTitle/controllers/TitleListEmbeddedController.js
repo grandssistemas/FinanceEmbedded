@@ -38,29 +38,15 @@ function TitleListEmbeddedController(
 		});
 	};
 
-	$scope.simpleSearch = function (field, param) {
-		if (param === '') {
-			$scope.title.methods.get(1);
-			return;
-		}
-		const aq = `obj.${field} like '${param}'`;
-		TitleService.findTitleWithParticipations(($scope.titleType || '').toUpperCase(), 1, aq).then((data) => {
-			$scope.title.data = data.data.values;
-			$scope.title.count = data.data.count;
-			$scope.title.pageSize = data.data.pageSize;
-		}).catch((error) => {
-			console.error(error);
-		});
-	};
-
-	$scope.advancedSearch = (param) => {
-		const filterType = new window.GQuery(new window.Criteria('obj.titleType', window.ComparisonOperator.EQUAL, $scope.titleType.toUpperCase()));
+	$scope.searchTitle = (param) => {
+		const criteriaTitleType = new Criteria('obj.titleType', ComparisonOperator.EQUAL, $scope.titleType.toUpperCase());
+		const filterType = new GQuery(criteriaTitleType).join(new Join('obj.participations as p', JoinType.INNER));
 		if (!param || !param.and) {
 			param = filterType;
 		} else {
 			param = param.and(filterType);
 		}
-		$scope.title.methods.searchWithGQuery(param).then((values) => {
+		$scope.title.methods.asyncSearchWithGQuery(param).then((values) => {
 			$scope.title.data = values;
 		}).catch((error) => {
 			console.error(error);
@@ -231,11 +217,9 @@ function TitleListEmbeddedController(
 
 	$scope.getNextParcelExpiration = function (parcels) {
 		let result;
-
 		if (!parcels || parcels.length < 1) {
 			return null;
 		}
-
 		parcels.forEach((parcel) => {
 			if (!result && !parcel.fullPaid) {
 				result = parcel;

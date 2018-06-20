@@ -29,20 +29,20 @@
 
 		<div class="col-md-6">
 			<div style="margin-top: 18px">
-				<gumga-query search="simpleSearch(field,param)"
+				<gumga-query search="searchTitle(param)"
 				             use-gquery="true"
-				             advanced-search="advancedSearch(param)">
+				             advanced-search="searchTitle(param)">
 					<search-field label="N° Documento"
 					              field="documentNumber"></search-field>
 					<advanced-search-field type="string"
 					                       label="Número do documento"
-					                       field="documentNumber"></advanced-search-field>
+					                       field="obj.documentNumber"></advanced-search-field>
 					<advanced-search-field type="number"
 					                       label="Valor Total"
-					                       field="value"></advanced-search-field>
+					                       field="obj.value"></advanced-search-field>
 					<advanced-search-field type="date"
 					                       label="Data de Emissão"
-					                       field="emissionDate"></advanced-search-field>
+					                       field="obj.emissionDate"></advanced-search-field>
 				</gumga-query>
 			</div>
 		</div>
