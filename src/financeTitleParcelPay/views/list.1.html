@@ -1,61 +1,9 @@
 <div class="ma-container">
-    <div class="ma-page mbg-style">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="mbg-title">
-                    Minhas contas
-                </div>
-            </div>
+    <div class="ma-page">
+        <div class="ma-form-title ma-title">
+            Pagar Títulos
         </div>
         <div class="row">
-            <div class="col-md-6">
-                <label class="input-label">Você está no cliente</label>
-                <form name="Form">
-                    <gumga-many-to-one value="individualSearch"
-                                       list="individual.data"
-                                       class="gmd mbg-m-t-o"
-                                       search-method="individual.methods.asyncSearch('name',param)"
-                                       add-method="individual.methods.asyncPost(value,'name')"
-                                       field="name"
-                                       authorize-add="false"
-                                       display-info="false">
-                        <match>
-                            <div>{{match.model.name}}</div>
-                        </match>
-                    </gumga-many-to-one>
-                </form>
-            </div>
-            <div class="col-md-6">
-                <label class="input-label">Filtros</label>
-                <form name="Form">
-                    <gumga-many-to-one value="individualSearch"
-                                       list="individual.data"
-                                       class="gmd"
-                                       search-method="individual.methods.asyncSearch('name',param)"
-                                       add-method="individual.methods.asyncPost(value,'name')"
-                                       field="name"
-                                       authorize-add="false"
-                                       display-info="false">
-                        <match>
-                            <div>{{match.model.name}}</div>
-                        </match>
-                    </gumga-many-to-one>
-                </form>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="mbg-title-received">
-
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="mbg-title-parcel">
-
-                </div>
-            </div>
-        </div>
-        <!-- <div class="row">
             <div class="col-md-12">
                 <div class="panel gmd ma-panel">
                     <div class="panel-body ma-pad-panel">
@@ -161,11 +109,9 @@
                     </div>
                 </div>
             </div>
-        </div> -->
+        </div>
 
-        <gmd-fab force-click="false"
-                 fixed
-                 opened="!fabs">
+        <gmd-fab force-click="false" fixed opened="!fabs">
             <button class="bg-accent gmd-ripple"
                     type="button"
                     title="Pagar"
