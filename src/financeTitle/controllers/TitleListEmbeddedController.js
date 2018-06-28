@@ -184,7 +184,7 @@ function TitleListEmbeddedController(
 		$scope.$ctrl.onNewTitle({ type: $scope.$ctrl.titleType });
 	};
 
-	$scope.goEdit = function (type, id, fullPaid) {
+	$scope.goEdit = function (type, id, fullPaid) {		
 		$scope.$ctrl.onEditTitle({ type, id, fullPaid });
 	};
 
