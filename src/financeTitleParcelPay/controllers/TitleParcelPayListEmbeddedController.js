@@ -45,6 +45,7 @@ function TitleParcelPayListEmbeddedController(
 		{ name: 'Hoje', key: 'today' },
 		{ name: 'Esta Semana', key: 'thisWeek' },
 		{ name: 'Este Mês', key: 'thisMonth' },
+		{ name: 'Mês Passado', key: 'lastMonth' },
 		{ name: 'Este Ano', key: 'thisYear' },
 		{ name: 'Todos', key: null }
 	];
@@ -105,6 +106,11 @@ function TitleParcelPayListEmbeddedController(
 			case 'thisMonth': {
 				beginDate = moment().startOf('month').format('YYYY-MM-DD');
 				endDate = moment().endOf('month').format('YYYY-MM-DD');
+				break;
+			}
+			case 'lastMonth': {
+				beginDate = moment().startOf('month').subtract(31, 'days').format('YYYY-MM-DD');
+				endDate = moment().endOf('month').subtract(31, 'days').format('YYYY-MM-DD');
 				break;
 			}
 			case 'thisYear': {
