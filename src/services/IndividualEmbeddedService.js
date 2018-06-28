@@ -6,7 +6,8 @@ function IndividualEmbeddedService(GumgaRest, $http, FinanceEmbeddedService, Fin
 	Service.searchIndividual = (param) => {
 		let gQuery = new GQuery();
 		if (param) {
-			gQuery = gQuery.and(new Criteria("obj.name", ComparisonOperator.CONTAINS, param).addIgnoreCase(param).addTranslate());
+			gQuery = gQuery.and(new Criteria("obj.name", ComparisonOperator.CONTAINS, param).addIgnoreCase(param).addTranslate())
+			gQuery = gQuery.or(new Criteria("obj.primaryDocument", ComparisonOperator.CONTAINS, param).addIgnoreCase(param).addTranslate())
 		}
 		return Service.searchWithGQuery(gQuery);
 	};
