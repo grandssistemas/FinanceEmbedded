@@ -9,7 +9,8 @@ TitleParcelPayListEmbeddedController.$inject = [
 	'$timeout',
 	'IndividualEmbeddedService',
 	'$q',
-	'$state'];
+	'$state',
+	'SweetAlert'];
 
 function TitleParcelPayListEmbeddedController(
 	$uibModal,
@@ -20,7 +21,8 @@ function TitleParcelPayListEmbeddedController(
 	$timeout,
 	IndividualEmbeddedService,
 	$q,
-	$state
+	$state,
+	SweetAlert
 ) {
 	gumgaController.createRestMethods($scope, TitleParcelPayService, 'titleparcelPay');
 	gumgaController.createRestMethods($scope, IndividualEmbeddedService, 'individual');
@@ -49,7 +51,7 @@ function TitleParcelPayListEmbeddedController(
 		{ name: 'Este Ano', key: 'thisYear' },
 		{ name: 'Todos', key: null }
 	];
-	$scope.filterMto = $scope.filters[4];
+	$scope.filterMto = $scope.filters[5];
 	$scope.categoryTitle = $scope.listCategoryTitle[0];
 	$scope.urlStorage = StorageService.apiAmazonLocation;
 	$scope.beginDate = new Date();
@@ -89,7 +91,7 @@ function TitleParcelPayListEmbeddedController(
 		});
 	};
 
-	$scope.filter = function (whichFilter, fullpaid, titleCategory) {
+	$scope.filter = function (whichFilter, fullpaid, titleCategory, page, pageSize) {
 		$scope.paidOut = fullpaid;
 		$scope.lastClicked = whichFilter;
 		let gQuery = new GQuery(new Criteria('obj.title.titleType', ComparisonOperator.EQUAL, titleCategory));
@@ -146,7 +148,7 @@ function TitleParcelPayListEmbeddedController(
 			gQuery = gQuery.and(new Criteria('obj.fullPaid', ComparisonOperator.EQUAL, false));
 		}
 		$scope.gQueryFilters = gQuery;
-		$scope.getByGQuery(titleCategory);
+		$scope.getByGQuery(titleCategory, page, pageSize);
 		$scope.changeSubTypeButton(whichFilter);
 	};
 
@@ -225,12 +227,12 @@ function TitleParcelPayListEmbeddedController(
 				hasReversed = hasReversed || parcel.titleData.reversed;
 			});
 
-
 			if (sameIndividual && !hasReversed) {
 				TitleParcelPayService.setInstallmentsPayable(parcels);
 				$scope.$ctrl.onSameIndividual();
 			} else {
 				$scope.errorMessage = hasReversed ? 'Foram selecionados títulos já estornados. Não é possível fazer a movimentação desses títulos.' : 'Foram selecionadas parcelas de fornecedores diferentes, altere sua seleção.';
+				SweetAlert.swal('Atenção', $scope.errorMessage, 'warning');
 				$timeout(() => {
 					delete $scope.errorMessage;
 				}, 5000);
@@ -326,7 +328,7 @@ function TitleParcelPayListEmbeddedController(
 					$scope.titleparcelPay.data.forEach((row, i) => { $scope.titleparcelPay.data[i].type = titleCategory; });
 					$scope.titleparcelPay.pageSize = data.data.pageSize;
 					$scope.titleparcelPay.count = data.data.count;
-				} else {
+				} else if (titleCategory === 'RECEIVE') {
 					$scope.selectedReceiveValues = [];
 					$scope.titleparcelReceive.data = data.data.values;
 					$scope.titleparcelReceive.data.forEach((row, i) => { $scope.titleparcelReceive.data[i].type = titleCategory; });

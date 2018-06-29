@@ -72,8 +72,10 @@
 				     ng-class="!categoryTitle || categoryTitle.key === 'RECEIVEPAY' ? 'col-md-6' : 'col-md-12'">
 					<div class="mbg-list">
 						<div class="mbg-title-pay-receive mbg-bg-receive">
-							<i class="fas fa-long-arrow-alt-down mbg-icon-title"></i>
-							Contas a Receber
+							<span>
+								<i class="fas fa-long-arrow-alt-down mbg-icon-title"></i>
+								Contas a Receber
+							</span>
 							<div class="mbg-right-box">
 								<div class="right-button"
 								     ng-click="goList('RECEIVE')">
@@ -96,15 +98,17 @@
 						            page-size="titleparcelReceive.pageSize"
 						            count="titleparcelReceive.count"
 						            page-model="titleparcelReceive.page"
-						            on-page-change="getByGQuery('RECEIVE', page, pageSize)">
+						            on-page-change="filter(filterMto.key, paidOut, 'RECEIVE', page, pageSize)">
 						</gumga-list>
 					</div>
 				</div>
 				<div ng-show="!categoryTitle || categoryTitle.key === 'RECEIVEPAY' || categoryTitle.key === 'PAY'"
 				     ng-class="!categoryTitle || categoryTitle.key === 'RECEIVEPAY' ? 'col-md-6' : 'col-md-12'">
 					<div class="mbg-title-pay-receive mbg-bg-pay">
-						<i class="fas fa-long-arrow-alt-up mbg-icon-title"></i>
-						Contas a Pagar
+						<span>
+							<i class="fas fa-long-arrow-alt-up mbg-icon-title"></i>
+							Contas a Pagar
+						</span>
 						<div class="mbg-right-box">
 							<div class="right-button"
 							     ng-click="goList('PAY')">
@@ -129,14 +133,15 @@
 						            count="titleparcelPay.count"
 						            page-model="titleparcelPay.page"
 						            max-height="auto"
-						            on-page-change="getByGQuery('PAY', page, pageSize)">
+						            on-page-change="filter(filterMto.key, paidOut, 'PAY', page, pageSize)">
 						</gumga-list>
 					</div>
 				</div>
 			</div>
 			<gmd-fab force-click="false"
 			         fixed
-			         opened="!fabs" style="display: inline-block;">
+			         opened="!fabs"
+			         style="display: inline-block;">
 				<button class="bg-accent gmd-ripple"
 				        type="button"
 				        title="Pagar"

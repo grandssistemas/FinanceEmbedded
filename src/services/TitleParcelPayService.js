@@ -48,6 +48,7 @@ function TitleParcelPayService(GumgaRest, $http, FinanceEmbeddedService) {
 			if (page === 1) page = 0;
 			var searchDate = date ? " AND obj.expiration <= '" + format(date, 'yyyy-MM-dd') + "'" : "";
 			var searchIndividual = individual ? ' AND obj.individual.id = ' + individual.id : '';
+			console.log(type);
 			return $http.get(Service._url
 				+ "?start=" + page + "&aq=obj.title.titleType='" + type + "' AND (obj.fullPaid = " + paidOut + " OR obj.fullPaid is null)"
 				+ searchDate

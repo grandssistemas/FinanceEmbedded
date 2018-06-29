@@ -90,13 +90,13 @@ function TitleFormEmbeddedController(
 		};
 
 		$scope.backToList = () => {
-			let title;
-			if ($scope.titleType === 'editreceive') {
-				title = 'receive';
-			} else {
-				title = 'pay';
-			}
-			$state.go(`app.title.list${title}`);
+			// let title;
+			// if ($scope.titleType === 'editreceive') {
+			// 	title = 'receive';
+			// } else {
+			// 	title = 'pay';
+			// }
+			$state.go(`app.titleparcel.list`);
 		};
 
 		$scope.ratioPlanSearch = (param) => {
