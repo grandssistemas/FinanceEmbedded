@@ -72,20 +72,25 @@
 				     ng-class="!categoryTitle || categoryTitle.key === 'RECEIVEPAY' ? 'col-md-6' : 'col-md-12'">
 					<div class="mbg-list">
 						<div class="mbg-title-pay-receive mbg-bg-receive">
-							<span>
+							<div class="mbg-left-box">
 								<i class="fas fa-long-arrow-alt-down mbg-icon-title"></i>
-								Contas a Receber
-							</span>
-							<div class="mbg-right-box">
-								<div class="right-button"
-								     ng-click="goList('RECEIVE')">
-									<i class="fas fa-edit"></i>
-									<span>Editar Títulos</span>
-								</div>
-								<div class="right-button"
-								     ng-click="goNewTitle('RECEIVE')">
-									<i class="fas fa-plus"></i>
-									<span>Novo</span>
+								<h3>
+									Contas a Receber
+								</h3>
+								<h5>
+									Selecione aqui a(s) parcela(s) que irá receber do seu cliente
+								</h5>
+								<div class="mbg-right-box">
+									<div class="right-button"
+									     ng-click="goList('RECEIVE')">
+										<i class="fas fa-edit"></i>
+										<span>Editar</span>
+									</div>
+									<div class="right-button"
+									     ng-click="goNewTitle('RECEIVE')">
+										<i class="fas fa-plus"></i>
+										<span>Novo</span>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -105,20 +110,27 @@
 				<div ng-show="!categoryTitle || categoryTitle.key === 'RECEIVEPAY' || categoryTitle.key === 'PAY'"
 				     ng-class="!categoryTitle || categoryTitle.key === 'RECEIVEPAY' ? 'col-md-6' : 'col-md-12'">
 					<div class="mbg-title-pay-receive mbg-bg-pay">
-						<span>
+
+
+						<div class="mbg-left-box">
 							<i class="fas fa-long-arrow-alt-up mbg-icon-title"></i>
-							Contas a Pagar
-						</span>
-						<div class="mbg-right-box">
-							<div class="right-button"
-							     ng-click="goList('PAY')">
-								<i class="fas fa-edit"></i>
-								<span>Editar Títulos</span>
-							</div>
-							<div class="right-button"
-							     ng-click="goNewTitle('PAY')">
-								<i class="fas fa-plus"></i>
-								<span>Novo</span>
+							<h3>
+								Contas a Pagar
+							</h3>
+							<h5>
+								Selecione aqui a(s) parcela(s) que irá pagar ao seu fornecedor
+							</h5>
+							<div class="mbg-right-box">
+								<div class="right-button"
+								     ng-click="goList('PAY')">
+									<i class="fas fa-edit"></i>
+									<span>Editar</span>
+								</div>
+								<div class="right-button"
+								     ng-click="goNewTitle('PAY')">
+									<i class="fas fa-plus"></i>
+									<span>Novo</span>
+								</div>
 							</div>
 						</div>
 					</div>
