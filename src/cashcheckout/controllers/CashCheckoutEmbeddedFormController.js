@@ -1,6 +1,7 @@
 CashCheckoutEmbeddedFormController.$inject = ['$scope',
 	'CashCheckinEmbeddedService',
 	'FinanceUnitService',
+	'FinanceReportService',
 	'SweetAlert',
 	'MoneyUtilsService',
 	'$filter',
@@ -11,6 +12,7 @@ function CashCheckoutEmbeddedFormController(
 	$scope,
 	CashCheckinEmbeddedService,
 	FinanceUnitService,
+	FinanceReportService,
 	SweetAlert,
 	MoneyUtilsService,
 	$filter,
@@ -43,7 +45,31 @@ function CashCheckoutEmbeddedFormController(
 								change: $scope.change,
 								defaultTransfer: $scope.defaultTransfer
 							});
-							CashCheckinEmbeddedService.update(entity).then(() => {
+							CashCheckinEmbeddedService.update(entity).then((resp) => {
+								const response = resp.data.data;
+								const baseState = '';
+								SweetAlert.swal(
+									{
+										title: 'Confirmação',
+										text: 'Deseja imprimir o relatório deste fechamento de caixa?',
+										type: 'warning',
+										showCancelButton: true,
+										confirmButtonColor: '#DD6B55',
+										confirmButtonText: 'Sim',
+										cancelButtonText: 'Não',
+										closeOnConfirm: true,
+										closeOnCancel: true
+									},
+									(isConfirm) => {
+										if (isConfirm) {
+											const variables = [];
+											variables.push(FinanceReportService.mountVariable('', 'idpdv', response.group.id));
+											variables.push(FinanceReportService.mountVariable('', 'idcheckin', response.id));
+
+											FinanceReportService.openModalViewer('CASHCHECKOUT', [], variables, () => true, baseState);
+										}
+									}
+								);
 								$scope.$ctrl.onGoHome();
 							});
 						}
@@ -81,7 +107,7 @@ function CashCheckoutEmbeddedFormController(
 			for (let i = 0; i < entity.values.length; i++) {
 				if (!isComparationCorrect(entity.values[i], entity.destinyChange)) {
 					SweetAlert.swal('Diferença de Valores!', `A conta ${entity.values[i].financeUnit.name
-					} esta com diferença de valores, realize movimentações de caixa para corrigir antes de fechar.`, 'error');
+						} esta com diferença de valores, realize movimentações de caixa para corrigir antes de fechar.`, 'error');
 					return false;
 				}
 			}
