@@ -1,5 +1,7 @@
 CashCheckoutEmbeddedFormController.$inject = ['$scope',
 	'CashCheckinEmbeddedService',
+	'GenericReportService',
+	'CompanyService',
 	'FinanceUnitService',
 	'FinanceReportService',
 	'SweetAlert',
@@ -11,6 +13,8 @@ CashCheckoutEmbeddedFormController.$inject = ['$scope',
 function CashCheckoutEmbeddedFormController(
 	$scope,
 	CashCheckinEmbeddedService,
+	GenericReportService,
+	CompanyService,
 	FinanceUnitService,
 	FinanceReportService,
 	SweetAlert,
@@ -46,7 +50,7 @@ function CashCheckoutEmbeddedFormController(
 								defaultTransfer: $scope.defaultTransfer
 							});
 							CashCheckinEmbeddedService.update(entity).then((resp) => {
-								const response = resp.data.data;
+								const cashier = resp.data.data;
 								const baseState = '';
 								SweetAlert.swal(
 									{
@@ -63,10 +67,39 @@ function CashCheckoutEmbeddedFormController(
 									(isConfirm) => {
 										if (isConfirm) {
 											const variables = [];
-											variables.push(FinanceReportService.mountVariable('', 'idpdv', response.group.id));
-											variables.push(FinanceReportService.mountVariable('', 'idcheckin', response.id));
-
-											FinanceReportService.openModalViewer('CASHCHECKOUT', [], variables, () => true, baseState);
+											GenericReportService.getDefault('CASHCHECKOUT').then((response) => {
+												if (response.data) {
+													CompanyService.variablesReport().then((vari) => {
+														const variables = vari;
+														const filters = '';
+														variables.push(FinanceReportService.mountVariable('', 'idpdv', cashier.group.id));
+														variables.push(FinanceReportService.mountVariable('', 'idcheckin', cashier.id));
+														const modalInstance = $uibModal.open({
+															animation: $scope.animationsEnabled,
+															templateUrl: '/modules/stimulsoftreport/views/viewermodal.html',
+															controller: 'ViewerController',
+															backdrop: 'static',
+															size: 'lg',
+															resolve: {
+																entity() {
+																	return response.data;
+																},
+																filters() {
+																	return filters;
+																},
+																variable() {
+																	return variables;
+																},
+																backState() {
+																	return '';
+																}
+															}
+														});
+													});
+												} else {
+													SweetAlert.swal('Falta de Relatório de Fechamento de Caixa', 'Você esta sem o relatório de fechamento de caixa, contate o suporte.', 'warning');
+												}
+											});
 										}
 									}
 								);
