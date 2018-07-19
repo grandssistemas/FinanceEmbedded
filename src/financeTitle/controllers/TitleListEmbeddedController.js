@@ -1,171 +1,149 @@
 // var modalTemplate = require('../views/viewermodal.html');
-let modalTemplate = require('../views/receiveTitlePrintModal.html');
-TitleListEmbeddedController.$inject = [
-    '$scope',
-    '$state',
-    'TitleService',
-    'FinanceReportService',
-    'SweetAlert',
-    '$uibModal',
-    'gumgaController'];
+const modalTemplate = require('../views/receiveTitlePrintModal.html');
+
 function TitleListEmbeddedController(
-    $scope,
-    $state,
-    TitleService,
-    FinanceReportService,
-    SweetAlert,
-    $uibModal,
-    gumgaController) {
+	$scope,
+	$state,
+	TitleService,
+	FinanceReportService,
+	SweetAlert,
+	$uibModal,
+	gumgaController
+) {
+	TitleService.resetDefaultState();
 
-    TitleService.resetDefaultState();
+	gumgaController.createRestMethods($scope, TitleService, 'title');
+	$scope.participation = '';
+	$scope.currentPage = 1;
 
-    gumgaController.createRestMethods($scope, TitleService, 'title');
-    $scope.participation = "";
-    $scope.currentPage = 1;
+	$scope.$ctrl.$onInit = () => {
+		$scope.titleType = $scope.$ctrl.titleType;
+		$scope.title.methods.get($scope.currentPage);
+	};
 
+	$scope.title.on('deleteSuccess', () => {
+		$scope.title.methods.get(1);
+	});
 
+	$scope.verdata = (valor) => {
+		$scope.openPrintings(valor.id);
+	};
 
-    $scope.$ctrl.$onInit = () => {
-        $scope.titleType = $scope.$ctrl.titleType;
-        $scope.title.methods.get($scope.currentPage);
-    }
+	$scope.title.methods.get = function (page) {
+		$scope.currentPage = page;
+		TitleService.findTitleWithParticipations(($scope.titleType || '').toUpperCase(), page).then((response) => {
+			$scope.title.data = response.data.values;
+			$scope.title.count = response.data.count;
+			$scope.title.pageSize = response.data.pageSize;
+		});
+	};
 
-    $scope.title.on('deleteSuccess', function () {
-        $scope.title.methods.get(1);
-    });
+	$scope.searchTitle = (param) => {
+		const criteriaTitleType = new Criteria('obj.titleType', ComparisonOperator.EQUAL, $scope.titleType.toUpperCase());
+		const filterType = new GQuery(criteriaTitleType).join(new Join('obj.participations as p', JoinType.INNER));
+		if (!param || !param.and) {
+			param = filterType;
+		} else {
+			param = param.and(filterType);
+		}
+		$scope.title.methods.asyncSearchWithGQuery(param).then((values) => {
+			$scope.title.data = values;
+		}).catch((error) => {
+			console.error(error);
+		});
+	};
 
-    $scope.verdata = (valor) => {
-        $scope.openPrintings(valor.id)
-    };
-
-    $scope.title.methods.get = function (page) {
-        $scope.currentPage = page;
-        TitleService.findTitleWithParticipations(($scope.titleType || "").toUpperCase(), page).then(function (response) {
-            $scope.title.data = response.data.values;
-            $scope.title.count = response.data.count;
-            $scope.title.pageSize = response.data.pageSize;
-        });
-    };
-
-    $scope.simpleSearch = function (field, param) {
-        if (param === "") {
-            $scope.title.methods.get(1);
-            return;
-        }
-        var aq = "obj." + field + " like '" + param + "'";
-        TitleService.findTitleWithParticipations(($scope.titleType || "").toUpperCase(), 1, aq).then(function (data) {
-            $scope.title.data = data.data.values;
-            $scope.title.count = data.data.count;
-            $scope.title.pageSize = data.data.pageSize;
-        })
-    };
-
-    // title.methods.advancedSearch(param)
-    $scope.advancedSearch = (param) => {
-        let filterType = new GQuery(new Criteria('obj.titleType', ComparisonOperator.EQUAL, $scope.titleType.toUpperCase()));
-        if (!param || !param.and) {
-            param = filterType;
-        } else {
-            param = param.and(filterType);
-        }
-        $scope.title.methods.asyncSearchWithGQuery(param).then((values) => {
-            $scope.title.data = values;
-        });
-    }
-
-    $scope.buscaParticipations = function (participation) {
-        if (participation === "") {
-            $scope.title.methods.get($scope.currentPage)
-        }
-        $scope.title.data = $scope.title.data.filter(function (data) {
-            return data.participationsFormatted.indexOf(participation) > -1
-        })
-    };
+	$scope.buscaParticipations = function (participation) {
+		if (participation === '') {
+			$scope.title.methods.get($scope.currentPage);
+		}
+		$scope.title.data = $scope.title.data.filter((data) => data.participationsFormatted.indexOf(participation) > -1);
+	};
 
 
-    const initialize = () => {
-        $scope.titleType = $scope.titleType || $state.$current.data.type;
-        $scope.selected = {};
-        $scope.labels = [];
-        TitleService.getLabels()
-            .then(function (response) {
-                $scope.labels = response.data.values;
-            }, function (error) {
-                console.error(error.data);
-            });
-    }
+	const initialize = () => {
+		$scope.titleType = $scope.titleType || $state.$current.data.type;
+		$scope.selected = {};
+		$scope.labels = [];
+		TitleService.getLabels()
+			.then((response) => {
+				$scope.labels = response.data.values;
+			}, (error) => {
+				console.error(error.data);
+			});
+	};
 
-    initialize();
+	initialize();
 
-    $scope.buscaTag = function (param) {
-        var search = "searchFields=value&q=" + param;
-        return TitleService.searchLabels(search).then(function (response) {
-            $scope.labels = response.data.values
-        })
-    };
+	$scope.buscaTag = function (param) {
+		const search = `searchFields=value&q=${param}`;
+		return TitleService.searchLabels(search).then((response) => {
+			$scope.labels = response.data.values;
+		});
+	};
 
-    $scope.selectLabel = function (label) {
-        $scope.selected.labels.clear();
-        $scope.selected.labels[0] = label;
+	$scope.selectLabel = function (label) {
+		$scope.selected.labels.clear();
+		$scope.selected.labels[0] = label;
 
-        TitleService.searchTags(label.value, ($scope.titleType || "").toUpperCase()).then(function (response) {
-            $scope.title.data = response.data.values
-        })
-    };
+		TitleService.searchTags(label.value, ($scope.titleType || '').toUpperCase()).then((response) => {
+			$scope.title.data = response.data.values;
+		});
+	};
 
-    $scope.reset = function () {
-        $scope.title.methods.get(1);
-    };
+	$scope.reset = function () {
+		$scope.title.methods.get(1);
+	};
 
-    $scope.titleList = [];
+	$scope.titleList = [];
 
-    $scope.tableConf = {
-        columns: 'titleType, issuedAt,documentNumber, participationsFormatted, expiration, docname, value, btns',
-        materialTheme: true,
-        title: ($scope.titleType || '').toLowerCase() === 'pay' ? 'Listagem de Contas a Pagar' : 'Listagem de Contas a Receber',
-        columnsConfig: [
-            {
-                name: 'titleType',
-                title: '<span gumga-translate-tag="title.titleType"></span>',
-                content: '<span style="">{{$value.titleType == \'PAY\' ? \'A PAGAR\' : \'A RECEBER\'}}</span>',
-                size: 'col-md-2 col-lg-1'
+	$scope.tableConf = {
+		columns: 'titleType, issuedAt,documentNumber, participationsFormatted, expiration, docname, value, btns',
+		materialTheme: true,
+		title: ($scope.titleType || '').toLowerCase() === 'pay' ? 'Listagem de Contas a Pagar' : 'Listagem de Contas a Receber',
+		columnsConfig: [
+			{
+				name: 'titleType',
+				title: '<span gumga-translate-tag="title.titleType"></span>',
+				content: '<span style="">{{$value.titleType == \'PAY\' ? \'A PAGAR\' : \'A RECEBER\'}}</span>',
+				size: 'col-md-2 col-lg-1'
 
-            }, {
-                name: 'issuedAt',
-                title: '<span gumga-translate-tag="title.issuedAt"></span>',
-                content: '<span>{{$value.emissionDate | date: \'dd/MM/yyyy\' }}</span>'
+			}, {
+				name: 'issuedAt',
+				title: '<span gumga-translate-tag="title.issuedAt"></span>',
+				content: '<span>{{$value.emissionDate | date: \'dd/MM/yyyy\' }}</span>'
 
-            }, {
-                name: 'documentNumber',
-                title: '<span gumga-translate-tag="title.documentNumberAdapted"></span>',
-                content: '<span>{{$value.documentNumber}}</span>'
+			}, {
+				name: 'documentNumber',
+				title: '<span gumga-translate-tag="title.documentNumberAdapted"></span>',
+				content: '<span>{{$value.documentNumber}}</span>'
 
-            }, {
-                name: 'participationsFormatted',
-                title: '<span gumga-translate-tag="title.participationsFormatted"></span>',
-                content: '<div uib-tooltip="{{$value.participationsFormatted}}" ng-class="{\'text-overflow-list\':$value.participations.length == 1, \'text-align-center\':$value.participations.length > 1}">' +
-                    '<i class=" glyphicon glyphicon-user"></i><i class=" glyphicon glyphicon-user" ng-if="$value.participations.length > 1"></i>' +
-                    '&nbsp;<span ng-if="$value.participations.length == 1">{{$value.participationsFormatted}}</span></div>'
+			}, {
+				name: 'participationsFormatted',
+				title: '<span gumga-translate-tag="title.participationsFormatted"></span>',
+				content: '<div uib-tooltip="{{$value.participationsFormatted}}" ng-class="{\'text-overflow-list\':$value.participations.length == 1, \'text-align-center\':$value.participations.length > 1}">' +
+					'<i class=" glyphicon glyphicon-user"></i><i class=" glyphicon glyphicon-user" ng-if="$value.participations.length > 1"></i>' +
+					'&nbsp;<span ng-if="$value.participations.length == 1">{{$value.participationsFormatted}}</span></div>'
 
-            }, {
-                name: 'expiration',
-                title: '<span gumga-translate-tag="title.expiration"></span>',
-                content: '<span>{{$parent.$parent.getNextParcelExpiration($value.parcel) | date: \'dd/MM/yyyy\'}}</span>'
+			}, {
+				name: 'expiration',
+				title: '<span gumga-translate-tag="title.expiration"></span>',
+				content: '<span>{{$parent.$parent.getNextParcelExpiration($value.parcel) | date: \'dd/MM/yyyy\'}}</span>'
 
-            }, {
-                name: 'docname',
-                title: '<span gumga-translate-tag="title.documentType"></span>',
-                content: '<span>{{$value.documentType.name}}</span>'
+			}, {
+				name: 'docname',
+				title: '<span gumga-translate-tag="title.documentType"></span>',
+				content: '<span>{{$value.documentType.name}}</span>'
 
-            }, {
-                name: 'value',
-                title: '<span gumga-translate-tag="title.value"></span>',
-                content: '<span>{{$value.value | currency}}</span>'
+			}, {
+				name: 'value',
+				title: '<span gumga-translate-tag="title.value"></span>',
+				content: '<span>{{$value.value | currency}}</span>'
 
-            }, {
-                name: 'btns',
-                title: ' ',
-                content: `
+			}, {
+				name: 'btns',
+				title: ' ',
+				content: `
                 <div style="display:inline-block;">
                     <span>
                         &nbsp;&nbsp;
@@ -184,100 +162,108 @@ function TitleListEmbeddedController(
                 <span ng-if="!$value.isReversed && $value.fullPaid && $value.titleType == \'RECEIVE\'" class="label label-success">Recebido</span>
                 <span ng-if="!$value.isReversed && $value.fullPaid && $value.titleType == \'PAY\'" class="label label-success">Pago</span>
                 <span ng-if="!$value.isReversed && !$value.hasRatio" class="glyphicon glyphicon-info-sign pull-right" uib-tooltip=\'Sem Rateio\' tooltip-placement=\'left\'></span>`,
-                size: 'col-md-3'
-            }]
-    };
+				size: 'col-md-3'
+			}]
+	};
 
-    $scope.openPrintings = function (id) {
-        $uibModal.open({
-            templateUrl: modalTemplate,
-            controller: 'ReceiveTitlePrintModalController',
-            backdrop: 'static',
-            size: 'sm',
-            resolve: {
-                id: function () {
-                    return id;
-                }
-            }
-        });
-    };
+	$scope.openPrintings = function (id) {
+		$uibModal.open({
+			templateUrl: modalTemplate,
+			controller: 'ReceiveTitlePrintModalController',
+			backdrop: 'static',
+			size: 'sm',
+			resolve: {
+				id() {
+					return id;
+				}
+			}
+		});
+	};
 
-    $scope.goInsert = function () {
-        $scope.$ctrl.onNewTitle({ type: $scope.$ctrl.titleType });
-    };
+	$scope.goInsert = function () {
+		$scope.$ctrl.onNewTitle({ type: $scope.$ctrl.titleType });
+	};
 
-    $scope.goEdit = function (type, id, fullPaid) {
-        $scope.$ctrl.onEditTitle({ type: type, id: id, fullPaid: fullPaid });
-    };
+	$scope.goEdit = function (type, id, fullPaid) {		
+		$scope.$ctrl.onEditTitle({ type, id, fullPaid });
+	};
 
-    $scope.replacement = function (value, fullPaid) {
-        $scope.$ctrl.onReplacement({ value: value, fullPaid: fullPaid });
-    };
+	$scope.replacement = function (value, fullPaid) {
+		$scope.$ctrl.onReplacement({ value, fullPaid });
+	};
 
-    function convertDate(date) {
-        function pad(s) {
-            return (s < 10) ? '0' + s : s;
-        }
+	// function convertDate(date) {
+	// 	function pad(s) {
+	// 		return (s < 10) ? `0${s}` : s;
+	// 	}
 
-        var d = new Date(date);
-        return [pad(d.getDate()), pad(d.getMonth() + 1), d.getFullYear()].join('/');
-    }
+	// 	const d = new Date(date);
+	// 	return [pad(d.getDate()), pad(d.getMonth() + 1), d.getFullYear()].join('/');
+	// }
 
-    function formatData(values) {
-        var len = values.values.length;
-        for (var i = 0; i < len; i++) {
-            var value = values.values[i];
-            value.issuedAt = convertDate(value.issuedAt);
-            value.postedAt = convertDate(value.postedAt);
-            value.titleType = translateTitleType(value.titleType);
-        }
-    }
+	// function formatData(values) {
+	// 	const len = values.values.length;
+	// 	for (let i = 0; i < len; i++) {
+	// 		const value = values.values[i];
+	// 		value.issuedAt = convertDate(value.issuedAt);
+	// 		value.postedAt = convertDate(value.postedAt);
+	// 		value.titleType = translateTitleType(value.titleType);
+	// 	}
+	// }
 
-    function translateTitleType(title) {
-        return (title === "PAY") ? "A pagar" : "A receber";
-    }
+	// function translateTitleType(title) {
+	// 	return (title === 'PAY') ? 'A pagar' : 'A receber';
+	// }
 
-    $scope.getNextParcelExpiration = function (parcels) {
-        let result;
+	$scope.getNextParcelExpiration = function (parcels) {
+		let result;
+		if (!parcels || parcels.length < 1) {
+			return null;
+		}
+		parcels.forEach((parcel) => {
+			if (!result && !parcel.fullPaid) {
+				result = parcel;
+			} else if (!parcel.fullPaid) {
+				const dateIndex = new Date(parcel);
+				const dateResult = new Date(result);
+				if (dateResult > dateIndex) {
+					result = dateIndex;
+				}
+			}
+		});
 
-        if (!parcels || parcels.length < 1) {
-            return null;
-        }
+		if (!result) {
+			parcels.forEach((parcel) => {
+				if (!result) {
+					result = parcel;
+				} else {
+					const dateIndex = new Date(parcel);
+					const dateResult = new Date(result);
+					if (dateResult > dateIndex) {
+						result = dateIndex;
+					}
+				}
+			});
+		}
+		return result.expiration;
+	};
 
-        parcels.forEach(function (parcel) {
-            if (!result && !parcel.fullPaid) {
-                result = parcel;
-            } else if (!parcel.fullPaid) {
-                let dateIndex = new Date(parcel);
-                let dateResult = new Date(result);
-                if (dateResult > dateIndex) {
-                    result = dateIndex;
-                }
-            }
-        });
-
-        if (!result) {
-            parcels.forEach(function (parcel) {
-                if (!result) {
-                    result = parcel;
-                } else {
-                    let dateIndex = new Date(parcel);
-                    let dateResult = new Date(result);
-                    if (dateResult > dateIndex) {
-                        result = dateIndex;
-                    }
-                }
-            });
-        }
-        return result.expiration;
-    };
-
-    $scope.print = function (type) {
-        var typePrint = type === 'receive' ? 'RECEIVE_BILL' : null;
-        FinanceReportService.openModalViewer(typePrint, '', [], () => {
-            SweetAlert.swal("Falta de Relatorio de contas a receber", "Você esta sem o relátorio de contas a receber contate o suporte.", "warning");
-        })
-    };
+	$scope.print = function (type) {
+		const typePrint = type === 'receive' ? 'RECEIVE_BILL' : null;
+		FinanceReportService.openModalViewer(typePrint, '', [], () => {
+			SweetAlert.swal('Falta de Relatorio de contas a receber', 'Você esta sem o relátorio de contas a receber contate o suporte.', 'warning');
+		});
+	};
 }
+
+TitleListEmbeddedController.$inject = [
+	'$scope',
+	'$state',
+	'TitleService',
+	'FinanceReportService',
+	'SweetAlert',
+	'$uibModal',
+	'gumgaController'
+];
 
 module.exports = TitleListEmbeddedController;

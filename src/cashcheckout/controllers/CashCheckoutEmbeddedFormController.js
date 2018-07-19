@@ -1,6 +1,9 @@
 CashCheckoutEmbeddedFormController.$inject = ['$scope',
 	'CashCheckinEmbeddedService',
+	'GenericReportService',
+	'CompanyService',
 	'FinanceUnitService',
+	'FinanceReportService',
 	'SweetAlert',
 	'MoneyUtilsService',
 	'$filter',
@@ -10,7 +13,10 @@ CashCheckoutEmbeddedFormController.$inject = ['$scope',
 function CashCheckoutEmbeddedFormController(
 	$scope,
 	CashCheckinEmbeddedService,
+	GenericReportService,
+	CompanyService,
 	FinanceUnitService,
+	FinanceReportService,
 	SweetAlert,
 	MoneyUtilsService,
 	$filter,
@@ -43,7 +49,60 @@ function CashCheckoutEmbeddedFormController(
 								change: $scope.change,
 								defaultTransfer: $scope.defaultTransfer
 							});
-							CashCheckinEmbeddedService.update(entity).then(() => {
+							CashCheckinEmbeddedService.update(entity).then((resp) => {
+								const cashier = resp.data.data;
+								const baseState = '';
+								SweetAlert.swal(
+									{
+										title: 'Confirmação',
+										text: 'Deseja imprimir o relatório deste fechamento de caixa?',
+										type: 'warning',
+										showCancelButton: true,
+										confirmButtonColor: '#DD6B55',
+										confirmButtonText: 'Sim',
+										cancelButtonText: 'Não',
+										closeOnConfirm: true,
+										closeOnCancel: true
+									},
+									(isConfirm) => {
+										if (isConfirm) {
+											const variables = [];
+											GenericReportService.getDefault('CASHCHECKOUT').then((response) => {
+												if (response.data) {
+													CompanyService.variablesReport().then((vari) => {
+														const variables = vari;
+														const filters = '';
+														variables.push(FinanceReportService.mountVariable('', 'idpdv', cashier.group.id));
+														variables.push(FinanceReportService.mountVariable('', 'idcheckin', cashier.id));
+														const modalInstance = $uibModal.open({
+															animation: $scope.animationsEnabled,
+															templateUrl: '/modules/stimulsoftreport/views/viewermodal.html',
+															controller: 'ViewerController',
+															backdrop: 'static',
+															size: 'lg',
+															resolve: {
+																entity() {
+																	return response.data;
+																},
+																filters() {
+																	return filters;
+																},
+																variable() {
+																	return variables;
+																},
+																backState() {
+																	return '';
+																}
+															}
+														});
+													});
+												} else {
+													SweetAlert.swal('Falta de Relatório de Fechamento de Caixa', 'Você esta sem o relatório de fechamento de caixa, contate o suporte.', 'warning');
+												}
+											});
+										}
+									}
+								);
 								$scope.$ctrl.onGoHome();
 							});
 						}
@@ -81,7 +140,7 @@ function CashCheckoutEmbeddedFormController(
 			for (let i = 0; i < entity.values.length; i++) {
 				if (!isComparationCorrect(entity.values[i], entity.destinyChange)) {
 					SweetAlert.swal('Diferença de Valores!', `A conta ${entity.values[i].financeUnit.name
-					} esta com diferença de valores, realize movimentações de caixa para corrigir antes de fechar.`, 'error');
+						} esta com diferença de valores, realize movimentações de caixa para corrigir antes de fechar.`, 'error');
 					return false;
 				}
 			}

@@ -21,9 +21,12 @@
 										</div>
 									</div>
 									<div class="col-md-4 pull-right">
-										<label gumga-translate-tag="cashcheckin.defaulttransfer">Init Change </label>
+										<label>
+											<span gumga-translate-tag="cashcheckin.defaulttransfer">Init Change</span>
+											<strong class="text-danger"> * </strong>
+										</label>
 										<strong class="fa fa-question-circle"
-										        style="cursor: pointer; position: absolute;"
+										        style="cursor: pointer; position: absolute; margin-left: 5px;"
 										        uib-popover="Todo o valor movimentado será transferido para a conta selecionada."></strong>
 										<gumga-many-to-one value="defaultTransfer"
 										                   tab-seq="3"
@@ -43,9 +46,10 @@
 										<div class="col-md-4">
 											<label>
 												<span>{{value.financeUnit.name}}</span>
+												<strong class="text-danger"> *</strong>
 											</label>
 											<strong class="fa fa-question-circle"
-											        style="cursor: pointer; position: absolute;"
+											        style="cursor: pointer; position: absolute; margin-left: 5px;"
 											        uib-popover="Confira suas movimentações e confirme o valor aqui."></strong>
 											<input type="text"
 											       class="form-control"
@@ -61,7 +65,7 @@
 												<span gumga-translate-tag="cashcheckin.expectedvalue">Expected value</span>
 											</label>
 											<strong class="fa fa-question-circle"
-											        style="cursor: pointer; position: absolute;"
+											        style="cursor: pointer; position: absolute; margin-left: 5px;"
 											        uib-popover="Valor que deve existir no seu caixa"></strong>
 											<input type="text"
 											       class="form-control"

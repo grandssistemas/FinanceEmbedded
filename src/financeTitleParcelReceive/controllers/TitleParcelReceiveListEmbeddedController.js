@@ -1,4 +1,4 @@
-let template = require('./../views/receiptPrint.html');
+const template = require('./../views/receiptPrint.html');
 
 TitleParcelReceiveListEmbeddedController.$inject = [
 	'TitleService',
@@ -10,21 +10,20 @@ TitleParcelReceiveListEmbeddedController.$inject = [
 	'IndividualEmbeddedService',
 	'FinanceReportService'];
 
-function TitleParcelReceiveListEmbeddedController(TitleService,
+function TitleParcelReceiveListEmbeddedController(
+	TitleService,
 	FinanceConfigurationService,
 	$scope,
 	TitleParcelPayService,
 	gumgaController,
 	$timeout,
 	IndividualEmbeddedService,
-	FinanceReportService) {
+	FinanceReportService
+) {
+	$scope.searchIndividual = (param) => IndividualEmbeddedService.searchIndividual(param);
 
-	$scope.searchIndividual = (param) => {
-		return IndividualEmbeddedService.searchIndividual(param);
-	}
-
-	let dateStart = null;
-	let dateEnd = new Date();
+	const dateStart = null;
+	const dateEnd = new Date();
 
 	gumgaController.createRestMethods($scope, TitleParcelPayService, 'titleparcel');
 	gumgaController.createRestMethods($scope, IndividualEmbeddedService, 'individual');
@@ -32,8 +31,8 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
 	gumgaController.createRestMethods($scope, TitleService, 'title');
 
 	$scope.isRenegotiate = false;
-	$scope.financeConfiguration.execute('get').on('getSuccess', function (data) {
-		$scope.isRenegotiate = data.values[0].isRenegotiate
+	$scope.financeConfiguration.execute('get').on('getSuccess', (data) => {
+		$scope.isRenegotiate = data.values[0].isRenegotiate;
 	});
 
 	TitleParcelPayService.resetDefaultState();
@@ -50,7 +49,7 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
 	$scope.increase = 0;
 	$scope.total = 0;
 
-	$scope.$watch('individualSearch', function (individual) {
+	$scope.$watch('individualSearch', (individual) => {
 		$scope.individualSearch = individual;
 		$scope.filter($scope.lastClicked, $scope.paidOut);
 	});
@@ -62,21 +61,21 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
 	});
 
 	$scope.totalize = function () {
-		$timeout(function () {
-			var total = 0;
-			var increase = 0;
-			angular.forEach($scope.selectedValues, function (o) {
+		$timeout(() => {
+			let total = 0;
+			let increase = 0;
+			angular.forEach($scope.selectedValues, (o) => {
 				total += o.remaining;
 				increase += o.calculedInterest + o.calculedPenalty;
 			});
-			var qtd = 0;
-			var qtdPaid = 0;
-			$scope.selectedValues.forEach(function (e) {
+			let qtd = 0;
+			let qtdPaid = 0;
+			$scope.selectedValues.forEach((e) => {
 				if (e.isReplaced) {
-					qtd++
+					qtd++;
 				}
 				if (e.fullPaid) {
-					qtdPaid++
+					qtdPaid++;
 				}
 			});
 			$scope.containsReplaced = qtd > 0;
@@ -88,20 +87,18 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
 
 	$scope.printPaid = function (items) {
 		const variables = [];
-		const sql = ' in ('.concat(items.parcels.reduce((final, current) => {
-			return `${final},${current.id}`
-		}, '')).concat(')').replace('\(\,', '\(');
+		const sql = ' in ('.concat(items.parcels.reduce((final, current) => `${final},${current.id}`, '')).concat(')').replace('\(\,', '\(');
 		variables.push(FinanceReportService.mountVariable('', 'parcelIds', sql));
-		variables.push(FinanceReportService.mountVariable('', 'orgName', JSON.parse(window.sessionStorage.getItem('user')).organization))
+		variables.push(FinanceReportService.mountVariable('', 'orgName', JSON.parse(window.sessionStorage.getItem('user')).organization));
 		FinanceReportService.openModalViewer('RECEIPT', '', variables, () => {
-			SweetAlert.swal("Falta de Recibos", "Você esta sem o recibo configurado contate o suporte.", "warning");
-		})
+			SweetAlert.swal('Falta de Recibos', 'Você esta sem o recibo configurado contate o suporte.', 'warning');
+		});
 	};
 
 	$scope.individualCheckAndPay = function (parcels, $containsFullPaid) {
 		if ($containsFullPaid) {
-			var totalValue = 0;
-			$scope.selectedValues.forEach(function (data) {
+			let totalValue = 0;
+			$scope.selectedValues.forEach((data) => {
 				totalValue += data.totalpayed;
 			});
 			$scope.recibo = { value: totalValue };
@@ -112,7 +109,7 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
 			let sameIndividual = true;
 			let hasReversed = false;
 			parcels.forEach((parcel) => {
-				sameIndividual = sameIndividual && (parcel.individual.name === individualDefault)
+				sameIndividual = sameIndividual && (parcel.individual.name === individualDefault);
 				hasReversed = hasReversed || parcel.titleData.reversed;
 			});
 
@@ -122,7 +119,7 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
 				$scope.$ctrl.onSameIndividual();
 			} else {
 				$scope.errorMessage = hasReversed ? 'Foram selecionados títulos já estornados. Não é possível fazer a movimentação desses títulos.' : 'Foram selecionadas parcelas de fornecedores diferentes, altere sua seleção.';
-				$timeout(function () {
+				$timeout(() => {
 					delete $scope.errorMessage;
 				}, 5000);
 			}
@@ -219,7 +216,7 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
 
 	$scope.getByGQuery = (page, pageSize) => {
 		TitleParcelPayService.getByGQueryMaxDate(null, 'RECEIVE', page, $scope.individualSearch, $scope.paidOut, $scope.gQueryFilters, pageSize, $scope.sortField, $scope.sortDir)
-			.then(function (data) {
+			.then((data) => {
 				$scope.selectedValues = [];
 				$scope.titleparcel.data = data.data.values;
 				$scope.titleparcel.pageSize = data.data.pageSize;
@@ -263,6 +260,8 @@ function TitleParcelReceiveListEmbeddedController(TitleService,
 			case 'custom':
 				startDate = moment($scope.startDate);
 				endDate = moment($scope.endDate);
+				break;
+			default:
 				break;
 		}
 
