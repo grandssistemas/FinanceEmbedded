@@ -55,6 +55,7 @@
     transition: all 350ms ease;
     will-change: transform, box-shadow;
     cursor: pointer;
+    border: 1px solid transparent;
 }
 
 .cashcheckout-account-header:focus, 
@@ -62,7 +63,7 @@
 .cashcheckout-account-header:active,
 .cashcheckout-account-header.active {
     transform: scale(1.002);
-    box-shadow: 1px 1px 1px rgba(0,0,0,0.12), 0 0px 2px rgba(0,0,0,0.12);
+    border: 1px solid #e8e8e8;
 }
 
 .cashcheckout-account-header svg {
@@ -123,6 +124,7 @@
     display: flex;
     align-items: flex-start;
     overflow: hidden;
+    background: #f5f5f5;
 }
 
 .cashcheckout-account-body.open {
