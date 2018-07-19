@@ -1,4 +1,5 @@
 
+require('./style.css');
 require('./views/BalanceModal.html');
 
 module.exports = angular.module('finance.cashcheckoutembedded', [])

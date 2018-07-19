@@ -1,4 +1,4 @@
-let template = require('../views/form.html');
+let template = require('../views/cashcheckout.html');
 
 module.exports = {
     templateUrl: template,
