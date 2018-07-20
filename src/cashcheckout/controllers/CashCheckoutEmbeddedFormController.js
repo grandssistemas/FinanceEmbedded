@@ -28,8 +28,9 @@ function CashCheckoutEmbeddedFormController(
 		$scope.entity = angular.copy($scope.$ctrl.entity);
 
 		$scope.noCheckin = !$scope.entity;
-		
+
 		$scope.close = function (entity) {
+			$scope.defaultTransfer = entity.destinyChange.defaultTransfer;
 			if (validateDiference(entity) && !$scope.noCheckin) {
 				SweetAlert.swal(
 					{
@@ -49,7 +50,6 @@ function CashCheckoutEmbeddedFormController(
 								date: new Date(),
 								status: 'NORMAL',
 								change: $scope.change,
-								defaultTransfer: $scope.defaultTransfer
 							});
 							CashCheckinEmbeddedService.update(entity).then((resp) => {
 								const cashier = resp.data.data;
@@ -254,6 +254,7 @@ function CashCheckoutEmbeddedFormController(
 		}
 
 		$scope.getTotalValue = () => {
+			if (!$scope.entity || !$scope.entity.values) { return 0; }
 			return $scope.entity.values.reduce((value, account) => {
 				return value + account.movementedValue;
 			}, 0);

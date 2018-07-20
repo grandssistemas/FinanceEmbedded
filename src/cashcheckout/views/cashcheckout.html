@@ -39,12 +39,17 @@
                        ng-click="stopPropagation($event)"
                        placeholder="Confirme o valor aqui"
                        mobiage-money-mask
-                       ng-init="account.informedValue = ''"
                        ng-model="account.informedValue"
                        data-prefix="R$ "
                        data-decimal=","
                        data-allow-negative="true"
                        data-thousands=".">
+
+                <label ng-show="account.informedValue"
+                       class="difference">
+                    Faltando:
+                    <span>{{ (account.informedValue - account.movementedValue) * -1 | currency:'R$'}}</span>
+                </label>
 
                 <svg version="1.1"
                      xmlns="http://www.w3.org/2000/svg"
@@ -103,9 +108,24 @@
     </div>
     <div class="cashcheckout-footer">
 
-        <label>Valor total: {{ getTotalValue() | currency:'R$' }}</label>
+        <div class="cashcheckout-footer-left">
+            <label>Valor total: {{ getTotalValue() | currency: 'R$' }}</label>
+            <div class="cashcheckout-leftchange"
+                 ng-show="!!entity.change">
+                <label gumga-translate-tag="cashcheckin.leftchange">Left Change
+                </label>
+                <input type="text"
+                       ng-model="change"
+                       placeholder="Se precisar, informe um troco"
+                       mobiage-money-mask
+                       data-prefix="R$ "
+                       data-decimal=","
+                       data-allow-negative="true"
+                       data-thousands="." />
+            </div>
+        </div>
 
-        <button>
+        <button ng-click="close(entity)">
             Fechar caixa
         </button>
 
