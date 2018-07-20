@@ -7,7 +7,8 @@ CashCheckoutEmbeddedFormController.$inject = ['$scope',
 	'SweetAlert',
 	'MoneyUtilsService',
 	'$filter',
-	'$uibModal'
+	'$uibModal',
+	'MbgPageLoader'
 ];
 
 function CashCheckoutEmbeddedFormController(
@@ -20,14 +21,16 @@ function CashCheckoutEmbeddedFormController(
 	SweetAlert,
 	MoneyUtilsService,
 	$filter,
-	$uibModal
+	$uibModal,
+	MbgPageLoader
 ) {
 	$scope.$ctrl.$onInit = function () {
 		$scope.entity = angular.copy($scope.$ctrl.entity);
 
-
 		$scope.noCheckin = !$scope.entity;
+
 		$scope.close = function (entity) {
+			$scope.defaultTransfer = entity.destinyChange.defaultTransfer;
 			if (validateDiference(entity) && !$scope.noCheckin) {
 				SweetAlert.swal(
 					{
@@ -47,7 +50,6 @@ function CashCheckoutEmbeddedFormController(
 								date: new Date(),
 								status: 'NORMAL',
 								change: $scope.change,
-								defaultTransfer: $scope.defaultTransfer
 							});
 							CashCheckinEmbeddedService.update(entity).then((resp) => {
 								const cashier = resp.data.data;
@@ -218,6 +220,46 @@ function CashCheckoutEmbeddedFormController(
 				}
 			});
 		};
+
+		$scope.getHoursIgnoreDate = (dateValue) => {
+			const mommentInstance = moment(dateValue);
+			return mommentInstance.utc().hours() + ':' + mommentInstance.utc().minutes();
+		}
+
+		$scope.openDetailsAccount = (account, index) => {
+			if (account.openDetails) {
+				$scope.entity.values[index].openDetails = false;
+				return;
+			}
+			const acordionDetails = () => {
+				$scope.entity.values.forEach((value, i) => {
+					$scope.entity.values[i].openDetails = false;
+				});
+				$scope.entity.values[index].openDetails = true;
+			};
+			if (account.moviments) {
+				acordionDetails();
+			} else {
+				const promisse = FinanceUnitService.getEntriesByFinanceUnitAndCheckin(account.financeUnit.id, $scope.entity.id);
+				MbgPageLoader.open(promisse).finally(() => { });
+				promisse.then((response) => {
+					$scope.entity.values[index].moviments = response.data.values;
+					acordionDetails();
+				});
+			}
+		};
+
+		$scope.stopPropagation = (evt) => {
+			evt.stopPropagation();
+		}
+
+		$scope.getTotalValue = () => {
+			if (!$scope.entity || !$scope.entity.values) { return 0; }
+			return $scope.entity.values.reduce((value, account) => {
+				return value + account.movementedValue;
+			}, 0);
+		}
+
 	};
 }
 

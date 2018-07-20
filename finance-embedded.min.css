@@ -154,5 +154,232 @@ License: https://www.stimulsoft.com/en/licensing/reports
 }
 .bg-white {
     background-color: #FFFFFF;
+}.cashcheckout-wrapper {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    margin-top: 26px;
+    padding: 0 18px;
 }
+
+.cashcheckout-wrapper * {
+    font-family: MontSerrat,sans-serif;
+}
+
+.cashcheckout-header {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.cashcheckout-header h1 {
+    margin: 0;
+    font-size: 18px;
+    color: var(--contrast);
+    font-weight: bold;
+}
+
+.cashcheckout-header svg {
+    width: 44px;
+    margin: 12px 0 18px 0px;
+    fill: var(--contrast);
+}
+
+.cashcheckout-header label {
+    margin-bottom: 12px;
+    color: var(--neutral2);
+}
+
+.cashcheckout-header label span {
+    color: var(--color1);
+}
+
+.cashcheckout-account-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-top: 14px;
+}
+
+.cashcheckout-account-header {
+    min-height: 54px;
+    background: #F3F3F3;
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    border-radius: 5px;
+    transition: all 350ms ease;
+    will-change: transform, box-shadow;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.cashcheckout-account-header:focus, 
+.cashcheckout-account-header:hover,
+.cashcheckout-account-header:active,
+.cashcheckout-account-header.active {
+    transform: scale(1.002);
+    border: 1px solid #e8e8e8;
+}
+
+.cashcheckout-account-header svg {
+    width: 24px;
+    position: absolute;
+    height: 24px;
+    right: 24px;
+    transition: all 350ms ease;
+    transform: rotate(90deg);
+    will-change: transform;
+    fill: var(--neutral2);
+}
+
+.cashcheckout-account-header.active svg {
+    transform: rotate(270deg);
+}
+
+.cashcheckout-account-header label {
+    color: var(--color1);
+}
+
+.cashcheckout-account-header .difference {
+    color: var(--color1);
+    margin-left: 20px;
+}
+
+.cashcheckout-account-header .difference span {
+    color: var(--contrast);
+}
+
+.cashcheckout-account-header input {
+    margin-left: 24px;
+    border: none;
+    background: #FFF;
+    height: 34px;
+    border-radius: 5px;
+    padding-left: 24px;
+    outline: none;
+}
+
+.cashcheckout-account-metadata {
+    display: flex;
+    flex-direction: column;
+}
+
+.cashcheckout-account-metadata p {
+    font-size: 12px;
+    color: var(--neutral2);
+    margin: 0;
+}
+
+.cashcheckout-account-metadata p span {
+    font-weight: bold;
+    color: var(--contrast);
+}
+
+.cashcheckout-account-body {
+    transition: all 1s ease;
+    transform-origin: top;
+    height: 0;
+    opacity: 0;
+    justify-content: center;
+    padding: 0 18px;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+    display: flex;
+    align-items: flex-start;
+    overflow: hidden;
+    background: #f5f5f5;
+}
+
+.cashcheckout-account-body.open {
+    opacity: 1;
+    pointer-events: all;
+    margin-bottom: 5px;
+}
+
+.cashcheckout-account-body table {
+    width: 100%;
+    height: 100%;
+}
+
+.cashcheckout-account-body table tr {
+    height: 44px;
+}
+
+.cashcheckout-account-body table tr th {
+    color: var(--color1);
+}
+
+.cashcheckout-footer {
+    height: 164px;
+    display: flex;
+    align-items: center;
+    padding: 0 0;
+}
+
+
+.cashcheckout-footer-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.cashcheckout-leftchange {
+    display: flex;
+    flex-direction: column;
+}
+
+.cashcheckout-footer .cashcheckout-leftchange label {
+    font-size: 12px;
+    margin-top: 12px;
+    color: var(--neutral2);
+}
+
+.cashcheckout-leftchange input {
+    width: 234px;
+    background: #f3f3f3;
+    border-radius: 4px;
+    border: none;
+    padding: 10px 12px;
+    outline: none;
+    margin-top: 5px;
+}
+
+.cashcheckout-footer label {
+    font-size: 18px;
+    color: var(--contrast);
+}
+
+.cashcheckout-footer button {
+    width: 250px;
+    height: 48px;
+    border-radius: 50px;
+    background: var(--contrast);
+    border: none;
+    text-transform: uppercase;
+    color: #FFF;
+    font-weight: bold;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*# sourceMappingURL=finance-embedded.min.css.map*/
