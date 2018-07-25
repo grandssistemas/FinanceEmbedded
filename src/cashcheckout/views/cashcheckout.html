@@ -1,5 +1,22 @@
 <div class="cashcheckout-wrapper">
-    <div class="cashcheckout-header">
+    <div class="cashcheckout-header"
+         ng-show="noCheckin">
+        <h1>Fechamento de caixa</h1>
+        <svg class="mbg-smc-detail"
+             xmlns="http://www.w3.org/2000/svg"
+             viewBox="0 0 78.56 7.99">
+            <path class="mbg-smc-detail-path"
+                  d="M11.82,5A9.21,9.21,0,0,0,23.76,5a7.23,7.23,0,0,1,9.59,0,9.21,9.21,0,0,0,11.9,0,7.24,7.24,0,0,1,9.56,0,9.21,9.21,0,0,0,12,0,7,7,0,0,1,4.78-1.8A6.47,6.47,0,0,1,75.68,4.5c.48-.47.95-1,1.41-1.45a8.6,8.6,0,0,0-5.55-1.88,8.94,8.94,0,0,0-6,2.2,7.24,7.24,0,0,1-9.56,0A9.21,9.21,0,0,0,44,3.37a7.23,7.23,0,0,1-9.55,0,9.21,9.21,0,0,0-11.94,0,7.23,7.23,0,0,1-9.55,0,8.94,8.94,0,0,0-6-2.2A8.58,8.58,0,0,0,1.51,3c.46.49.93,1,1.41,1.45A6.46,6.46,0,0,1,7,3.17,7,7,0,0,1,11.82,5Z"
+        
+                  transform="translate(-0.04 -0.16)"></path>
+        </svg>
+        <label>Parece que não existe caixa aberto,</label>
+        <label>mais fique tranquilo, quando você abrir um ele irá aparecer aqui.</label>
+        <label>Você pode ir agora para abertura de caixa e começar fazer suas vendas.</label>
+    </div>
+
+    <div class="cashcheckout-header"
+         ng-show="!noCheckin">
         <h1>Fechamento de caixa</h1>
         <svg class="mbg-smc-detail"
              xmlns="http://www.w3.org/2000/svg"
@@ -21,7 +38,8 @@
         <label>O caixa iniciou com
             <span>{{entity.change | currency}}</span> de troco</label>
     </div>
-    <div class="cashcheckout-body">
+    <div class="cashcheckout-body"
+         ng-show="!noCheckin">
         <div class="cashcheckout-account-wrapper"
              ng-repeat="account in entity.values"
              ng-show="account.movementedValue < 0 || account.movementedValue > 0">
@@ -106,16 +124,19 @@
             </div>
         </div>
     </div>
-    <div class="cashcheckout-footer">
-
+    <div class="cashcheckout-footer"
+         ng-show="!noCheckin">
         <div class="cashcheckout-footer-left">
             <label>Valor total: {{ getTotalValue() | currency: 'R$' }}</label>
         </div>
-
-        <button ng-click="openModalConfirmClose(entity)"
-                ng-disabled="getTotalValue() == getTotalRemaining()">
+        <button ng-click="openModalConfirmClose(entity)">
             Fechar caixa
         </button>
-
+    </div>
+    <div class="cashcheckout-footer"
+         ng-show="noCheckin">
+        <button ui-sref="app.cashcheckin.checkin">
+            Abrir um caixa
+        </button>
     </div>
 </div>
