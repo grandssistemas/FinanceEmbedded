@@ -110,22 +110,10 @@
 
         <div class="cashcheckout-footer-left">
             <label>Valor total: {{ getTotalValue() | currency: 'R$' }}</label>
-            <div class="cashcheckout-leftchange"
-                 ng-show="!!entity.change">
-                <label gumga-translate-tag="cashcheckin.leftchange">Left Change
-                </label>
-                <input type="text"
-                       ng-model="change"
-                       placeholder="Se precisar, informe um troco"
-                       mobiage-money-mask
-                       data-prefix="R$ "
-                       data-decimal=","
-                       data-allow-negative="true"
-                       data-thousands="." />
-            </div>
         </div>
 
-        <button ng-click="close(entity)">
+        <button ng-click="openModalConfirmClose(entity)"
+                ng-disabled="getTotalValue() == getTotalRemaining()">
             Fechar caixa
         </button>
 

@@ -1,3 +1,5 @@
+import templateConfirmCashCheckout from '../views/confirm-cashcheckout-modal.html';
+
 CashCheckoutEmbeddedFormController.$inject = ['$scope',
 	'CashCheckinEmbeddedService',
 	'GenericReportService',
@@ -25,93 +27,114 @@ function CashCheckoutEmbeddedFormController(
 	MbgPageLoader
 ) {
 	$scope.$ctrl.$onInit = function () {
+
 		$scope.entity = angular.copy($scope.$ctrl.entity);
 
 		$scope.noCheckin = !$scope.entity;
 
-		$scope.close = function (entity) {
+		$scope.beforeCashCheckout = (entity) => {
+			const modalInstance = $uibModal.open({
+				animation: true,
+				templateUrl: templateConfirmCashCheckout,
+				controller: 'ConfirmCashCheckoutModal',
+				openedClass: 'modal-center',
+				backdrop: 'static',
+				size: 'md',
+				resolve: {
+					entity: () => entity,
+					change: () => $scope.change,
+				}
+			});
+			return modalInstance.result;
+		}
+
+		$scope.getTotalRemaining = () => {
+			if (!$scope.entity || !$scope.entity.values) { return 0; }
+			let remaining = 0;
+			$scope.entity.values.forEach((account) => {
+				remaining += ((account.informedValue - account.movementedValue) * -1);
+			});
+			return remaining;
+		}
+
+		$scope.openModalConfirmClose = function (entity) {
+			$scope.change = $scope.getTotalRemaining();
 			$scope.defaultTransfer = entity.destinyChange.defaultTransfer;
-			if (validateDiference(entity) && !$scope.noCheckin) {
+			$scope.beforeCashCheckout(entity).then((response) => {
+				if (response && response.closeCashCheckout) {
+					$scope.change = response.change;
+					if (validateDiference(entity) && !$scope.noCheckin) {
+						$scope.close(entity);
+					}
+				}
+			}, () => {
+				delete $scope.change;
+			});
+		};
+
+		$scope.close = (entity) => {
+			entity.cashCheckouts = entity.cashCheckouts || [];
+			entity.cashCheckouts.push({
+				date: new Date(),
+				status: 'NORMAL',
+				change: $scope.change,
+			});
+			CashCheckinEmbeddedService.update(entity).then((resp) => {
+				const cashier = resp.data.data;
 				SweetAlert.swal(
 					{
-						title: 'Deseja realmente fechar o Caixa?',
+						title: 'Confirmação',
+						text: 'Deseja imprimir o relatório deste fechamento de caixa?',
 						type: 'warning',
 						showCancelButton: true,
 						confirmButtonColor: '#DD6B55',
-						confirmButtonText: 'Sim!',
+						confirmButtonText: 'Sim',
 						cancelButtonText: 'Não',
 						closeOnConfirm: true,
 						closeOnCancel: true
 					},
 					(isConfirm) => {
 						if (isConfirm) {
-							entity.cashCheckouts = entity.cashCheckouts || [];
-							entity.cashCheckouts.push({
-								date: new Date(),
-								status: 'NORMAL',
-								change: $scope.change,
-							});
-							CashCheckinEmbeddedService.update(entity).then((resp) => {
-								const cashier = resp.data.data;
-								const baseState = '';
-								SweetAlert.swal(
-									{
-										title: 'Confirmação',
-										text: 'Deseja imprimir o relatório deste fechamento de caixa?',
-										type: 'warning',
-										showCancelButton: true,
-										confirmButtonColor: '#DD6B55',
-										confirmButtonText: 'Sim',
-										cancelButtonText: 'Não',
-										closeOnConfirm: true,
-										closeOnCancel: true
-									},
-									(isConfirm) => {
-										if (isConfirm) {
-											const variables = [];
-											GenericReportService.getDefault('CASHCHECKOUT').then((response) => {
-												if (response.data) {
-													CompanyService.variablesReport().then((vari) => {
-														const variables = vari;
-														const filters = '';
-														variables.push(FinanceReportService.mountVariable('', 'idpdv', cashier.group.id));
-														variables.push(FinanceReportService.mountVariable('', 'idcheckin', cashier.id));
-														const modalInstance = $uibModal.open({
-															animation: $scope.animationsEnabled,
-															templateUrl: '/modules/stimulsoftreport/views/viewermodal.html',
-															controller: 'ViewerController',
-															backdrop: 'static',
-															size: 'lg',
-															resolve: {
-																entity() {
-																	return response.data;
-																},
-																filters() {
-																	return filters;
-																},
-																variable() {
-																	return variables;
-																},
-																backState() {
-																	return '';
-																}
-															}
-														});
-													});
-												} else {
-													SweetAlert.swal('Falta de Relatório de Fechamento de Caixa', 'Você esta sem o relatório de fechamento de caixa, contate o suporte.', 'warning');
+							const variables = [];
+							GenericReportService.getDefault('CASHCHECKOUT').then((response) => {
+								if (response.data) {
+									CompanyService.variablesReport().then((vari) => {
+										const variables = vari;
+										const filters = '';
+										variables.push(FinanceReportService.mountVariable('', 'idpdv', cashier.group.id));
+										variables.push(FinanceReportService.mountVariable('', 'idcheckin', cashier.id));
+										const modalInstance = $uibModal.open({
+											animation: $scope.animationsEnabled,
+											templateUrl: '/modules/stimulsoftreport/views/viewermodal.html',
+											controller: 'ViewerController',
+											backdrop: 'static',
+											size: 'lg',
+											resolve: {
+												entity() {
+													return response.data;
+												},
+												filters() {
+													return filters;
+												},
+												variable() {
+													return variables;
+												},
+												backState() {
+													return '';
 												}
-											});
-										}
-									}
-								);
-								$scope.$ctrl.onGoHome();
+											}
+										});
+									});
+								} else {
+									SweetAlert.swal('Falta de Relatório de Fechamento de Caixa', 'Você esta sem o relatório de fechamento de caixa, contate o suporte.', 'warning');
+								}
 							});
 						}
 					}
 				);
-			}
-		};
+				$scope.$ctrl.onGoHome();
+			});
+		}
 
 		$scope.showWithoutMovement = false;
 
