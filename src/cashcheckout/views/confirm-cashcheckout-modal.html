@@ -9,7 +9,7 @@
         <div class="mbg-header-modal">
 
         </div>
-        <div class="mbg-body-modal">
+        <div class="mbg-body-modal" ng-style="{ 'overflow': 'hidden' }">
             <div class="confirm-cashcheckout-wrapper"
                  ng-class="{ 'active' : step } ">
                 <div class="confirm-cashcheckout-step"
@@ -35,9 +35,9 @@
                         <br> em {{ entity.date | date: 'dd/MM/yy' }} ás {{ getHoursIgnoreDate(entity.date) }}. Deseja continuar?</p>
                     <button ng-click="closeModal()"
                             ng-disabled="step != 2">Fechar caixa</button>
-                    <button ng-click="previousStep()"
+                    <button ng-click="dismiss()"
                             ng-disabled="step != 2"
-                            class="cancel">Voltar</button>
+                            class="cancel">Cancelar</button>
                 </div>
             </div>
         </div>
