@@ -282,8 +282,8 @@ function TitleParcelPayListEmbeddedController(
 			},
 			{
 				name: 'amount',
-				title: '<span>Valor</span>',
-				content: '{{$value.value | currency: "R$"}}',
+				title: '<span class="pull-right">Valor</span>',
+				content: '<div class="pull-right">{{$value.value | currency: "R$"}}</div>',
 				sortField: 'value'
 			}
 		]
