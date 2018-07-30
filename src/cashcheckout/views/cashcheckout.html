@@ -54,7 +54,6 @@
                 </div>
 
                 <input type="text"
-                style="text-align: right"
                        ng-click="stopPropagation($event)"
                        placeholder="Confirme o valor aqui"
                        mobiage-money-mask
@@ -115,7 +114,7 @@
                             {{ moviment.historic }}
                         </td>
                         <td>
-                            {{ moviment.momment | date: 'dd/MM/yy' }} - {{ getHoursIgnoreDate(moviment.momment) }}
+                            {{ moviment.momment | date: 'dd/MM/yy' }} - {{ moviment.momment | date: 'HH:mm' }}
                         </td>
                         <td style="text-align: right">
                             {{ moviment.value | currency:'R$' }}

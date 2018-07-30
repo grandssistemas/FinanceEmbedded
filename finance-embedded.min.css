@@ -257,7 +257,9 @@ License: https://www.stimulsoft.com/en/licensing/reports
     height: 34px;
     border-radius: 5px;
     padding-left: 24px;
+    padding-right: 24px;
     outline: none;
+    text-align: right;
 }
 
 .cashcheckout-account-metadata {
@@ -435,8 +437,6 @@ License: https://www.stimulsoft.com/en/licensing/reports
     opacity: 1;
     transition: all 350ms ease;
 }
-
-
 
 
 
