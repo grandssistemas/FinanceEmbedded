@@ -1,15 +1,31 @@
-<div class="modal-header"><h3 class="modal-title">Impressão</h3></div>
-<div class="modal-body">
-    <div class="row">
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top: -10px">
-            <p ng-init="init()"></p>
-            <div id="viewer"></div>
+<div class="ma-container"
+     ng-init="invoiceErrors()">
+    <div class="mbg-modal">
+        <button type="button"
+                class="btn mbg-close-modal"
+                ng-click="close()">Fechar
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="mbg-header-modal">
+            <div class="mbg-title">
+                Impressão
+            </div>
+            <svg class="mbg-detail"
+                 xmlns="http://www.w3.org/2000/svg"
+                 viewBox="0 0 78.56 7.99">
+                <path class="mbg-detail-path"
+                      d="M11.82,5A9.21,9.21,0,0,0,23.76,5a7.23,7.23,0,0,1,9.59,0,9.21,9.21,0,0,0,11.9,0,7.24,7.24,0,0,1,9.56,0,9.21,9.21,0,0,0,12,0,7,7,0,0,1,4.78-1.8A6.47,6.47,0,0,1,75.68,4.5c.48-.47.95-1,1.41-1.45a8.6,8.6,0,0,0-5.55-1.88,8.94,8.94,0,0,0-6,2.2,7.24,7.24,0,0,1-9.56,0A9.21,9.21,0,0,0,44,3.37a7.23,7.23,0,0,1-9.55,0,9.21,9.21,0,0,0-11.94,0,7.23,7.23,0,0,1-9.55,0,8.94,8.94,0,0,0-6-2.2A8.58,8.58,0,0,0,1.51,3c.46.49.93,1,1.41,1.45A6.46,6.46,0,0,1,7,3.17,7,7,0,0,1,11.82,5Z"
+            
+                      transform="translate(-0.04 -0.16)"></path>
         </div>
+        <div class="mbg-body-modal">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <p ng-init="init()"></p>
+                <div id="viewer"></div>
+            </div>
+        </div>
+        <!-- <div class="mbg-footer-modal">
+
+        </div> -->
     </div>
-</div>
-<div class="modal-footer">
-    <button type="button" class="btn btn-primary pull-right button-ok" style="color: #fff;" ng-click="close()">
-        Fechar
-        <i class="fa fa-arrow-right"></i>
-    </button>
 </div>
