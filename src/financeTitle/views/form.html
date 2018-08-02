@@ -18,7 +18,6 @@
                   <div class="">
                     <label class="col-md-3 control-label">Parcelas</label>
                     <div class="col-md-7">
-                      ng-if="renegotiation"
                       <label class="form-control">
                         {{parcels.length}}
                       </label>
@@ -440,7 +439,7 @@
                           <div class="col-md-2 ma-no-pad-right text-center">
                             <label gumga-translate-tag="title.numberparcel"></label>
                           </div>
-                          <div class="col-md-4 ma-no-pad-all text-center">
+                          <div class="col-md-3 ma-no-pad-all text-center">
                             <label gumga-translate-tag="title.expiration"></label>
                           </div>
                           <div class="col-md-3 ma-no-pad-left text-center">
@@ -465,7 +464,7 @@
                               <span class="bar"></span>
                             </gmd-input>
                           </div>
-                          <div class="col-md-4 ma-no-pad-all gmd-date-center"
+                          <div class="col-md-3 ma-no-pad-all gmd-date-center"
                                style="margin-top: 10px">
                             <gumga-date ng-model="parcel.expiration"
                                         name="expirationParcel{{$index}}"
@@ -500,6 +499,16 @@
                                     class="inline-block btn-link btn-xs text-primary"
                                     ng-click="showPayments(parcel)">
                               <i class="material-icons">search</i>
+                            </button>
+                          </div>
+                          <div class="col-md-1 ma-no-pad-all"
+                               ng-show="parcel.parcelPayments && parcel.parcelPayments.length">
+                            <button type="button"
+                                    style="margin-top: 12px;"
+                                    uib-tooltip="Imprimir recibo"
+                                    class="inline-block btn-link btn-xs text-primary"
+                                    ng-click="$parent.$parent.printReceipt(parcel, $event)">
+                                    <i class="material-icons">print</i>
                             </button>
                           </div>
                         </div>
