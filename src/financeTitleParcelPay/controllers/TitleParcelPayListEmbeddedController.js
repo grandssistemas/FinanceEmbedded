@@ -126,7 +126,7 @@ function TitleParcelPayListEmbeddedController(
 				break;
 			}
 			case 'custom': {
-				beginDate = `${moment($scope.beginDate).format('YYYY-MM-DD')} 00:00:00`;
+				beginDate = `${moment($s$scope.gQueryFilterscope.beginDate).format('YYYY-MM-DD')} 00:00:00`;
 				endDate = `${moment($scope.endDate).format('YYYY-MM-DD')} 23:59:59`;
 				break;
 			}
@@ -147,7 +147,12 @@ function TitleParcelPayListEmbeddedController(
 		} else {
 			gQuery = gQuery.and(new Criteria('obj.fullPaid', ComparisonOperator.EQUAL, false));
 		}
-		$scope.gQueryFilters = gQuery;
+		if (titleCategory === 'RECEIVE') {
+			$scope.gQueryFiltersReceive = gQuery;
+		} else {
+			$scope.gQueryFiltersPay = gQuery;
+		}
+
 		$scope.getByGQuery(titleCategory, page, pageSize);
 		$scope.changeSubTypeButton(whichFilter);
 	};
@@ -234,7 +239,7 @@ function TitleParcelPayListEmbeddedController(
 				} else {
 					$scope.$ctrl.onSameIndividualReceive();
 				}
-				
+
 			} else {
 				$scope.errorMessage = hasReversed ? 'Foram selecionados títulos já estornados. Não é possível fazer a movimentação desses títulos.' : 'Foram selecionadas parcelas de fornecedores diferentes, altere sua seleção.';
 				SweetAlert.swal('Atenção', $scope.errorMessage, 'warning');
@@ -259,8 +264,7 @@ function TitleParcelPayListEmbeddedController(
 			{
 				name: 'documentNumber',
 				title: '<span>Doc</span>',
-				content: '{{$value.titleData.documentNumber}}',
-				sortField: 'number'
+				content: '{{$value.titleData.documentNumber}}'
 			},
 			{
 				name: 'parcel',
@@ -325,7 +329,13 @@ function TitleParcelPayListEmbeddedController(
 	$scope.configData = () => $scope.filter('custom', $scope.paidOut);
 
 	$scope.getByGQuery = (titleCategory, page, pageSize) => {
-		TitleParcelPayService.getByGQueryMaxDate(null, titleCategory, page, $scope.individualSearch, $scope.paidOut, $scope.gQueryFilters, pageSize, $scope.sortField, $scope.sortDir)
+		let gQueryFilter = '';
+		if (titleCategory === 'RECEIVE') {
+			gQueryFilter = $scope.gQueryFiltersReceive;
+		} else {
+			gQueryFilter = $scope.gQueryFiltersPay;
+		}
+		TitleParcelPayService.getByGQueryMaxDate(null, titleCategory, page, $scope.individualSearch, $scope.paidOut, gQueryFilter, pageSize, $scope.sortField, $scope.sortDir)
 			.then((data) => {
 				if (titleCategory === 'PAY') {
 					$scope.selectedPayValues = [];
