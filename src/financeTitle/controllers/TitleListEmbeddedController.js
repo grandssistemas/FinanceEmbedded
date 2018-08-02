@@ -121,9 +121,7 @@ function TitleListEmbeddedController(
 			}, {
 				name: 'participationsFormatted',
 				title: '<span gumga-translate-tag="title.participationsFormatted"></span>',
-				content: '<div uib-tooltip="{{$value.participationsFormatted}}" ng-class="{\'text-overflow-list\':$value.participations.length == 1, \'text-align-center\':$value.participations.length > 1}">' +
-					'<i class=" glyphicon glyphicon-user"></i><i class=" glyphicon glyphicon-user" ng-if="$value.participations.length > 1"></i>' +
-					'&nbsp;<span ng-if="$value.participations.length == 1">{{$value.participationsFormatted}}</span></div>'
+				content: '<div class="ellipsis" ng-if="$value.participations.length == 1">{{$value.participationsFormatted}}</div>'
 
 			}, {
 				name: 'expiration',

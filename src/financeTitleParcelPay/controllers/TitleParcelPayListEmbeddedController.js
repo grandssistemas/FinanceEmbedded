@@ -271,7 +271,7 @@ function TitleParcelPayListEmbeddedController(
 			{
 				name: 'individual',
 				title: '<span>Nome</span>',
-				content: '{{$value.individual.name}}',
+				content: '<div class="ellipsis-200">{{$value.individual.name}}</div>',
 				sortField: 'individual.name'
 			},
 			{
