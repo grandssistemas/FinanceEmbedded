@@ -14,6 +14,11 @@ function TitleEmbeddedService(
 		Service.renegociationParcels = values;
 	};
 
+	Service.getTitleByIdTitleParcel = function () {
+		const gQuery = new GQuery();
+		return Service.searchWithGQuery(gQuery);
+	};
+
 	Service.findTitleWithParticipations = function (tipo, page, aqParam) {
 		if (page !== 1) page = (page * 10) - 10;
 		if (page === 1) page = 0;
