@@ -10,7 +10,8 @@ TitleParcelPayListEmbeddedController.$inject = [
 	'IndividualEmbeddedService',
 	'$q',
 	'$state',
-	'SweetAlert'];
+	'SweetAlert',
+	'TitleService'];
 
 function TitleParcelPayListEmbeddedController(
 	$uibModal,
@@ -22,10 +23,12 @@ function TitleParcelPayListEmbeddedController(
 	IndividualEmbeddedService,
 	$q,
 	$state,
-	SweetAlert
+	SweetAlert,
+	TitleService
 ) {
 	gumgaController.createRestMethods($scope, TitleParcelPayService, 'titleparcelPay');
 	gumgaController.createRestMethods($scope, IndividualEmbeddedService, 'individual');
+	// gumgaController.createRestMethods($scope, TitleEmbeddedService, 'title');
 
 	$scope.searchIndividual = (param) => {
 		param = param || '';
@@ -298,11 +301,13 @@ function TitleParcelPayListEmbeddedController(
 		return $scope.paidOut === parameter ? 'btn btn-danger' : 'btn btn-dark-default';
 	};
 
-	$scope.goList = (type) => {
-		if (type === 'PAY') {
+	$scope.goList = (type, item) => {
+		if (!item && type === 'PAY') {
 			$state.go('app.title.listpay');
-		} else {
+		} else if (!item && type === 'RECEIVE') {
 			$state.go('app.title.listreceive');
+		} else {
+			$state.go(`app.title.edit${item.titleData.titleType.toUpperCase()}`, { id: item.titleData.idTitle, visualization: item.titleData.hasFullPaid });
 		}
 	};
 

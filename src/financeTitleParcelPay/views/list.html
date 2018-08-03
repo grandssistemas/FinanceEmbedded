@@ -81,16 +81,18 @@
 									Selecione aqui a(s) parcela(s) que irá receber do seu cliente
 								</h5>
 								<div class="mbg-right-box">
-									<div class="right-button"
-									     ng-click="goList('RECEIVE')">
+									<button type="button"
+									        class="btn right-button mbg-clear-btn"
+									        ng-disabled="selectedValuesReceive.length > 1"
+									        ng-click="goList('RECEIVE', selectedValuesReceive[0])">
 										<i class="fas fa-edit"></i>
 										<span>Editar</span>
-									</div>
-									<div class="right-button"
-									     ng-click="goNewTitle('RECEIVE')">
+									</button>
+									<button class="btn right-button mbg-clear-btn"
+									        ng-click="goNewTitle('RECEIVE')">
 										<i class="fas fa-plus"></i>
 										<span>Novo</span>
-									</div>
+									</button>
 								</div>
 							</div>
 						</div>
@@ -121,16 +123,17 @@
 								Selecione aqui a(s) parcela(s) que irá pagar ao seu fornecedor
 							</h5>
 							<div class="mbg-right-box">
-								<div class="right-button"
-								     ng-click="goList('PAY')">
+								<button class="btn right-button mbg-clear-btn"
+								        ng-disabled="selectedValuesPay.length > 1"
+								        ng-click="goList('PAY', selectedValuesPay[0])">
 									<i class="fas fa-edit"></i>
 									<span>Editar</span>
-								</div>
-								<div class="right-button"
-								     ng-click="goNewTitle('PAY')">
+								</button>
+								<button class="btn right-button mbg-clear-btn"
+								        ng-click="goNewTitle('PAY')">
 									<i class="fas fa-plus"></i>
 									<span>Novo</span>
-								</div>
+								</button>
 							</div>
 						</div>
 					</div>
