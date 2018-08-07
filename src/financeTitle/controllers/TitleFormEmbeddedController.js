@@ -16,7 +16,9 @@ TitleFormEmbeddedController.$inject = [
 	'SweetAlert',
 	'MoneyUtilsService',
 	'TitleParcelPayService',
-	'$state'];
+	'$state',
+	'FinanceReportService',
+	'PaymentService'];
 
 function TitleFormEmbeddedController(
 	TitleService,
@@ -33,7 +35,9 @@ function TitleFormEmbeddedController(
 	SweetAlert,
 	MoneyUtils,
 	TitleParcelPayService,
-	$state
+	$state,
+	FinanceReportService,
+	PaymentService
 ) {
 	const ctrl = this;
 	ctrl.$onInit = () => {
@@ -55,6 +59,7 @@ function TitleFormEmbeddedController(
 		gumgaController.createRestMethods($scope, PlanLeafService, 'planLeaf');
 		gumgaController.createRestMethods($scope, WalletService, 'wallet');
 		gumgaController.createRestMethods($scope, TitleService, 'title');
+		gumgaController.createRestMethods($scope, PaymentService, 'payment');
 
 		$scope.searchIndividual = (param) => IndividualEmbeddedService.searchIndividual(param);
 
@@ -709,6 +714,33 @@ function TitleFormEmbeddedController(
 
 		$scope.showBarCodeTitle = function () {
 			return ($scope.title.data.titleType == 'PAY');
+		};
+
+		const getPayments = (parcels) => {
+			const arr = [];
+			parcels.forEach((parcelPayment) => {
+				var gQuery = new GQuery(new Criteria('pp.id', ComparisonOperator.EQUAL, parcelPayment.id))
+					.join(new Join('obj.parcelPayments as pp', JoinType.INNER));
+				arr.push($scope.payment.methods.asyncSearchWithGQuery(gQuery));
+			});
+			return Promise.all(arr).then((response) => {
+				let toReturn = [];
+				response.forEach((data) => data.forEach((payment) => {
+					if (toReturn.filter((d) => angular.equals(d, payment)).length === 0) {
+						toReturn.push(payment);
+					}
+				}));
+				return toReturn;
+			})
+		}
+
+		$scope.printReceipt = (parcel) => {
+			getPayments(parcel.parcelPayments).then((resp) => {
+				const baseState = 'titleparcelreceive.list';
+				const variables = [];
+				variables.push(FinanceReportService.mountVariable('', 'idPayment', resp[0].id));
+				FinanceReportService.openModalViewer('RECEIPTTITLE', [], variables, () => true, baseState);
+			});
 		};
 
 		$scope.showPayments = function (parcel) {
