@@ -28,7 +28,6 @@ function TitleParcelPayListEmbeddedController(
 ) {
 	gumgaController.createRestMethods($scope, TitleParcelPayService, 'titleparcelPay');
 	gumgaController.createRestMethods($scope, IndividualEmbeddedService, 'individual');
-	// gumgaController.createRestMethods($scope, TitleEmbeddedService, 'title');
 
 	$scope.searchIndividual = (param) => {
 		param = param || '';
@@ -242,7 +241,6 @@ function TitleParcelPayListEmbeddedController(
 				} else {
 					$scope.$ctrl.onSameIndividualReceive();
 				}
-
 			} else {
 				$scope.errorMessage = hasReversed ? 'Foram selecionados títulos já estornados. Não é possível fazer a movimentação desses títulos.' : 'Foram selecionadas parcelas de fornecedores diferentes, altere sua seleção.';
 				SweetAlert.swal('Atenção', $scope.errorMessage, 'warning');
