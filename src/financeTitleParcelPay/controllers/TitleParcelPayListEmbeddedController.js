@@ -229,7 +229,11 @@ function TitleParcelPayListEmbeddedController(
 
 			if (sameIndividual && !hasReversed) {
 				TitleParcelPayService.setInstallmentsPayable(parcels);
-				$scope.$ctrl.onSameIndividual();
+				if (parcels[0].type === 'PAY') {
+					$scope.$ctrl.onSameIndividual();
+				} else {
+					$scope.$ctrl.onSameIndividualReceive();
+				}
 			} else {
 				$scope.errorMessage = hasReversed ? 'Foram selecionados títulos já estornados. Não é possível fazer a movimentação desses títulos.' : 'Foram selecionadas parcelas de fornecedores diferentes, altere sua seleção.';
 				SweetAlert.swal('Atenção', $scope.errorMessage, 'warning');
