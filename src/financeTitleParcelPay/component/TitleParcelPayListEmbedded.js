@@ -4,6 +4,7 @@ module.exports = {
     templateUrl: template,
     controller: 'TitleParcelPayListEmbeddedController',
     bindings:{
-        onSameIndividual: '&'
+        onSameIndividual: '&',
+        onSameIndividualReceive: '&'
     }
 };
