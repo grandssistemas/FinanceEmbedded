@@ -9,6 +9,7 @@ CashCheckoutEmbeddedFormController.$inject = ['$scope',
 	'SweetAlert',
 	'MoneyUtilsService',
 	'$filter',
+	'$timeout',
 	'$uibModal',
 	'MbgPageLoader'
 ];
@@ -23,12 +24,16 @@ function CashCheckoutEmbeddedFormController(
 	SweetAlert,
 	MoneyUtilsService,
 	$filter,
+	$timeout,
 	$uibModal,
 	MbgPageLoader
 ) {
 	$scope.$ctrl.$onInit = function () {
 
 		$scope.entity = angular.copy($scope.$ctrl.entity);
+
+		$scope.type = 'NORMAL';
+		// $scope.type = 'BLIND';
 
 		$scope.noCheckin = !$scope.entity;
 
@@ -63,7 +68,7 @@ function CashCheckoutEmbeddedFormController(
 			$scope.beforeCashCheckout(entity).then((response) => {
 				if (response && response.closeCashCheckout) {
 					$scope.change = response.change;
-					if (validateDiference(entity) && !$scope.noCheckin) {
+					if (!$scope.noCheckin) {
 						$scope.close(entity);
 					}
 				}
@@ -161,16 +166,16 @@ function CashCheckoutEmbeddedFormController(
 
 		calcMovement();
 
-		function validateDiference(entity) {
-			for (let i = 0; i < entity.values.length; i++) {
-				if (!isComparationCorrect(entity.values[i], entity.destinyChange)) {
-					SweetAlert.swal('Diferença de Valores!', `A conta ${entity.values[i].financeUnit.name
-						} esta com diferença de valores, realize movimentações de caixa para corrigir antes de fechar.`, 'error');
-					return false;
-				}
-			}
-			return true;
-		}
+		// function validateDiference(entity) {
+		// 	for (let i = 0; i < entity.values.length; i++) {
+		// 		if (!isComparationCorrect(entity.values[i], entity.destinyChange)) {
+		// 			SweetAlert.swal('Diferença de Valores!', `A conta ${entity.values[i].financeUnit.name
+		// 				} esta com diferença de valores, realize movimentações de caixa para corrigir antes de fechar.`, 'error');
+		// 			return false;
+		// 		}
+		// 	}
+		// 	return true;
+		// }
 
 		function isComparationCorrect(value, destiny) {
 			let change = 0;
@@ -263,10 +268,14 @@ function CashCheckoutEmbeddedFormController(
 			if (account.moviments) {
 				acordionDetails();
 			} else {
+				account.verified = false;
 				const promisse = FinanceUnitService.getEntriesByFinanceUnitAndCheckin(account.financeUnit.id, $scope.entity.id);
 				MbgPageLoader.open(promisse).finally(() => { });
 				promisse.then((response) => {
 					$scope.entity.values[index].moviments = response.data.values;
+					$scope.entity.values[index].moviments.forEach((moviment) => {
+						moviment.verified = false;
+					})
 					acordionDetails();
 				});
 			}
@@ -281,6 +290,28 @@ function CashCheckoutEmbeddedFormController(
 			return $scope.entity.values.reduce((value, account) => {
 				return value + account.movementedValue;
 			}, 0);
+		}
+
+		$scope.handlingAccountVerified = (newValue, account) => {
+			$timeout(() => {
+				(account.moviments || []).forEach((moviment) => {
+					moviment.verified = newValue;
+				});
+			});
+		}
+
+		$scope.checkVerifiedAccount = (account) => {
+			$timeout(() => {
+				account.verified = (account.moviments || []).filter((moviment) => {
+					return moviment.verified == false;
+				}).length == 0;
+			});
+		}
+
+		$scope.allAccountsVerified = () => {
+			return $scope.entity.values.filter((account) => {
+				return (account.movementedValue < 0 || account.movementedValue > 0) && !account.verified;
+			}).length == 0;
 		}
 
 	};

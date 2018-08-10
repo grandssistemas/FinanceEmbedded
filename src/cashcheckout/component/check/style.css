@@ -1,0 +1,31 @@
+.check-wrapper {
+    position: relative;
+    width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.check-wrapper svg {
+    position: relative;
+    transform: none;
+    right: 0;
+    width: 38px;
+    height: auto;
+    cursor: pointer;
+}
+
+.check-wrapper svg .st0 {
+    fill: none;
+    stroke: #000000;
+    stroke-width: 5;
+    stroke-miterlimit: 10;     
+}
+
+.check-wrapper svg.checked {
+    fill: #0fc34c;
+}
+
+.check-wrapper svg:last-child {
+    width: 25px;
+}
