@@ -33,8 +33,8 @@ function CashCheckoutEmbeddedFormController(
 
 		$scope.entity = angular.copy($scope.$ctrl.entity);
 
-		$scope.type = 'NORMAL';
-		// $scope.type = 'BLIND';
+		// $scope.type = 'NORMAL';
+		$scope.type = 'BLIND';
 
 		$scope.noCheckin = !$scope.entity;
 
@@ -186,6 +186,8 @@ function CashCheckoutEmbeddedFormController(
 			return value.movementedValue === MoneyUtilsService.sumMoney(value.informedValue, change);
 		}
 
+		$scope.stopClickPropagation = (evt) => evt.stopPropagation();
+
 		$scope.formatDate = function (date) {
 			return $filter('date')(new Date(date), 'dd/MM/yyyy HH:mm:ss');
 		};
@@ -294,25 +296,52 @@ function CashCheckoutEmbeddedFormController(
 		}
 
 		$scope.handlingAccountVerified = (newValue, account) => {
-			$timeout(() => {
-				(account.moviments || []).forEach((moviment) => {
-					moviment.verified = newValue;
+			if ($scope.type == 'NORMAL') {
+				$timeout(() => {
+					(account.moviments || []).forEach((moviment) => {
+						moviment.verified = newValue;
+					});
 				});
-			});
+			}
+			if ($scope.type == 'BLIND') {
+				$timeout(() => {
+					if (account.verifiedValue == account.movementedValue) {
+						(account.moviments || []).forEach((moviment, i) => {
+							account.moviments[i].verifiedValue = moviment.value;
+						})
+					}
+				});
+			}
 		}
 
 		$scope.checkVerifiedAccount = (account) => {
-			$timeout(() => {
-				account.verified = (account.moviments || []).filter((moviment) => {
-					return moviment.verified == false;
-				}).length == 0;
-			});
+			if ($scope.type == 'NORMAL') {
+				$timeout(() => {
+					account.verified = (account.moviments || []).filter((moviment) => {
+						return moviment.verified == false;
+					}).length == 0;
+				});
+			}
+			if ($scope.type == 'BLIND') {
+				$timeout(() => {
+					account.verifiedValue = (account.moviments || []).reduce((value, moviment) => {
+						return value + moviment.verifiedValue;
+					}, 0);
+				});
+			}
 		}
 
 		$scope.allAccountsVerified = () => {
-			return $scope.entity.values.filter((account) => {
-				return (account.movementedValue < 0 || account.movementedValue > 0) && !account.verified;
-			}).length == 0;
+			if ($scope.type == 'NORMAL') {
+				return $scope.entity.values.filter((account) => {
+					return (account.movementedValue < 0 || account.movementedValue > 0) && !account.verified;
+				}).length == 0;
+			}
+			if ($scope.type == 'BLIND') {
+				return $scope.entity.values.filter((account) => {
+					return (account.movementedValue < 0 || account.movementedValue > 0) && account.verifiedValue != account.movementedValue;
+				}).length == 0;
+			}
 		}
 
 	};

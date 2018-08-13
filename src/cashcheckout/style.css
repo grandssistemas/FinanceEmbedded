@@ -96,6 +96,7 @@
 
 .cashcheckout-account-header input {
     margin-left: 24px;
+    margin-right: 14px;
     border: none;
     background: #FFF;
     height: 34px;
@@ -297,9 +298,14 @@
     width: 68px;
 }
 
-.cashcheckout-account-body .check-icon {
+.cashcheckout-wrapper .check-icon {
     width: 24px;
     fill: #0fc34c;
+}
+
+.cashcheckout-wrapper .error-value-icon {
+    width: 24px;
+    fill: var(--error);
 }
 
 .cashcheckout-account-body input {
