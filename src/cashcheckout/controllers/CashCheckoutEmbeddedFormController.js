@@ -1,4 +1,5 @@
 import templateConfirmCashCheckout from '../views/confirm-cashcheckout-modal.html';
+const viewModal = require('../../../../FM/mobiage-presentation/src/main/webapp/app/modules/grands-components/modules/stimulsoftreport/views/viewermodal.html');
 
 CashCheckoutEmbeddedFormController.$inject = ['$scope',
 	'CashCheckinEmbeddedService',
@@ -110,7 +111,7 @@ function CashCheckoutEmbeddedFormController(
 										variables.push(FinanceReportService.mountVariable('', 'idcheckin', cashier.id));
 										const modalInstance = $uibModal.open({
 											animation: $scope.animationsEnabled,
-											templateUrl: '/modules/stimulsoftreport/views/viewermodal.html',
+											templateUrl: viewModal,
 											controller: 'ViewerController',
 											backdrop: 'static',
 											size: 'lg',

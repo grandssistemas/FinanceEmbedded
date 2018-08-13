@@ -226,7 +226,7 @@ License: https://www.stimulsoft.com/en/licensing/reports
     border: 1px solid #e8e8e8;
 }
 
-.cashcheckout-account-header svg {
+.cashcheckout-account-header svg.toogle-details {
     width: 24px;
     position: absolute;
     height: 24px;
@@ -237,7 +237,7 @@ License: https://www.stimulsoft.com/en/licensing/reports
     fill: var(--neutral2);
 }
 
-.cashcheckout-account-header.active svg {
+.cashcheckout-account-header.active svg.toogle-details {
     transform: rotate(270deg);
 }
 
@@ -269,6 +269,11 @@ License: https://www.stimulsoft.com/en/licensing/reports
 .cashcheckout-account-metadata {
     display: flex;
     flex-direction: column;
+    margin-right: 24px;
+}
+
+.cashcheckout-account-metadata label span {
+    color: var(--contrast);
 }
 
 .cashcheckout-account-metadata p {
@@ -306,7 +311,6 @@ License: https://www.stimulsoft.com/en/licensing/reports
 
 .cashcheckout-account-body table {
     width: 100%;
-    height: 100%;
 }
 
 .cashcheckout-account-body table tr {
@@ -368,6 +372,9 @@ License: https://www.stimulsoft.com/en/licensing/reports
     font-weight: bold;
 }
 
+.cashcheckout-footer button[disabled="disabled"] {
+    opacity: .6;
+}
 
 .confirm-cashcheckout-wrapper {
     width: 364px;
@@ -442,6 +449,77 @@ License: https://www.stimulsoft.com/en/licensing/reports
     transition: all 350ms ease;
 }
 
+.table-column-148 {
+    width: 148px;
+}
 
+.table-column-68 {
+    width: 68px;
+}
 
+.cashcheckout-account-body .check-icon {
+    width: 24px;
+    fill: #0fc34c;
+}
+
+.cashcheckout-account-body input {
+    border: 1px solid rgb(204, 204, 204);
+    border-radius: 5px;
+    background: rgb(255, 255, 255);
+    min-height: 34px;
+    outline: none;
+    width: 124px;
+    text-align: right;
+    padding: 0 14px;
+}
+
+/* .cashcheckout-wrapper .check-wrapper {
+    margin-left: 24px;
+}
+
+.cashcheckout-wrapper .check-wrapper svg {
+    position: relative;
+    transform: none;
+    right: 0;
+    width: 38px;
+    height: auto;
+}
+
+.cashcheckout-wrapper .check-wrapper svg .st0 {
+    fill: none;
+    stroke: #000000;
+    stroke-width: 5;
+    stroke-miterlimit: 10;                          
+} */
+.check-wrapper {
+    position: relative;
+    width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.check-wrapper svg {
+    position: relative;
+    transform: none;
+    right: 0;
+    width: 38px;
+    height: auto;
+    cursor: pointer;
+}
+
+.check-wrapper svg .st0 {
+    fill: none;
+    stroke: #000000;
+    stroke-width: 5;
+    stroke-miterlimit: 10;     
+}
+
+.check-wrapper svg.checked {
+    fill: #0fc34c;
+}
+
+.check-wrapper svg:last-child {
+    width: 25px;
+}
 /*# sourceMappingURL=finance-embedded.min.css.map*/
