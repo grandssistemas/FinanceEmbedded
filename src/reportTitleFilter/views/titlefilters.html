@@ -1,0 +1,18 @@
+<div class="row">
+    <div class="col-md-12">
+        <gumga-chips placeholder="Buscar Clientes"
+                     search-field="name"
+                     filter-option-by="contains"
+                     full-mode
+                     ng-model="$parent.selecionados">
+            <gumga-chips-item ng-repeat="item in selecionados track by $index"
+                              ng-value="item">
+                {{item.name}}
+            </gumga-chips-item>
+            <gumga-chips-option ng-repeat="option in individualList"
+                                ng-value="option">
+                {{option.name}}
+            </gumga-chips-option>
+        </gumga-chips>
+    </div>
+</div>
