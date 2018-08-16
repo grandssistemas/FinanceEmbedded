@@ -33,8 +33,8 @@ function CashCheckoutEmbeddedFormController(
 
 		$scope.entity = angular.copy($scope.$ctrl.entity);
 
-		// $scope.type = 'NORMAL';
-		$scope.type = 'BLIND';
+		$scope.type = 'NORMAL';
+		// $scope.type = 'BLIND';
 
 		$scope.noCheckin = !$scope.entity;
 
