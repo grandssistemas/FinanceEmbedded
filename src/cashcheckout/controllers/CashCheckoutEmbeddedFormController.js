@@ -32,7 +32,6 @@ function CashCheckoutEmbeddedFormController(
 	$scope.$ctrl.$onInit = function () {
 
 		$scope.entity = angular.copy($scope.$ctrl.entity);
-
 		$scope.type = 'NORMAL';
 		// $scope.type = 'BLIND';
 
@@ -254,7 +253,7 @@ function CashCheckoutEmbeddedFormController(
 
 		$scope.getHoursIgnoreDate = (dateValue) => {
 			const mommentInstance = moment(dateValue);
-			return mommentInstance.utc().hours() + ':' + mommentInstance.utc().minutes();
+			return mommentInstance.hours() + ':' + mommentInstance.utc().minutes();
 		}
 
 		$scope.openDetailsAccount = (account, index) => {
