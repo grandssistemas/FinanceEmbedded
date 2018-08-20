@@ -454,9 +454,8 @@ function PayReceiveEmbeddedController(
 
 	$scope.makePayment = function (payment) {
 		$scope.post = payment;
-
 		const paymentDTO = angular.copy(payment);
-
+		paymentDTO.momment = new Date();
 		paymentDTO.parcels.forEach((parcel, index) => {
 			paymentDTO.parcels[index].discount.value = paymentDTO.parcels[index].discount.value * 100;
 			paymentDTO.parcels[index].interest.value = paymentDTO.parcels[index].interest.value * 100;

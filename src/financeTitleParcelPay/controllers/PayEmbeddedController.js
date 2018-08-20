@@ -480,6 +480,8 @@ function PayEmbeddedController(
 
 
 	$scope.makePayment = function (payment) {
+		payment.momment = new Date();
+
 		PaymentService.pay(payment)
 			.then(function () {
 				$scope.$ctrl.onBackClick();
