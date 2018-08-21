@@ -69,6 +69,9 @@ function CashCheckoutEmbeddedFormController(
 				if (response && response.closeCashCheckout) {
 					$scope.change = response.change;
 					if (!$scope.noCheckin) {
+						(entity.values).forEach((value, i) => {
+							entity.values[i].informedValue = entity.values[i].movementedValue;
+						})
 						$scope.close(entity);
 					}
 				}
