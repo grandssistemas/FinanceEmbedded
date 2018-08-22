@@ -1,5 +1,5 @@
 import templateConfirmCashCheckout from '../views/confirm-cashcheckout-modal.html';
-const viewModal = require('../../../../FM/mobiage-presentation/src/main/webapp/app/modules/grands-components/modules/stimulsoftreport/views/viewermodal.html');
+const viewModal = require('../../financereport/views/viewermodal.html');
 
 CashCheckoutEmbeddedFormController.$inject = ['$scope',
 	'CashCheckinEmbeddedService',
@@ -30,7 +30,6 @@ function CashCheckoutEmbeddedFormController(
 	MbgPageLoader
 ) {
 	$scope.$ctrl.$onInit = function () {
-
 		$scope.entity = angular.copy($scope.$ctrl.entity);
 		$scope.type = 'NORMAL';
 		// $scope.type = 'BLIND';
