@@ -88,6 +88,7 @@ function TitleFormEmbeddedController(
 		};
 
 		$scope.update = (invalid, entity) => {
+			console.log(entity);
 			if (invalid) {
 				return;
 			}
@@ -740,6 +741,12 @@ function TitleFormEmbeddedController(
 				const variables = [];
 				variables.push(FinanceReportService.mountVariable('', 'idPayment', resp[0].id));
 				FinanceReportService.openModalViewer('RECEIPTTITLE', [], variables, () => true, baseState);
+			});
+		};
+
+		$scope.searchTypeCategory = (param, type) => {
+			return TitleService.searchTypeCategorys(param, type).then((resp) => {
+				return resp.data.values;
 			});
 		};
 
