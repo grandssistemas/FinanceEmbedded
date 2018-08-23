@@ -19,6 +19,11 @@ function TitleEmbeddedService(
 		return Service.searchWithGQuery(gQuery);
 	};
 
+	Service.searchTypeCategorys = function (param, type) {
+		let gQuery =  new GQuery(new Criteria('id', ComparisonOperator.EQUAL, 1));
+		return $http.post(`${FinanceEmbeddedService.getDefaultConfiguration().api}/title/typecategorys`, gQuery);
+	};
+
 	Service.findTitleWithParticipations = function (tipo, page, aqParam) {
 		if (page !== 1) page = (page * 10) - 10;
 		if (page === 1) page = 0;

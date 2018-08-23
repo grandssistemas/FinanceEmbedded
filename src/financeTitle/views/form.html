@@ -184,7 +184,26 @@
                       </div>
                     </div>
                   </div>
-                  <br>
+                  <div ng-if="titleType == 'pay' || titleType == 'editpay'"
+                       class="row">
+                    <div class="col-md-12">
+                      <div class="reset-height">
+                        <label>
+                          <span gumga-translate-tag="title.typeCategory"></span>
+                        </label>
+                        <gumga-many-to-one name="typecategory"
+                                           value="title.data.typeCategory"
+                                           active-favorite="true"
+                                           search-method="searchTypeCategory(param, titleType)"
+                                           field="category"
+                                           authorize-add="false"
+                                           class="gmd"
+                                           on-select="selected(value)"
+                                           display-info="false">
+                        </gumga-many-to-one>
+                      </div>
+                    </div>
+                  </div>
                   <div class="row">
                     <div class="col-md-12">
                       <label>
@@ -508,7 +527,7 @@
                                     uib-tooltip="Imprimir recibo"
                                     class="inline-block btn-link btn-xs text-primary"
                                     ng-click="$parent.$parent.printReceipt(parcel, $event)">
-                                    <i class="material-icons">print</i>
+                              <i class="material-icons">print</i>
                             </button>
                           </div>
                         </div>

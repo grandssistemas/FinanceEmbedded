@@ -743,6 +743,12 @@ function TitleFormEmbeddedController(
 			});
 		};
 
+		$scope.searchTypeCategory = (param, type) => {
+			return TitleService.searchTypeCategorys(param, type).then((resp) => {
+				return resp.data.values;
+			});
+		};
+
 		$scope.showPayments = function (parcel) {
 			if (!parcel.parcelPayments.length) {
 				SweetAlert.swal('Nenhum pagamento encontrado', 'Nenhum pagamento foi realizado para a parcela selecionada.', 'warning');
