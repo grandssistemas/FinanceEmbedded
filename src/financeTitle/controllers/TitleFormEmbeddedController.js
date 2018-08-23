@@ -88,6 +88,7 @@ function TitleFormEmbeddedController(
 		};
 
 		$scope.update = (invalid, entity) => {
+			console.log(entity);
 			if (invalid) {
 				return;
 			}

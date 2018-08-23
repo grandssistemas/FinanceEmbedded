@@ -20,8 +20,18 @@ function TitleEmbeddedService(
 	};
 
 	Service.searchTypeCategorys = function (param, type) {
-		let gQuery =  new GQuery(new Criteria('id', ComparisonOperator.EQUAL, 1));
-		return $http.post(`${FinanceEmbeddedService.getDefaultConfiguration().api}/title/typecategorys`, gQuery);
+		let gQuery = new GQuery();
+		if (param) {
+			gQuery = gQuery.and(new Criteria('category', ComparisonOperator.CONTAINS, param));
+		}
+		if (type) {
+			gQuery = gQuery.and(new Criteria('type', ComparisonOperator.EQUAL, type.toUpperCase()));
+		}
+		const obj = {
+			gQuery
+		};
+
+		return $http.post(`${FinanceEmbeddedService.getDefaultConfiguration().api}/title/typecategorys`, obj);
 	};
 
 	Service.findTitleWithParticipations = function (tipo, page, aqParam) {
