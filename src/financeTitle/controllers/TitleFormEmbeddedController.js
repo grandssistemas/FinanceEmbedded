@@ -18,7 +18,10 @@ TitleFormEmbeddedController.$inject = [
 	'TitleParcelPayService',
 	'$state',
 	'FinanceReportService',
-	'PaymentService'];
+	'PaymentService',
+	'CheckingAccountService',
+	'ThirdPartyChequeService',
+	'ChequePortfolioService'];
 
 function TitleFormEmbeddedController(
 	TitleService,
@@ -37,7 +40,10 @@ function TitleFormEmbeddedController(
 	TitleParcelPayService,
 	$state,
 	FinanceReportService,
-	PaymentService
+	PaymentService,
+	CheckingAccountService,
+	ThirdPartyChequeService,
+	ChequePortfolioService
 ) {
 	const ctrl = this;
 	ctrl.$onInit = () => {
@@ -60,12 +66,15 @@ function TitleFormEmbeddedController(
 		gumgaController.createRestMethods($scope, WalletService, 'wallet');
 		gumgaController.createRestMethods($scope, TitleService, 'title');
 		gumgaController.createRestMethods($scope, PaymentService, 'payment');
+		gumgaController.createRestMethods($scope, CheckingAccountService, 'checkingaccount');
+		gumgaController.createRestMethods($scope, ChequePortfolioService, 'chequeportfolio');
 
 		$scope.searchIndividual = (param) => IndividualEmbeddedService.searchIndividual(param);
 
 		$scope.documentType.methods.search('name', '');
 		$scope.financeunit.methods.search('name', '');
 		$scope.ratioPlan.methods.search('label', '');
+		$scope.chequeportfolio.methods.search('name', '');
 
 		$scope.titleType = $scope.$ctrl.typeTitle; // Tipo de lançamento podendo vir: pay para pagamento ou receive para receber.
 		$scope.editParcels = false;
@@ -76,7 +85,8 @@ function TitleFormEmbeddedController(
 		$scope.tags = [];
 		$scope.step = 1;
 		$scope.interestActive = true;
-
+		$scope.chequeList = [];
+		$scope.checks = [];
 
 		$scope.blockBtnSave = (formInvalid) => formInvalid;
 
@@ -86,12 +96,11 @@ function TitleFormEmbeddedController(
 			}
 			$scope.launchPaid();
 		};
-
 		$scope.update = (invalid, entity) => {
-			console.log(entity);
 			if (invalid) {
 				return;
 			}
+			console.log(entity);
 			$scope.save(entity);
 		};
 
@@ -176,6 +185,9 @@ function TitleFormEmbeddedController(
 				}
 			}
 			if (numStep === 2) {
+				$scope.disable = false;
+				$scope.step = numStep;
+			} else if (numStep === 3) {
 				$scope.disable = false;
 				$scope.step = numStep;
 			}
@@ -768,6 +780,85 @@ function TitleFormEmbeddedController(
 				}
 			});
 		};
+
+		$scope.setUpdateCheck = (value) => {
+		};
+
+		$scope.addPaymentCompanyCheck = (check) => {
+			const checkItem = angular.copy(check);
+			checkItem.momment = new Date();
+
+			$scope.title.data.emittedChecksJoin.push(checkItem);
+			
+			emptyCheck(check);
+		};
+
+		$scope.getEmployees = (param, page, pageSize) => {
+			return IndividualEmbeddedService.searchEmployees(param, page, pageSize).then((resp) => resp.data.values);
+		};
+
+		function emptyCheck(check) {
+			check.historic = '';
+			check.value = 0;
+			check.availableIn = '';
+			check.employee = '';
+			check.number = '';
+			check.financeUnit = '';
+		}
+
+		$scope.listCheques = (id, param) => {
+			id = id || 0;
+			param = param || '';
+			return ThirdPartyChequeService.getAdvancedSearch("lower(obj.issuer.name) like lower('%" + param + "%') and obj.portfolio.id = " + id + " and obj.status = 'AVAILABLE'")
+				.then((data) => {
+					$scope.chequeList = data.data.values;
+				});
+		};
+
+		$scope.tableConfig = {
+			columns: 'number, value, delete', //columnas disponiveis
+			//itemsPerPage: [5, 10], // itens por página
+			checkbox: false, // Mostrar checkbox
+			materialTheme: true, //usar tema de material design
+			// activeLineColor: 'red', // cor da linha selecionada
+			// hoverLineColor: 'red', // cor da linha ao passar o mouse.
+			ordination: false, // possibilitar ordenar colunas
+			resizable: false, // possibilitar aumentar ou diminuir tamanho das colunas.
+			fixed: { // fixar colunas
+				head: true, // fixar cabeçalho
+				left: 2 // fixar as primeiras duas colunas da esquerda.
+				// right: 1 - fixar a primeira coluna da direita,
+				// foot: true - fixar rodapé,
+				// top: 2 - fixar as primeiras 2 colunas e linhas do topo.
+			},
+			columnsConfig: [
+				{
+					name: 'number',
+					title: 'Nº Cheque',
+					content: '{{$value.number}}',
+					alignColumn: 'left',
+					alignRows: 'left'
+				},
+				{
+					name: 'value',
+					title: 'Valor',
+					alignRows: 'right',
+					content: '{{$value.value | currency:\'R$ \'}}'
+				},
+				{
+					name: 'delete',
+					title: ' ',
+					alignColumn: 'center',
+					alignRows: 'center',
+					content: `
+						<cp-delete-icon ng-click="$parent.$parent.delete($index)"></cp-delete-icon>
+					`
+				}
+			]
+		}
+		$scope.delete = (index) => {
+			$scope.title.data.scheduleds.splice(index, 1);
+		}
 	}
 }
 

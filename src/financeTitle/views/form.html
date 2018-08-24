@@ -23,7 +23,6 @@
                       </label>
                     </div>
                   </div>
-
                   <div class="">
                     <label class="col-md-3 control-label">Valor</label>
                     <div class="col-md-7">
@@ -410,47 +409,46 @@
             </div>
             <div class="col-md-6 ma-pad-left-panel">
               <div class="panel gmd ma-panel"
-                   id="panel2">
-                <div class="panel-heading">
-                  <ul class="nav nav-tabs cl-light-primary title-b-u gmd"
-                      style="margin-top: -8px;">
-                    <li class="uib-tab"
-                        heading="parcels"
-                        ng-class="step == 1 ? 'cl-light-primary title-b-u':''"
-                        ng-if="step == 1">
-                      <a ng-click="changeStep(1)">
-                        <label class="h2-margin"
-                               gumga-translate-tag="title.parcels"></label>
-                      </a>
-                    </li>
-                    <li class="uib-tab"
-                        heading="parcels"
-                        ng-class="step == 1 ? 'cl-light-primary title-b-u':''"
-                        ng-if="step == 2">
-                      <a ng-click="changeStep(1)">Parcelas</a>
-                    </li>
-                    <li class="uib-tab"
-                        heading="rateio"
-                        ng-class="step == 2 ? 'cl-light-primary title-b-u':''"
-                        ng-if="step == 1">
-                      <a ng-click="changeStep(2)">Rateio</a>
-                    </li>
-                    <li class="uib-tab"
-                        heading="rateio"
-                        ng-class="step == 2 ? 'cl-light-primary title-b-u':''"
-                        ng-if="step == 2">
-                      <a ng-click="changeStep(2)">
-                        <label class="h2-margin">Rateio</label>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
+                   id="panel2"
+                   style="margin-top: 9px;">
+                <ul class="nav nav-tabs cl-light-primary title-b-u gmd"
+                    style="margin-top: -8px;">
+                  <li class="uib-tab"
+                      heading="parcels"
+                      ng-class="step == 1 ? 'cl-light-primary title-b-u active':''">
+                    <a ng-click="changeStep(1)">
+                      <span class="h2-margin"
+                            gumga-translate-tag="title.parcels">Parcels</span>
+                    </a>
+                  </li>
+                  <li class="uib-tab"
+                      heading="rateio"
+                      ng-class="step == 2 ? 'cl-light-primary title-b-u active':''">
+                    <a ng-click="changeStep(2)">
+                      <span class="h2-margin"
+                            gumga-translate-tag="title.entries">Entries</span>
+                    </a>
+                  </li>
+                  <li class="uib-tab"
+                      ng-show="titleType == 'pay' || titleType == 'editpay'"
+                      heading="check"
+                      ng-class="step == 3 ? 'cl-light-primary title-b-u active':''">
+                    <a ng-click="changeStep(3)">
+                      <span class="h2-margin"
+                            gumga-translate-tag="title.joinCheck">Join Check</span>
+                    </a>
+                  </li>
+                </ul>
                 <div class="panel-body ma-pad-panel">
                   <div class="tab-content"
                        ng-class="title.data.parcel.length >= 1 ? '' : ''">
                     <!-- Parcelas -->
                     <div class="tab-pane"
                          ng-class="step == 1 ? 'active': ''">
+                      <div class="text-center"
+                           ng-show="title.data.parcel.length <= 0">
+                        <label>Preencha os dados do título para aparecer as parcelas.</label>
+                      </div>
                       <div ng-if="title.data.parcel.length > 0 && title.data.numberParcel">
                         <div class="row reset-height">
                           <div class="col-md-2 ma-no-pad-right text-center">
@@ -712,11 +710,186 @@
                         </div>
                       </div>
                     </div>
-                    <!--Final Rateio-->
+                    <div class="tab-pane"
+                         ng-class="step == 3 ? 'active':''">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <uib-accordion close-others="true">
+                            <div uib-accordion-group
+                                 is-open="registerCheck.open"
+                                 class="panel-default">
+                              <uib-accordion-heading>
+                                Cadastrar cheque
+                                <i class="pull-right glyphicon"
+                                   ng-class="{'glyphicon-chevron-down': registerCheck.open, 'glyphicon-chevron-right': !registerCheck.open}"></i>
+                              </uib-accordion-heading>
+                              <div class="separate"></div>
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <div class="reset-height"
+                                       gumga-form-class="account">
+                                    <label class="mbg-label"
+                                           gumga-translate-tag="titleparcel.account">account</label>
+                                    <gumga-many-to-one name="account"
+                                                       value="check.financeUnit"
+                                                       search-method="checkingaccount.methods.asyncSearch('name',param)"
+                                                       field="name"
+                                                       authorize-add="false"
+                                                       id="paymentBank2Financeunit">
+                                    </gumga-many-to-one>
+                                  </div>
+                                </div>
+                                <div class="col-md-12">
+                                  <div class="reset-height"
+                                       gumga-form-class="employee">
+                                    <label class="mbg-label"
+                                           gumga-translate-tag="title.employee">employee</label>
+                                    <gumga-many-to-one name="employee"
+                                                       value="check.employee"
+                                                       search-method="getEmployees(param, pageSize, page)"
+                                                       infinity-pagination="true"
+                                                       field="name"
+                                                       authorize-add="false">
+                                    </gumga-many-to-one>
+                                  </div>
+                                </div>
+                                <div class="col-md-12">
+                                  <div gumga-form-class="number">
+                                    <gmd-input>
+                                      <input type="text"
+                                             name="number"
+                                             ng-model="check.number"
+                                             class="form-control gmd"
+                                             tabindex="2"
+                                             gumga-error/>
+                                      <span class="bar"></span>
+                                      <label gumga-translate-tag="titleparcel.checkNumber">checkNumber</label>
+                                    </gmd-input>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div gumga-form-class="availableIn">
+                                    <div class="ma-select">
+                                      <label gumga-translate-tag="titleparcel.availableIn"
+                                             class="input-label mbg-label">availableIn</label>
+                                      <gumga-date ng-model="check.availableIn"
+                                                  name="availableIn"></gumga-date>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div gumga-form-class="value">
+                                    <gmd-input>
+                                      <input type="text"
+                                             name="value"
+                                             id="valuebank2"
+                                             ng-model="check.value"
+                                             class="form-control text-right gmd"
+                                             gumga-error
+                                             ui-money-mask="2"
+                                             tabindex="4">
+                                      <span class="bar"></span>
+                                      <label gumga-translate-tag="titleparcel.value">Valor</label>
+                                      <br/>
+                                    </gmd-input>
+                                  </div>
+                                </div>
+                                <div class="col-md-10">
+                                  <div gumga-form-class="historic">
+                                    <gmd-input>
+                                      <input type="text"
+                                             name="historic"
+                                             ng-model="check.historic"
+                                             class="form-control gmd"
+                                             tabindex="5"
+                                             gumga-error/>
+                                      <span class="bar"></span>
+                                      <label gumga-translate-tag="titleparcel.historic">historic</label>
+                                    </gmd-input>
+                                  </div>
+                                </div>
+                                <div class="col-md-2 mbg-center-flex">
+                                  <button class="btn gmd fab btn-success btn-sm"
+                                          ng-click="addPaymentCompanyCheck(check)">
+                                    <i class="material-icons">add</i>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                            <div uib-accordion-group
+                                 class="panel-default"
+                                 is-open="joinCheck.open">
+                              <uib-accordion-heading>
+                                Vincular cheque
+                                <i class="pull-right glyphicon"
+                                   ng-class="{'glyphicon-chevron-down': joinCheck.open, 'glyphicon-chevron-right': !joinCheck.open}"></i>
+                              </uib-accordion-heading>
+                              <div class="separate"></div>
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <div gumga-form-class="currentAccount"
+                                       class="reset-height">
+                                    <label class="mbg-label"
+                                           gumga-translate-tag="titleparcel.account">currentAccount</label>
+                                    <gumga-many-to-one value="account.check.financeUnit"
+                                                       name="currentAccount"
+                                                       async="true"
+                                                       list="checkingaccount.data"
+                                                       search-method="chequeportfolio.methods.asyncSearch('name',param)"
+                                                       field="name"
+                                                       authorize-add="false"
+                                                       on-select="listCheques(value.id, param)">
+                                    </gumga-many-to-one>
+                                  </div>
+                                </div>
+                                <div class="m-t">
+                                  <gumga-many-to-many left-list="chequeList"
+                                                      right-list="title.data.thirdPartyChecksJoin"
+                                                      left-search="listCheques(account.check.financeUnit.id, param)"
+                                                      authorize-add="false"
+                                                      text-left="Listando {{$value}} {{$value > 1 ? 'itens': 'item'}}"
+                                                      text-right="Listando {{$value}} {{$value > 1 ? 'itens': 'item'}}"
+                                                      text-heading-left="Cheques"
+                                                      text-heading-right="Cheques selecionados"
+                                                      text-moveall-left="Mover todos para direita"
+                                                      text-moveall-right="Mover todos para esquerda"
+                                                      on-list-change="selecionados(value)"
+                                                      text-left-empty="Lista está vazia"
+                                                      text-right-empty="Lista está vazia"
+                                                      text-right-placeholder="Filtrar"
+                                                      required
+                                                      text-left-placeholder="Filtrar">
+                                    <left-field>
+                                      {{$value.chequeNumber}} | {{$value.bank.number}} | {{$value.issuer.name}} | {{$value.value | currency: "R$"}}
+                                    </left-field>
+                                    <right-field>
+                                      {{$value.chequeNumber}} | {{$value.bank.number}} | {{$value.issuer.name}} | {{$value.value | currency: "R$"}}
+                                    </right-field>
+                                  </gumga-many-to-many>
+                                </div>
+                              </div>
+                            </div>
+
+                          </uib-accordion>
+                          <div ng-show="title.data.emittedChecksJoin.length > 0">
+                            <div class="text-center">
+                              <label>
+                                Cheques cadastrados
+                              </label>
+                            </div>
+                            <div class="m-t">
+                              <gumga-list data="title.data.emittedChecksJoin"
+                                          configuration="tableConfig"
+                                          page-align="flex-end"
+                                          on-click="setUpdateCheck($value)">
+                              </gumga-list>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <!--Final dos nav-tab-->
                 </div>
-                <!--Final parcela/rateio-->
               </div>
             </div>
           </div>
