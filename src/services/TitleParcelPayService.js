@@ -1,25 +1,31 @@
 TitleParcelPayService.$inject = ['GumgaRest', '$http', 'FinanceEmbeddedService'];
 
 function TitleParcelPayService(GumgaRest, $http, FinanceEmbeddedService) {
-	var Service = new GumgaRest(FinanceEmbeddedService.getDefaultConfiguration().api + '/titleparcel');
+	var service = new GumgaRest(FinanceEmbeddedService.getDefaultConfiguration().api + '/titleparcel');
 
 	var installmentsPayable = [];
 
-	Service.getInstallmentsPayable = function () {
+	service.searchProgramedPayment = (page, pageSize, LastgQuery) => {
+		let gQuery = LastgQuery;
+		gQuery.useDistinct = true;
+		return service.searchWithGQuery(gQuery, page, pageSize);
+	};
+
+	service.getInstallmentsPayable = function () {
 		return installmentsPayable;
 	};
 
-	Service.setInstallmentsPayable = function (arr) {
+	service.setInstallmentsPayable = function (arr) {
 		installmentsPayable = arr;
 	};
 
 
-	Service.grouped = function (type) {
-		return $http.get(Service._url + '/grouped/' + type);
+	service.grouped = function (type) {
+		return $http.get(service._url + '/grouped/' + type);
 	};
 
-	Service.individualSearch = function (idIndividual, type) {
-		return $http.get(Service._url + '/grouped/' + type + '/' + idIndividual)
+	service.individualSearch = function (idIndividual, type) {
+		return $http.get(service._url + '/grouped/' + type + '/' + idIndividual)
 	};
 
 	let format = function date2str(x, y) {
@@ -39,9 +45,9 @@ function TitleParcelPayService(GumgaRest, $http, FinanceEmbeddedService) {
 		});
 	};
 
-	Service.findOpenByMaxDate = function (date, type, page, individual, paidOut, aqFilterSelected) {
+	service.findOpenByMaxDate = function (date, type, page, individual, paidOut, aqFilterSelected) {
 		if (aqFilterSelected !== null) {
-			return $http.get(Service._url + "?start=" + page + "&aq="
+			return $http.get(service._url + "?start=" + page + "&aq="
 				+ aqFilterSelected);
 		} else {
 			if (page !== 1) page = (page * 10) - 10;
@@ -56,7 +62,7 @@ function TitleParcelPayService(GumgaRest, $http, FinanceEmbeddedService) {
 		}
 	};
 
-	Service.getByGQueryMaxDate = function (date, type, page, individual, paidOut, gQuery, pageSize, sortField, sortDir) {
+	service.getByGQueryMaxDate = function (date, type, page, individual, paidOut, gQuery, pageSize, sortField, sortDir) {
 		if (gQuery === null) {
 			gQuery = new GQuery();
 
@@ -97,14 +103,14 @@ function TitleParcelPayService(GumgaRest, $http, FinanceEmbeddedService) {
 				qo.sortDir = sortDir
 		}
 
-		return Service.sendQueryObject(qo);
+		return service.sendQueryObject(qo);
 	}
 
-	Service.getPaymentsByParcel = function (id) {
-		return Service.extend('get', `/getpaymentsbyparcel/${id}`);
+	service.getPaymentsByParcel = function (id) {
+		return service.extend('get', `/getpaymentsbyparcel/${id}`);
 	};
 
-	return Service;
+	return service;
 }
 
 module.exports = TitleParcelPayService;
