@@ -367,7 +367,6 @@ function TitleParcelPayListEmbeddedController(
 		}
 		TitleParcelPayService.getByGQueryMaxDate(null, titleCategory, page, $scope.individualSearch, $scope.paidOut, gQueryFilter, pageSize, $scope.sortField, $scope.sortDir)
 			.then((data) => {
-				console.log(data);
 				if (titleCategory === 'PAY') {
 					$scope.selectedPayValues = [];
 					$scope.titleparcelPay.data = data.data.values;
