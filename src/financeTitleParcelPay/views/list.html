@@ -52,6 +52,20 @@
 					</gumga-many-to-one>
 				</div>
 				<div class="col-md-3">
+					<label class="mbg-label input-label">Plano de conta</label>
+					<gumga-many-to-one value="typeCategory"
+					                   list="typeCategorys"
+					                   search-method="getSearchFilterCategory(param)"
+					                   class="gmd mbg-m-t-o"
+					                   field="category"
+					                   authorize-add="false"
+					                   display-info="false">
+						<match>
+							<div>{{match.model.category}}</div>
+						</match>
+					</gumga-many-to-one>
+				</div>
+				<!-- <div class="col-md-3">
 					<label class="mbg-label input-label">Contas a</label>
 					<gumga-many-to-one value="categoryTitle"
 					                   list="listCategoryTitle"
@@ -65,7 +79,7 @@
 							<div>{{match.model.name}}</div>
 						</match>
 					</gumga-many-to-one>
-				</div>
+				</div> -->
 			</div>
 			<div class="row">
 				<div ng-show="!categoryTitle || categoryTitle.key === 'RECEIVEPAY' || categoryTitle.key === 'RECEIVE'"

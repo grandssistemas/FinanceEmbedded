@@ -100,7 +100,6 @@ function TitleFormEmbeddedController(
 			if (invalid) {
 				return;
 			}
-			console.log(entity);
 			$scope.save(entity);
 		};
 

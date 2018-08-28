@@ -79,12 +79,18 @@ function TitleParcelPayListEmbeddedController(
 		$scope.filter($scope.filterMto.key, $scope.paidOut, 'PAY');
 	});
 
-	$scope.getSearchCategory = function (param) {
-		return $q((resolve) => {
-			const arr = $scope.listCategoryTitle.filter((category) => category.name.indexOf(param) !== -1);
-			resolve(arr);
-		});
-	};
+	$scope.$watch('typeCategory', (cat) => {
+		$scope.filterCategory = cat;
+		$scope.filter($scope.filterMto.key, $scope.paidOut, 'RECEIVE');
+		$scope.filter($scope.filterMto.key, $scope.paidOut, 'PAY');
+	});
+
+	// $scope.getSearchCategory = function (param) {
+	// 	return $q((resolve) => {
+	// 		const arr = $scope.listCategoryTitle.filter((category) => category.name.indexOf(param) !== -1);
+	// 		resolve(arr);
+	// 	});
+	// };
 
 	$scope.getSearchFilter = function (param) {
 		return $q((resolve) => {
@@ -92,6 +98,20 @@ function TitleParcelPayListEmbeddedController(
 			resolve(arr);
 		});
 	};
+
+	$scope.getSearchFilterCategory = function (param) {
+		return $q((resolve) => {
+			const arr = $scope.typeCategorys.filter((fil) => fil.category.indexOf(param) !== -1);
+			resolve(arr);
+		});
+	};
+
+	TitleService.searchTypeCategorys().then((resp) => {
+		const newData = { key: '', category: 'Todas', $$hashKey: '' };
+		$scope.typeCategorys = resp.data.values;
+		$scope.typeCategorys.splice(0, 0, newData);
+		$scope.typeCategory = $scope.typeCategorys[0];
+	});
 
 	$scope.filter = function (whichFilter, fullpaid, titleCategory, page, pageSize) {
 		$scope.paidOut = fullpaid;
@@ -149,6 +169,11 @@ function TitleParcelPayListEmbeddedController(
 		} else {
 			gQuery = gQuery.and(new Criteria('obj.fullPaid', ComparisonOperator.EQUAL, false));
 		}
+
+		if ($scope.filterCategory && $scope.filterCategory.key !== '') {
+			gQuery = gQuery.and(new Criteria('obj.title.typeCategory.id', ComparisonOperator.EQUAL, $scope.filterCategory.id));
+		}
+
 		if (titleCategory === 'RECEIVE') {
 			$scope.gQueryFiltersReceive = gQuery;
 		} else {
@@ -342,6 +367,7 @@ function TitleParcelPayListEmbeddedController(
 		}
 		TitleParcelPayService.getByGQueryMaxDate(null, titleCategory, page, $scope.individualSearch, $scope.paidOut, gQueryFilter, pageSize, $scope.sortField, $scope.sortDir)
 			.then((data) => {
+				console.log(data);
 				if (titleCategory === 'PAY') {
 					$scope.selectedPayValues = [];
 					$scope.titleparcelPay.data = data.data.values;
