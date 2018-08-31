@@ -10,6 +10,13 @@ function TitleEmbeddedService(
 	const service = new GumgaRest(`${FinanceEmbeddedService.getDefaultConfiguration().api}/title`);
 	service.renegociationParcels = [];
 
+	service.searchTitleBySale = (id) => {
+		let gQuery = new GQuery(new Criteria('obj.idIntegracao', ComparisonOperator.EQUAL, id))
+			.select('bj.id');
+
+		return service.searchWithGQuery(gQuery);
+	};
+
 	service.setRenegociationParcels = function (values) {
 		service.renegociationParcels = values;
 	};
