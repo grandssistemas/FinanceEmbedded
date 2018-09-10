@@ -95,12 +95,13 @@ function TitleListEmbeddedController(
 		$scope.title.methods.get(1);
 	};
 
+	$scope.titlePage = ($scope.titleType || '').toLowerCase() === 'pay' ? 'Listagem de Contas a Pagar' : 'Listagem de Contas a Receber';
+
 	$scope.titleList = [];
 
 	$scope.tableConf = {
 		columns: 'titleType, issuedAt,documentNumber, participationsFormatted, expiration, docname, value, btns',
 		materialTheme: true,
-		title: ($scope.titleType || '').toLowerCase() === 'pay' ? 'Listagem de Contas a Pagar' : 'Listagem de Contas a Receber',
 		columnsConfig: [
 			{
 				name: 'titleType',

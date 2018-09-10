@@ -1,67 +1,64 @@
-<div class="row">
+<div class="page-wrapper">
 	<div class="col-md-12">
-		<!-- <div class="col-md-3">
-            <a ng-click="print(titleType)"
-               class="btn btn-default"
-               ng-show="titleType == 'receive'">
-                <i class="fa fa-printer"></i>
-                <span gumga-translate-tag="formbuttons.printreport"> Print Report</span>
-            </a>
-        </div> -->
-		<div class="col-md-3">
-			<label for="group"
-			       class="control-label input-label margin-many">
-				<span>Pesquisar marcadores</span>
-			</label>
-			<ui-select multiple
-			           ng-model="selected.labels"
-			           theme="bootstrap"
-			           name="labels"
-			           on-select="selectLabel($item)"
-			           on-remove="reset()">
-				<ui-select-match>{{$item.value}}</ui-select-match>
-				<ui-select-choices repeat="label in labels"
-				                   refresh="buscaTag($select.search)">
-					<div ng-if="!label.isTag">{{label.value + label.isTag}}</div>
-				</ui-select-choices>
-			</ui-select>
+		<div class="row row-flex">
+			<div class="col-md-6">
+				<cp-page-title title="'{{titlePage}}'"></cp-page-title>
+			</div>
 		</div>
-
-		<div class="col-md-6">
-			<div style="margin-top: 18px">
-				<gumga-query search="searchTitle(param)"
-				             use-gquery="true"
-				             advanced-search="searchTitle(param)">
-					<search-field label="N° Documento"
-					              field="documentNumber"></search-field>
-					<advanced-search-field type="string"
-					                       label="Número do documento"
-					                       field="obj.documentNumber"></advanced-search-field>
-					<advanced-search-field type="number"
-					                       label="Valor Total"
-					                       field="obj.value"></advanced-search-field>
-					<advanced-search-field type="date"
-					                       label="Data de Emissão"
-					                       field="obj.emissionDate"></advanced-search-field>
-				</gumga-query>
+		<div class="row">
+			<div class="col-md-6">
+				<label for="group"
+				       class="control-label input-label margin-many">
+					<span>Pesquisar marcadores</span>
+				</label>
+				<ui-select multiple
+				           ng-model="selected.labels"
+				           theme="bootstrap"
+				           name="labels"
+				           on-select="selectLabel($item)"
+				           on-remove="reset()">
+					<ui-select-match>{{$item.value}}</ui-select-match>
+					<ui-select-choices repeat="label in labels"
+					                   refresh="buscaTag($select.search)">
+						<div ng-if="!label.isTag">{{label.value + label.isTag}}</div>
+					</ui-select-choices>
+				</ui-select>
+			</div>
+			<div class="col-md-6 m-b">
+				<div style="margin-top: 18px">
+					<gumga-query search="searchTitle(param)"
+					             use-gquery="true"
+					             advanced-search="searchTitle(param)">
+						<search-field label="N° Documento"
+						              field="documentNumber"></search-field>
+						<advanced-search-field type="string"
+						                       label="Número do documento"
+						                       field="obj.documentNumber"></advanced-search-field>
+						<advanced-search-field type="number"
+						                       label="Valor Total"
+						                       field="obj.value"></advanced-search-field>
+						<advanced-search-field type="date"
+						                       label="Data de Emissão"
+						                       field="obj.emissionDate"></advanced-search-field>
+					</gumga-query>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<gumga-list class="table-striped"
+				            data="title.data"
+				            configuration="tableConf"
+				            page-size="title.pageSize"
+				            count="title.count"
+				            page-model="title.page"
+				            max-height="400px"
+				            on-page-change="title.methods.get(page, pageSize)">
+				</gumga-list>
 			</div>
 		</div>
 	</div>
 </div>
-
-<div class="col-md-12"
-     style="margin-top:1%">
-	<gumga-list class="table-striped"
-	            data="title.data"
-	            configuration="tableConf"
-	            page-size="title.pageSize"
-	            count="title.count"
-	            page-model="title.page"
-	            max-height="400px"
-	            on-page-change="title.methods.get(page, pageSize)">
-	</gumga-list>
-</div>
-
 
 <gmd-fab force-click="false"
          fixed
