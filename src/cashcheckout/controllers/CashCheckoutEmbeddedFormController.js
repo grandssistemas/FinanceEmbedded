@@ -87,60 +87,61 @@ function CashCheckoutEmbeddedFormController(
 				change: $scope.change,
 			});
 			CashCheckinEmbeddedService.update(entity).then((resp) => {
-				if ($scope.getTotalValue() !== 0) {
-					const cashier = resp.data.data;
-					SweetAlert.swal(
-						{
-							title: 'Confirmação',
-							text: 'Deseja imprimir o relatório deste fechamento de caixa?',
-							type: 'warning',
-							showCancelButton: true,
-							confirmButtonColor: '#DD6B55',
-							confirmButtonText: 'Sim',
-							cancelButtonText: 'Não',
-							closeOnConfirm: true,
-							closeOnCancel: true
-						},
-						(isConfirm) => {
-							if (isConfirm) {
-								const variables = [];
-								GenericReportService.getDefault('CASHCHECKOUT').then((response) => {
-									if (response.data) {
-										CompanyService.variablesReport().then((vari) => {
-											const variables = vari;
-											const filters = '';
-											variables.push(FinanceReportService.mountVariable('', 'idpdv', cashier.group.id));
-											variables.push(FinanceReportService.mountVariable('', 'idcheckin', cashier.id));
-											const modalInstance = $uibModal.open({
-												animation: $scope.animationsEnabled,
-												templateUrl: viewModal,
-												controller: 'ViewerController',
-												backdrop: 'static',
-												size: 'lg',
-												resolve: {
-													entity() {
-														return response.data;
-													},
-													filters() {
-														return filters;
-													},
-													variable() {
-														return variables;
-													},
-													backState() {
-														return '';
-													}
+
+				const cashier = resp.data.data;
+				SweetAlert.swal(
+					{
+						title: 'Confirmação',
+						text: 'Deseja imprimir o relatório deste fechamento de caixa?',
+						type: 'warning',
+						showCancelButton: true,
+						confirmButtonColor: '#DD6B55',
+						confirmButtonText: 'Sim',
+						cancelButtonText: 'Não',
+						closeOnConfirm: true,
+						closeOnCancel: true
+					},
+					(isConfirm) => {
+						if (isConfirm) {
+							const variables = [];
+							GenericReportService.getDefault('CASHCHECKOUT').then((response) => {
+								if (response.data) {
+									CompanyService.variablesReport().then((vari) => {
+										const variables = vari;
+										const filters = '';
+										variables.push(FinanceReportService.mountVariable('', 'idpdv', cashier.group.id));
+										variables.push(FinanceReportService.mountVariable('', 'idcheckin', cashier.id));
+										console.log(cashier.group.id, cashier.id);
+										const modalInstance = $uibModal.open({
+											animation: $scope.animationsEnabled,
+											templateUrl: viewModal,
+											controller: 'ViewerController',
+											backdrop: 'static',
+											size: 'lg',
+											resolve: {
+												entity() {
+													return response.data;
+												},
+												filters() {
+													return filters;
+												},
+												variable() {
+													return variables;
+												},
+												backState() {
+													return '';
 												}
-											});
+											}
 										});
-									} else {
-										SweetAlert.swal('Falta de Relatório de Fechamento de Caixa', 'Você esta sem o relatório de fechamento de caixa, contate o suporte.', 'warning');
-									}
-								});
-							}
+									});
+								} else {
+									SweetAlert.swal('Falta de Relatório de Fechamento de Caixa', 'Você esta sem o relatório de fechamento de caixa, contate o suporte.', 'warning');
+								}
+							});
 						}
-					);
-				}
+					}
+				);
+
 				$scope.$ctrl.onGoHome();
 			});
 		}
