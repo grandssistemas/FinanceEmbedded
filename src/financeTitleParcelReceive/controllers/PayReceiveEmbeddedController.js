@@ -490,6 +490,16 @@ function PayReceiveEmbeddedController(
 			});
 	};
 
+	function emptyCheck() {
+		$scope.payment.check.bank = '';
+		$scope.payment.check.branch = '';
+		$scope.payment.check.account = '';
+		$scope.payment.check.chequeNumber = '';
+		$scope.payment.check.issuer = { document: '', name: '' };
+		$scope.payment.check.validUntil = '';
+		$scope.payment.value = '';
+	}
+
 	$scope.setarfocusPayment = function (value) {
 		switch (value) {
 			case 'money':
@@ -498,6 +508,7 @@ function PayReceiveEmbeddedController(
 				break;
 			case 'check':
 				document.getElementById('paymentCheckFinanceunit').focus();
+				emptyCheck();
 				break;
 			case 'bank':
 				angular.element(document.getElementById('paymentBankFinanceunit'))
@@ -539,10 +550,28 @@ function PayReceiveEmbeddedController(
 		return data.data.values;
 	});
 
-	$scope.checkExpired = (validUntil) => {
-		if (!validUntil) return false;
-		const dateToCompare = validUntil instanceof Date ? validUntil : new Date(validUntil);
-		return (dateToCompare && moment(validUntil).isBefore(new Date(), 'day'));
+
+	$scope.validadeCheck = (payment) => {
+		if (payment && payment.check && (!payment.check.bank ||
+			!payment.check.branch ||
+			!payment.check.account ||
+			!payment.check.chequeNumber ||
+			!payment.check.portfolio ||
+			!payment.check.validUntil ||
+			!payment.value)) {
+			return true;
+		}
+		if (payment && payment.check && payment.check.issuer && (
+			!payment.check.issuer.document ||
+			!payment.check.issuer.name)
+		) {
+			return true;
+		}
+		if (payment && payment.check && !payment.check.validUntil) return false;
+		if (payment && payment.check && payment.check.validUntil) {
+			const dateToCompare = payment.check.validUntil instanceof Date ? payment.check.validUntil : new Date(payment.check.validUntil);
+			return (dateToCompare && moment(payment.check.validUntil).isBefore(new Date(), 'day'));
+		}
 	};
 }
 

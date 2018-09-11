@@ -133,7 +133,10 @@
 													       tabindex="1"
 													       id="paymentCheckFinanceunit" />
 													<span class="bar"></span>
-													<label gumga-translate-tag="titleparcelreceive.bank">bank</label>
+													<label>
+														<span gumga-translate-tag="titleparcelreceive.bank">bank</span>
+														<strong class="text-danger"> *</strong>
+													</label>
 												</gmd-input>
 											</div>
 										</div>
@@ -147,7 +150,10 @@
 													       class="form-control gmd"
 													       tabindex="2" />
 													<span class="bar"></span>
-													<label gumga-translate-tag="thirdpartycheque.branch">branch</label>
+													<label>
+														<span gumga-translate-tag="thirdpartycheque.branch">branch</span>
+														<strong class="text-danger"> *</strong>
+													</label>
 												</gmd-input>
 											</div>
 										</div>
@@ -161,7 +167,10 @@
 													       class="form-control gmd"
 													       tabindex="3" />
 													<span class="bar"></span>
-													<label gumga-translate-tag="thirdpartycheque.account">account</label>
+													<label>
+														<span gumga-translate-tag="thirdpartycheque.account">account</span>
+														<strong class="text-danger"> *</strong>
+													</label>
 												</gmd-input>
 											</div>
 										</div>
@@ -175,7 +184,10 @@
 													       class="form-control gmd"
 													       tabindex="4" />
 													<span class="bar"></span>
-													<label gumga-translate-tag="thirdpartycheque.chequeNumber">chequeNumber</label>
+													<label>
+														<span gumga-translate-tag="thirdpartycheque.chequeNumber">chequeNumber</span>
+														<strong class="text-danger"> *</strong>
+													</label>
 												</gmd-input>
 											</div>
 										</div>
@@ -193,7 +205,10 @@
 													       ui-br-cpfcnpj-mask
 													       tabindex="5" />
 													<span class="bar"></span>
-													<label gumga-translate-tag="thirdpartycheque.issuerdocument">issuer document</label>
+													<label>
+														<span gumga-translate-tag="thirdpartycheque.issuerdocument">issuer document</span>
+														<strong class="text-danger"> *</strong>
+													</label>
 												</gmd-input>
 											</div>
 										</div>
@@ -207,7 +222,10 @@
 													       class="form-control gmd"
 													       tabindex="6" />
 													<span class="bar"></span>
-													<label gumga-translate-tag="thirdpartycheque.issuername">issuer name</label>
+													<label>
+														<span gumga-translate-tag="thirdpartycheque.issuername">issuer name</span>
+														<strong class="text-danger"> *</strong>
+													</label>
 												</gmd-input>
 											</div>
 										</div>
@@ -216,7 +234,10 @@
 									     ng-show="payment.method == 'thirdCheck'">
 										<div class="col-md-4">
 											<div>
-												<label gumga-translate-tag="thirdpartycheque.portfolio">portfolio</label>
+												<label>
+													<span gumga-translate-tag="thirdpartycheque.portfolio">portfolio</span>
+													<strong class="text-danger"> *</strong>
+												</label>
 												<gumga-many-to-one name="portfolio"
 												                   value="payment.check.portfolio"
 												                   search-method="chequeportfolio.methods.asyncSearch('name',param)"
@@ -228,8 +249,10 @@
 										</div>
 										<div class="col-md-4">
 											<div>
-												<label style="margin-bottom: 0"
-												       gumga-translate-tag="thirdpartycheque.validUntil">validUntil</label>
+												<label style="margin-bottom: 0">
+													<span gumga-translate-tag="thirdpartycheque.validUntil">validUntil</span>
+													<strong class="text-danger"> *</strong>
+												</label>
 												<gumga-date name="validUntil"
 												            ng-model="payment.check.validUntil"></gumga-date>
 											</div>
@@ -247,13 +270,16 @@
 												       ui-money-mask="2"
 												       tabindex="9">
 												<span class="bar"></span>
-												<label gumga-translate-tag="titleparcelreceive.value">value</label>
+												<label>
+													<span gumga-translate-tag="titleparcelreceive.value">value</span>
+													<strong class="text-danger"> *</strong>
+												</label>
 											</gmd-input>
 										</div>
 										<div class="col-md-1 m-t-md">
 											<label style="height: 0;">&nbsp;</label>
 											<button class="btn gmd fab btn-success btn-sm"
-											        ng-disabled="checkExpired(payment.check.validUntil)"
+											        ng-disabled="validadeCheck(payment)"
 											        ng-click="addReceiveCheck(payment)">
 												<i class="material-icons">add</i>
 											</button>
