@@ -5,13 +5,15 @@ TitleFilterController.$inject = [
 	'$scope',
 	'$timeout',
 	'IndividualEmbeddedService',
-	'gumgaController'];
+	'gumgaController',
+	'$filter'];
 
 function TitleFilterController(
 	$scope,
 	$timeout,
 	IndividualEmbeddedService,
-	gumgaController
+	gumgaController,
+	$filter
 ) {
 	gumgaController.createRestMethods($scope, IndividualEmbeddedService, 'individual');
 
@@ -24,12 +26,21 @@ function TitleFilterController(
 		});
 
 	$scope.$parent.$parent.mountFilterMyAccounts = function () {
-		const filters = {};
-
+		const filters = {
+			vars: []
+		};
+		const beginDate = $scope.beginDate || new Date('2000-01-01 00:00:00');
+		const endDate = $filter('date')($scope.endDate, 'yyyy-MM-dd HH:mm:ss') || $filter('date')(new Date(), 'yyyy-MM-dd HH:mm:ss');
 		if ($scope.selecionados) {
-			filters.vars = [
-				{ key: 'individuals', value: `obj.individual_id IN (${stringResult()})` }
-			];
+			filters.vars.push({ key: 'individuals', value: `obj.individual_id IN (${stringResult()})` });
+		}
+
+		if (beginDate) {
+			filters.vars.push({ key: 'beginDate', value: $filter('date')(beginDate, 'yyyy-MM-dd HH:mm:ss') });
+		}
+
+		if (endDate) {
+			filters.vars.push({ key: 'endDate', value: endDate.replace("00:00:00", "23:59:59") });
 		}
 		return filters;
 	};

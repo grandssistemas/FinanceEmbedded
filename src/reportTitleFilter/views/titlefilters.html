@@ -1,4 +1,21 @@
 <div class="row">
+    <div class="col-md-12 m-b">
+        <label>Filtrar por Período</label>
+    </div>
+    <div class="col-md-3">
+        <gumga-date ng-model="$parent.beginDate"
+                    id="beginDate"></gumga-date>
+    </div>
+    <div class="col-md-1 text-center">
+        <label>Até</label>
+    </div>
+    <div class="col-md-3">
+        <gumga-date ng-model="$parent.endDate"
+                    id="endDate"></gumga-date>
+    </div>
+</div>
+<br>
+<div class="row">
     <div class="col-md-12">
         <gumga-chips placeholder="Buscar Clientes"
                      search-field="name"
