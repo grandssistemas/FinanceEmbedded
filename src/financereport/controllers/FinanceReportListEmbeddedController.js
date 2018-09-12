@@ -2,7 +2,7 @@
  * Created by gelatti on 25/05/17.
  */
 
-require('../views/receivefilters.html')
+require('../views/receivefilters.html');
 FinanceReportListEmbeddedController.$inject = [
 	'$scope',
 	'FinanceReportService',
@@ -14,7 +14,8 @@ FinanceReportListEmbeddedController.$inject = [
 	'TitleService',
 	'IndividualEmbeddedService'];
 
-function FinanceReportListEmbeddedController($scope,
+function FinanceReportListEmbeddedController(
+	$scope,
 	FinanceReportService,
 	gumgaController,
 	$state,
@@ -22,10 +23,11 @@ function FinanceReportListEmbeddedController($scope,
 	SweetAlert,
 	$rootScope,
 	TitleService,
-	IndividualEmbeddedService) {
+	IndividualEmbeddedService
+) {
 	gumgaController.createRestMethods($scope, FinanceReportService, 'financeReport');
 	gumgaController.createRestMethods($scope, TitleService, 'title');
-	var filters = '',
+	let filters = '',
 		variables = [];
 
 	$scope.inicialDate = new Date();
@@ -35,7 +37,7 @@ function FinanceReportListEmbeddedController($scope,
 	$scope.filterClient = null;
 
 	$scope.financeReport.methods.get = function (page) {
-		FinanceReportService.getByType(page, $scope.type).then(function (data) {
+		FinanceReportService.getByType(page, $scope.type).then((data) => {
 			$scope.financeReport.data = data.data.values;
 			$scope.financeReport.pageSize = data.data.pageSize;
 			$scope.financeReport.count = data.data.count;
@@ -47,7 +49,7 @@ function FinanceReportListEmbeddedController($scope,
 	$scope.financeReport.execute('get');
 
 	FinanceReportService.getReportType().then((data) => {
-		const newData = { label: "Todos" };
+		const newData = { label: 'Todos' };
 		$scope.reportType = data.data;
 		$scope.reportType.splice(0, 0, newData);
 	});
@@ -70,16 +72,15 @@ function FinanceReportListEmbeddedController($scope,
 				title: 'Deseja relamente apagar este relatório?',
 				text: 'Esta ação não pode ser desfeita.',
 				type: 'warning',
-				confirmButtonColor: "#1ab394",
+				confirmButtonColor: '#1ab394',
 				showCancelButton: true,
-				cancelButtonText: "Não",
-				confirmButtonText: "Sim"
-			}, confirmReversal
-			);
+				cancelButtonText: 'Não',
+				confirmButtonText: 'Sim'
+			}, confirmReversal);
 
 			function confirmReversal(isConfirm) {
 				if (isConfirm) {
-					FinanceReportService.delete(entity).then(function () {
+					FinanceReportService.delete(entity).then(() => {
 						$scope.financeReport.execute('get');
 					});
 				}
@@ -97,10 +98,10 @@ function FinanceReportListEmbeddedController($scope,
 
 	$scope.editReport = function (entity) {
 		variables = [];
-		$scope.$ctrl.editReport({ $value: entity, variables: variables });
+		$scope.$ctrl.editReport({ $value: entity, variables });
 	};
 
-	var mountVariable = (category, name, value) => {
+	const mountVariable = (category, name, value) => {
 		const variable = new Stimulsoft.Report.Dictionary.StiVariable();
 		variable.category = category;
 		variable.name = name;
@@ -116,27 +117,23 @@ function FinanceReportListEmbeddedController($scope,
 	};
 
 	$scope.viewReport = function (entity) {
-
-		IndividualEmbeddedService.variablesReport().then(vars => {
+		IndividualEmbeddedService.variablesReport().then((vars) => {
 			variables = vars;
 			variables.push(mountVariable('', 'inicialDate', $scope.inicialDate));
 			variables.push(mountVariable('', 'finalDate', $scope.finalDate));
 			variables.push(mountVariable('', 'filterClient', $scope.filterClient));
-
-
-			$scope.$ctrl.viewReport({ $value: entity, variables: variables });
+			$scope.$ctrl.viewReport({ $value: entity, variables });
 		});
-
 	};
 
 	$scope.copyReport = function (entity) {
-		var newEntity = angular.copy(entity);
-		var oi = { value: JSON.parse(window.sessionStorage.getItem('user')).organizationHierarchyCode };
+		const newEntity = angular.copy(entity);
+		const oi = { value: JSON.parse(window.sessionStorage.getItem('user')).organizationHierarchyCode };
 		delete newEntity.id;
 		delete newEntity.report.id;
 		newEntity.oi = oi;
 		newEntity.report.oi = oi;
-		FinanceReportService.update(newEntity).then(function () {
+		FinanceReportService.update(newEntity).then(() => {
 			$scope.financeReport.execute('get');
 		});
 	};
@@ -181,10 +178,10 @@ function FinanceReportListEmbeddedController($scope,
 	$scope.changeDefault = function (report) {
 		if (report.oi && report.oi.value) {
 			report.isDefault = !report.isDefault;
-			$rootScope.$emit('hideNextMessage')
+			$rootScope.$emit('hideNextMessage');
 			FinanceReportService.save(report).then(() => {
 				$scope.changeReports();
-			})
+			});
 		}
 	};
 
@@ -195,7 +192,7 @@ function FinanceReportListEmbeddedController($scope,
 	};
 
 	function mountFilters() {
-		var prom = $q.defer();
+		const prom = $q.defer();
 		return prom.promise;
 	}
 }
