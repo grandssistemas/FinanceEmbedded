@@ -11,9 +11,7 @@ function TitleEmbeddedService(
 	service.renegociationParcels = [];
 
 	service.searchTitleBySale = (id) => {
-		let gQuery = new GQuery(new Criteria('obj.idIntegracao', ComparisonOperator.EQUAL, id))
-			.select('bj.id');
-
+		let gQuery = new GQuery(new Criteria('obj.idIntegracao', ComparisonOperator.EQUAL, id));
 		return service.searchWithGQuery(gQuery);
 	};
 
