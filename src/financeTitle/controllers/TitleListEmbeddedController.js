@@ -12,6 +12,8 @@ function TitleListEmbeddedController(
 ) {
 	TitleService.resetDefaultState();
 
+	$scope.lastGQuery = new GQuery();
+
 	gumgaController.createRestMethods($scope, TitleService, 'title');
 	$scope.participation = '';
 	$scope.currentPage = 1;
@@ -46,6 +48,7 @@ function TitleListEmbeddedController(
 		} else {
 			param = param.and(filterType);
 		}
+		$scope.lastGQuery = param;
 		$scope.title.methods.asyncSearchWithGQuery(param).then((values) => {
 			$scope.title.data = values;
 		}).catch((error) => {
@@ -107,16 +110,19 @@ function TitleListEmbeddedController(
 				name: 'titleType',
 				title: '<span gumga-translate-tag="title.titleType"></span>',
 				content: '<span style="">{{$value.titleType == \'PAY\' ? \'A PAGAR\' : \'A RECEBER\'}}</span>',
+				sortField: 'titleType',
 				size: 'col-md-2 col-lg-1'
 
 			}, {
 				name: 'issuedAt',
 				title: '<span gumga-translate-tag="title.issuedAt"></span>',
+				sortField: 'emissionDate',
 				content: '<span>{{$value.emissionDate | date: \'dd/MM/yyyy\' }}</span>'
 
 			}, {
 				name: 'documentNumber',
 				title: '<span gumga-translate-tag="title.documentNumberAdapted"></span>',
+				sortField: 'documentNumber',
 				content: '<span>{{$value.documentNumber}}</span>'
 
 			}, {
@@ -137,6 +143,7 @@ function TitleListEmbeddedController(
 			}, {
 				name: 'value',
 				title: '<span gumga-translate-tag="title.value"></span>',
+				sortField: 'value',
 				content: '<span>{{$value.value | currency}}</span>'
 
 			}, {
@@ -165,6 +172,33 @@ function TitleListEmbeddedController(
 			}]
 	};
 
+	$scope.searchSortQuery = (field, dir, pageSize, page) => {
+		$scope.titleField = field;
+		$scope.titleDir = dir;
+		$scope.title.methods.createQuery()
+			.pageSize(pageSize)
+			.page(page)
+			.sort(field, dir)
+			.gQuery($scope.lastGQuery)
+			.send()
+			.then(() => {
+			});
+	};
+
+	$scope.createQuery = function (page, pageSize) {
+		$scope.field = $scope.titleField || 'emissionDate';
+		$scope.dir = $scope.titleDir || 'desc';
+
+		$scope.exchangeList
+			.methods
+			.createQuery()
+			.gQuery($scope.lastGQuery)
+			.page(page)
+			.sort($scope.field, $scope.dir)
+			.pageSize(pageSize)
+			.send();
+	};
+
 	$scope.openPrintings = function (id) {
 		$uibModal.open({
 			templateUrl: modalTemplate,
@@ -183,7 +217,7 @@ function TitleListEmbeddedController(
 		$scope.$ctrl.onNewTitle({ type: $scope.$ctrl.titleType });
 	};
 
-	$scope.goEdit = function (type, id, fullPaid) {		
+	$scope.goEdit = function (type, id, fullPaid) {
 		$scope.$ctrl.onEditTitle({ type, id, fullPaid });
 	};
 

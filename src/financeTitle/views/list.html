@@ -47,13 +47,14 @@
 		<div class="row">
 			<div class="col-md-12">
 				<gumga-list class="table-striped"
-				            data="title.data"
+										data="title.data"
+										sort="searchSortQuery(field, dir, pageSize, page)"
 				            configuration="tableConf"
 				            page-size="title.pageSize"
 				            count="title.count"
-				            page-model="title.page"
+				            page-model="page"
 				            max-height="400px"
-				            on-page-change="title.methods.get(page, pageSize)">
+				            on-page-change="createQuery(page, pageSize)">
 				</gumga-list>
 			</div>
 		</div>
