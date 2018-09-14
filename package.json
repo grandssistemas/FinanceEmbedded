@@ -1,6 +1,6 @@
 {
   "name": "@mobiage/finance-embedded",
-  "version": "2.3.25-stable",
+  "version": "2.3.26-beta",
   "description": "Financeiro embutido",
   "main": "src/index.js",
   "author": "Augusto Cesar",
