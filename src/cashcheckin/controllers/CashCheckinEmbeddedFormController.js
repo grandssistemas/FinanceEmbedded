@@ -1,25 +1,25 @@
-CashCheckinEmbeddedFormController.$inject = ['$scope',
+CashCheckinEmbeddedFormController.$inject = [
+	'$scope',
 	'CashCheckinEmbeddedService',
 	'FinanceUnitGroupService',
 	'FinanceUnitService',
 	'$filter',
 	'$timeout'];
 
-function CashCheckinEmbeddedFormController($scope,
+function CashCheckinEmbeddedFormController(
+	$scope,
 	CashCheckinEmbeddedService,
 	FinanceUnitGroupService,
 	FinanceUnitService,
 	$filter,
-	$timeout) {
+	$timeout
+) {
 	this.$onInit = function () {
 		$scope.changeOriginTooltip = 'Informe a conta de onde o valor do troco será retirado.';
 		$scope.changeDestinyTooltip = 'Informe a conta onde o valor do troco será incluído.';
 		$scope.entity = {};
+		$scope.isFinance = () => window.APILocation.apiLocation.indexOf('finance-api') !== -1;
 
-		$scope.isFinance = () => {
-			return window.APILocation.apiLocation.indexOf('finance-api') !== -1;
-		}
-		
 		$timeout(() => {
 			if ($scope.groupUnit) {
 				$scope.entity.change = 0;
@@ -33,24 +33,22 @@ function CashCheckinEmbeddedFormController($scope,
 		$scope.disableOpening = $scope.$ctrl.disableOpening;
 
 		$scope.getGroups = function (param) {
-			return FinanceUnitGroupService.getSearch('name', param || '').then(function (data) {
+			return FinanceUnitGroupService.getSearch('name', param || '').then((data) => {
 				return $scope.groups = data.data.values;
-			})
+			});
 		};
 
-		CashCheckinEmbeddedService.getCurrentCheckin().then(function (data) {
+		CashCheckinEmbeddedService.getCurrentCheckin().then((data) => {
 			$scope.entity.group = data.data.group;
 		});
 
 
-
 		$scope.open = function (entity) {
 			entity.status = 'NORMAL';
-
 			entity.group = $scope.groupUnit;
-			CashCheckinEmbeddedService.update(entity).then(function (data) {
+			CashCheckinEmbeddedService.update(entity).then((data) => {
 				$scope.$ctrl.onGoHome({ data });
-			})
+			});
 		};
 
 		$scope.formatDate = function (date) {
@@ -59,7 +57,7 @@ function CashCheckinEmbeddedFormController($scope,
 
 		$scope.onSelectGroup = (value) => {
 			FinanceUnitGroupService.getById(value.id).then((data) => {
-				$scope.financeUnits = data.data.financeUnits
+				$scope.financeUnits = data.data.financeUnits;
 			});
 
 			if (!value.id) {
@@ -71,9 +69,7 @@ function CashCheckinEmbeddedFormController($scope,
 				$scope.entity.change = 0;
 				document.getElementById('changeId').focus();
 			}, 100);
-		}
-
-
+		};
 
 
 		// $scope.getChangeOrigin = function (param) {
@@ -137,7 +133,7 @@ function CashCheckinEmbeddedFormController($scope,
 		//     return $scope.disableOpening || entity.employee == null || (entity.group == null || entity.group.id == null) ||
 		//         (entity.change && (entity.originChange == null || entity.destinyChange == null))
 		// }
-	}
+	};
 }
 
 module.exports = CashCheckinEmbeddedFormController;

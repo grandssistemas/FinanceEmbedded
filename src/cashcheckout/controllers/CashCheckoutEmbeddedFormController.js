@@ -111,7 +111,6 @@ function CashCheckoutEmbeddedFormController(
 										const filters = '';
 										variables.push(FinanceReportService.mountVariable('', 'idpdv', cashier.group.id));
 										variables.push(FinanceReportService.mountVariable('', 'idcheckin', cashier.id));
-										console.log(cashier.group.id, cashier.id);
 										const modalInstance = $uibModal.open({
 											animation: $scope.animationsEnabled,
 											templateUrl: viewModal,
