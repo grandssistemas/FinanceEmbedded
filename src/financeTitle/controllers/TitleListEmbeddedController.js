@@ -144,6 +144,8 @@ function TitleListEmbeddedController(
 				name: 'value',
 				title: '<span gumga-translate-tag="title.value"></span>',
 				sortField: 'value',
+				alignColumn: 'right',
+				alignRows: 'right',
 				content: '<span>{{$value.value | currency}}</span>'
 
 			}, {
