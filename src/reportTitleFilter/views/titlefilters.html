@@ -1,35 +1,74 @@
 <div class="row">
-    <div class="col-md-12 m-b">
-        <label>Filtrar por Período</label>
+    <div class="col-md-4">
+        <label>Contas a</label>
+        <gumga-many-to-one value="$parent.titleType"
+                           list="$parent.titleTypes"
+                           active-favorite="true"
+                           name="typeTitle"
+                           on-select="selectType(value)"
+                           on-deselect="clearVariationTypes()"
+                           search-method="getSearchTypes(param)"
+                           field="name"
+                           authorize-add="false"
+                           async="false"
+                           display-info="false">
+            <match>
+                <div>{{match.model.name}}</div>
+            </match>
+        </gumga-many-to-one>
     </div>
-    <div class="col-md-3">
-        <gumga-date ng-model="$parent.beginDate"
-                    id="beginDate"></gumga-date>
-    </div>
-    <div class="col-md-1 text-center">
-        <label>Até</label>
-    </div>
-    <div class="col-md-3">
-        <gumga-date ng-model="$parent.endDate"
-                    id="endDate"></gumga-date>
+    <div class="col-md-8"
+         ng-if="$parent.titleType">
+         <label> </label>
+        <gumga-many-to-one value="$parent.$parent.variationType"
+                           list="$parent.$parent.variationTypes"
+                           name="variationType"
+                           search-method="getSearchVariationTypes(param)"
+                           field="name"
+                           authorize-add="false"
+                           async="false"
+                           display-info="false">
+            <match>
+                <div>{{match.model.name}}</div>
+            </match>
+        </gumga-many-to-one>
     </div>
 </div>
 <br>
-<div class="row">
-    <div class="col-md-12">
-        <gumga-chips placeholder="Buscar Clientes"
-                     search-field="name"
-                     filter-option-by="contains"
-                     full-mode
-                     ng-model="$parent.selecionados">
-            <gumga-chips-item ng-repeat="item in selecionados track by $index"
-                              ng-value="item">
-                {{item.name}}
-            </gumga-chips-item>
-            <gumga-chips-option ng-repeat="option in individualList"
-                                ng-value="option">
-                {{option.name}}
-            </gumga-chips-option>
-        </gumga-chips>
+<div class="filter-wrapper">
+    <div class="row">
+        <div class="col-md-12 m-b">
+            <label>Filtrar por Período</label>
+        </div>
+        <div class="col-md-3">
+            <gumga-date ng-model="$parent.beginDate"
+                        id="beginDate"></gumga-date>
+        </div>
+        <div class="col-md-1 text-center">
+            <label>Até</label>
+        </div>
+        <div class="col-md-3">
+            <gumga-date ng-model="$parent.endDate"
+                        id="endDate"></gumga-date>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-12">
+            <gumga-chips placeholder="Buscar Clientes"
+                         search-field="name"
+                         filter-option-by="contains"
+                         full-mode
+                         ng-model="$parent.selecionados">
+                <gumga-chips-item ng-repeat="item in selecionados track by $index"
+                                  ng-value="item">
+                    {{item.name}}
+                </gumga-chips-item>
+                <gumga-chips-option ng-repeat="option in individualList"
+                                    ng-value="option">
+                    {{option.name}}
+                </gumga-chips-option>
+            </gumga-chips>
+        </div>
     </div>
 </div>
