@@ -1,4 +1,4 @@
-let receiptPrint = require('./../views/paymentPrint.html');
+const receiptPrint = require('./../views/paymentPrint.html');
 
 PayEmbeddedController.$inject = [
 	'FinanceConfigurationService',
@@ -36,12 +36,12 @@ function PayEmbeddedController(
 	IndividualCreditService,
 	MoneyUtilsService,
 	PercentageFinanceUtilsService,
-	CreditCardAccountService) {
-
+	CreditCardAccountService
+) {
 	$scope.configuration = {};
 	gumgaController.createRestMethods($scope, FinanceConfigurationService, 'financeConfiguration');
-	$scope.financeConfiguration.execute('get').on('getSuccess', function (data) {
-		$scope.configuration = data.values[0]
+	$scope.financeConfiguration.execute('get').on('getSuccess', (data) => {
+		$scope.configuration = data.values[0];
 	});
 	$scope.showMenuPersonalCredit = false;
 
@@ -62,21 +62,21 @@ function PayEmbeddedController(
 	gumgaController.createRestMethods($scope, FinanceUnitService, 'financeunit');
 
 	$scope.getPersonalCredits = function (params) {
-		return IndividualCreditService.getSearch('name', params).then(function (data) {
+		return IndividualCreditService.getSearch('name', params).then((data) => {
 			if (!$scope.configuration.displayPersonalCredit) {
 				var toReturn = data.data.values;
 			} else {
-				var toReturn = data.data.values.filter(function (elem) {
+				var toReturn = data.data.values.filter((elem) => {
 					return elem.individual.id === $scope.parcels[0].individual.id
-				})
+				});
 			}
 			$scope.showMenuPersonalCredit = (toReturn.length > 0);
-			return toReturn
-		})
+			return toReturn;
+		});
 	};
 
-	$timeout(function () {
-		$scope.getPersonalCredits('')
+	$timeout(() => {
+		$scope.getPersonalCredits('');
 	});
 
 	gumgaController.createRestMethods($scope, CheckingAccountService, 'checkingaccount');
@@ -103,7 +103,7 @@ function PayEmbeddedController(
 		id = id || 0;
 
 		param = param || '';
-		return ThirdPartyChequeService.getAdvancedSearch("lower(obj.issuer.name) like lower('%" + param + "%') and obj.portfolio.id = " + id + " and obj.status = 'AVAILABLE'")
+		return ThirdPartyChequeService.getAdvancedSearch(`lower(obj.issuer.name) like lower('%${param}%') and obj.portfolio.id = ${id} and obj.status = 'AVAILABLE'`)
 			.then((data) => {
 				$scope.chequeList = data.data.values;
 			});
@@ -123,8 +123,8 @@ function PayEmbeddedController(
 
 	// Cacula o total das parcelas
 	$scope.totalize = function () {
-		var total = 0;
-		for (var i = 0; i < $scope.payment.parcels.length; i++) {
+		let total = 0;
+		for (let i = 0; i < $scope.payment.parcels.length; i++) {
 			total += $scope.payment.parcels[i].value;
 		}
 		return total;
@@ -134,9 +134,7 @@ function PayEmbeddedController(
 	function getInterestValue(value, expiredDays) {
 		const interest = value.interest.value;
 		if (expiredDays) {
-			return MoneyUtilsService.divideMoney(
-				MoneyUtilsService.multiplyMoney(
-					PercentageFinanceUtilsService.multiply6(interest, value.value), expiredDays), 30);
+			return MoneyUtilsService.divideMoney(MoneyUtilsService.multiplyMoney(PercentageFinanceUtilsService.multiply6(interest, value.value), expiredDays), 30);
 		}
 		return 0;
 	}
@@ -155,22 +153,24 @@ function PayEmbeddedController(
 	}
 
 	$scope.getRemainingValue = (row) => {
-		let expiredDays = getExpiredDays(row.expiration);
-		let interestValue = getInterestValue(row, expiredDays);
-		let penaltyValue = getPenaltyValue(row, expiredDays);
-		let discountValue = getDiscountValue(row);
+		const expiredDays = getExpiredDays(row.expiration);
+		const interestValue = getInterestValue(row, expiredDays);
+		const penaltyValue = getPenaltyValue(row, expiredDays);
+		const discountValue = getDiscountValue(row);
 
-		const value = MoneyUtilsService.sumMoney(row.value,
-			MoneyUtilsService.sumMoney(interestValue,
-				MoneyUtilsService.sumMoney(penaltyValue, -discountValue)));
+		const value = MoneyUtilsService.sumMoney(
+			row.value,
+			MoneyUtilsService.sumMoney(
+				interestValue,
+				MoneyUtilsService.sumMoney(penaltyValue, -discountValue)
+			)
+		);
 		return MoneyUtilsService.sumMoney(value, -row.totalpayed);
-	}
+	};
 
 	// Calcula o total restante para o pagamento
 	$scope.totalizeRemaining = function () {
-		return $scope.payment.parcels.reduce((sum, current) => {
-			return sum + $scope.getRemainingValue(current);
-		}, 0);
+		return $scope.payment.parcels.reduce((sum, current) => sum + $scope.getRemainingValue(current), 0);
 		// var total = 0;
 		// for (var i = 0; i < $scope.parcels.length; i++) {
 		//     total += ($scope.parcels[i].remaining + $scope.parcels[i].calculedInterest + $scope.parcels[i].calculedPenalty);
@@ -181,104 +181,110 @@ function PayEmbeddedController(
 
 	// Adicionar pagamento de dinheiro
 	$scope.addPaymentMoney = function (payment) {
-		var methodPayment = {
-			historic: "Dinheiro",
-			method: "money",
+		$scope.focusValue = '';
+		const methodPayment = {
+			historic: 'Dinheiro',
+			method: 'money',
 			value: payment.value,
 			destination: payment.money.financeUnit.name,
 			financeUnit: payment.money.financeUnit
 		};
-		$scope.addPayment(methodPayment, "money")
+		$scope.addPayment(methodPayment, 'money');
 	};
 	// Adicionar pagamento de cheque terceiro
 	$scope.addPaymentCheck = function (payment) {
-		var methodPayment = {
-			historic: "Cheque Terceiro",
-			method: "check",
+		$scope.focusValue = '';
+		const methodPayment = {
+			historic: 'Cheque Terceiro',
+			method: 'check',
 			selectedChecks: payment.check.checks,
 			destination: payment.check.financeUnit.name,
 			value: payment.value,
 			financeUnit: payment.check.financeUnit
 		};
-		$scope.addPayment(methodPayment, "check");
-
+		$scope.addPayment(methodPayment, 'check');
+		$scope.focusValue = '';
 		$scope.chequeList = [];
 		$scope.cheques.data = [];
 		$scope.payment.check = {};
-		$scope.payment.check.checks = []
+		$scope.payment.check.checks = [];
 	};
 
 
 	// Adicionar pagamento de cheque empresa
 	$scope.addPaymentCompanyCheck = function (payment) {
-		var methodPayment = {
-			historic: "Cheque Empresa",
-			method: "checkCompany",
-			destination: payment.companyCheck.financeUnit.name + "Nº Cheque: " + payment.companyCheck.numberCheck,
+		$scope.focusValue = '';
+		const methodPayment = {
+			historic: 'Cheque Empresa',
+			method: 'checkCompany',
+			destination: `${payment.companyCheck.financeUnit.name}Nº Cheque: ${payment.companyCheck.numberCheck}`,
 			chequeNumber: payment.companyCheck.numberCheck,
 			value: payment.value,
 			availableIn: payment.companyCheck.availableIn,
 			financeUnit: payment.companyCheck.financeUnit
 		};
-		$scope.addPayment(methodPayment, "checkCompany")
+		$scope.addPayment(methodPayment, 'checkCompany');
 	};
 
 	// Adicionar pagamento de Banco - TED / DOC
 	$scope.addPaymentBank = function (payment) {
-		var methodPayment = {
-			historic: "Banco - op: " + $scope.payment.type,
+		$scope.focusValue = '';
+		const methodPayment = {
+			historic: `Banco - op: ${$scope.payment.type}`,
 			type: $scope.payment.type,
 			operationNumber: payment.docTed.operation,
-			method: "bank",
+			method: 'bank',
 			value: payment.value,
-			destination: "Conta Crédito: " + payment.docTed.financeUnit.name,
+			destination: `Conta Crédito: ${payment.docTed.financeUnit.name}`,
 			financeUnit: payment.docTed.financeUnit
 		};
 		$scope.payment.type = null;
-		$scope.addPayment(methodPayment, "docTed")
+		$scope.addPayment(methodPayment, 'docTed');
 	};
 
 	// Adicionar pagamento de cartão
 	$scope.addPaymentCard = function (payment) {
-		var methodPayment = {
-			historic: "Cartão",
-			method: "card",
+		$scope.focusValue = '';
+		const methodPayment = {
+			historic: 'Cartão',
+			method: 'card',
 			value: payment.value,
-			destination: "Conta Corrente: " + payment.card.financeUnit.name,
+			destination: `Conta Corrente: ${payment.card.financeUnit.name}`,
 			financeUnit: payment.card.financeUnit
 		};
-		$scope.addPayment(methodPayment, "docTed")
+		$scope.addPayment(methodPayment, 'docTed');
 	};
 
 	// Adicionar pagamento de crédito
 	$scope.addPaymentCredit = function (payment) {
-		var methodPayment = {
-			historic: "Crédito",
-			method: "credit",
+		$scope.focusValue = '';
+		const methodPayment = {
+			historic: 'Crédito',
+			method: 'credit',
 			value: payment.value,
 			destination: payment.credit.financeUnit.name,
 			financeUnit: payment.credit.financeUnit
 		};
-		$scope.addPayment(methodPayment, "credit")
+		$scope.addPayment(methodPayment, 'credit');
 	};
 
 	// Adicionar os pagamento a lista
 	$scope.addPayment = function (methodPayment, operation) {
 		$scope.payment.numberPayment++;
 		switch (operation) {
-			case "money":
+			case 'money':
 				$scope.payment.money = null;
 				break;
-			case "check":
+			case 'check':
 				$scope.payment.check = null;
 				break;
-			case "docTed":
+			case 'docTed':
 				$scope.payment.docTed = null;
 				break;
-			case "checkCompany":
+			case 'checkCompany':
 				$scope.payment.companyCheck = null;
 				break;
-			case "credit":
+			case 'credit':
 				$scope.payment.credit = null;
 		}
 
@@ -286,21 +292,21 @@ function PayEmbeddedController(
 		$scope.payment.method = null;
 
 		if ($scope.payment.numberPayment === 1) {
-			$scope.payment.methodPayment[0] = methodPayment
+			$scope.payment.methodPayment[0] = methodPayment;
 		} else {
-			$scope.payment.methodPayment.push(methodPayment)
+			$scope.payment.methodPayment.push(methodPayment);
 		}
 		$scope.lastPayment = ($scope.totalizeRemaining() - $scope.totalPayment());
-		$scope.payment.value = $scope.lastPayment
+		$scope.payment.value = $scope.lastPayment;
 	};
 
 	// Total pago
 	$scope.totalPayment = function () {
-		var total = 0;
-		angular.forEach($scope.payment.methodPayment, function (list) {
-			total += list.value
+		let total = 0;
+		angular.forEach($scope.payment.methodPayment, (list) => {
+			total += list.value;
 		});
-		return total
+		return total;
 	};
 
 	// Remover item da lista de metodo de pagamento
@@ -311,15 +317,15 @@ function PayEmbeddedController(
 			$scope.payment.check = {};
 			$scope.payment.check.checks = [];
 			$scope.cheques.data = [];
-			$scope.calcCheques()
+			$scope.calcCheques();
 		}
 	};
 
-	//Função para buscar os cheques da carteira
-	$scope.$watch('payment.check.financeUnit', function (checkFinanceUnit) {
+	// Função para buscar os cheques da carteira
+	$scope.$watch('payment.check.financeUnit', (checkFinanceUnit) => {
 		if (angular.isObject(checkFinanceUnit) && checkFinanceUnit.type === 'ChequePortfolio') {
-			search = "obj.portfolio.id=" + checkFinanceUnit.id + "AND obj.status = 'AVAILABLE'";
-			$scope.thirdpartycheque.methods.advancedSearch(search).on('advancedSearchSuccess', function (data) {
+			search = 'obj.portfolio.id=' + checkFinanceUnit.id + "AND obj.status = 'AVAILABLE'";
+			$scope.thirdpartycheque.methods.advancedSearch(search).on('advancedSearchSuccess', (data) => {
 				$scope.cheques.data = data.values.filter(function (elem) {
 					if ($scope.itemsSelected.length > 0) {
 						for (var index = 0; index < $scope.itemsSelected.length; index++) {
@@ -330,7 +336,7 @@ function PayEmbeddedController(
 					}
 					return true;
 				})
-			})
+			});
 		}
 	});
 
@@ -338,14 +344,14 @@ function PayEmbeddedController(
 	// Pega o total pago
 	$scope.totalSelecionado = 0;
 	$scope.selecionados = function (selecionado) {
-		$scope.totalSelecionado = $scope.payment.check.checks.map(a => a.value).reduce((a, b) => a + b, 0);
+		$scope.totalSelecionado = $scope.payment.check.checks.map((a) => a.value).reduce((a, b) => a + b, 0);
 		$scope.payment.value = $scope.totalSelecionado;
 		$scope.itemsSelected = $scope.payment.check.checks;
 	};
 
 	// Chamar o template para impressão do recibo
 	$scope.printReceipt = function () {
-		var value = $scope.totalPayment().toString();
+		let value = $scope.totalPayment().toString();
 		value = value.replace('.', ',');
 		$scope.payment.numberInWords = $filter('gumgaNumberInWords')(value, true);
 		$scope.payment.value = $scope.totalPayment().toFixed(2);
@@ -353,17 +359,17 @@ function PayEmbeddedController(
 	};
 
 	$scope.printPaid = function (items) {
-		var uibModalInstance = $uibModal.open({
+		const uibModalInstance = $uibModal.open({
 			templateUrl: receiptPrint,
 			controller: 'ReceivePrintEmbeddedController',
-			size: "lg",
+			size: 'lg',
 			resolve: {
-				items: function () {
+				items() {
 					return items;
 				}
 			}
 		});
-		uibModalInstance.result.then(function () {
+		uibModalInstance.result.then(() => {
 
 		});
 	};
@@ -385,6 +391,7 @@ function PayEmbeddedController(
 			editable: true,
 			title: '<span>Juros</span>',
 			content: '<input type="text" ui-money-mask ' +
+				'class="input-in-list" ' +
 				'ng-change="$parent.$parent.updateTotal($value,interestValue,penaltyValue,discountValue)" ' +
 				'ng-disabled="!$parent.$parent.isExpired($value.expiration)" ' +
 				'ng-init="interestValue = $parent.$parent.calcInterestValue($value)" ' +
@@ -394,6 +401,7 @@ function PayEmbeddedController(
 			editable: true,
 			title: '<span>Multa</span>',
 			content: '<input type="text" ui-money-mask ' +
+				'class="input-in-list" ' +
 				'ng-change="$parent.$parent.updateTotal($value,interestValue,penaltyValue,discountValue)" ' +
 				'ng-disabled="!$parent.$parent.isExpired($value.expiration)" ' +
 				'ng-init="penaltyValue = $parent.$parent.calcPenaltyValue($value)" ' +
@@ -403,6 +411,7 @@ function PayEmbeddedController(
 			editable: true,
 			title: '<span>Desconto</span>',
 			content: '<input type="text" ui-money-mask ' +
+				'class="input-in-list" ' +
 				'ng-change="$parent.$parent.updateTotal($value,interestValue,penaltyValue,discountValue)" ' +
 				'ng-init="discountValue = $parent.$parent.calcDiscountValue($value)" ' +
 				'ng-model="discountValue">'
@@ -463,10 +472,10 @@ function PayEmbeddedController(
 	// Calcula os cheque selecionado
 	$scope.calcCheques = function (id) {
 		if ($scope.payment.numberPayment >= 1) {
-			$scope.payment.value = $scope.lastPayment
+			$scope.payment.value = $scope.lastPayment;
 		} else {
-			var total = 0;
-			angular.forEach($scope.selectedValues, function (o) {
+			let total = 0;
+			angular.forEach($scope.selectedValues, (o) => {
 				total += o.value;
 			});
 			if (total !== 0) {
@@ -483,44 +492,45 @@ function PayEmbeddedController(
 		payment.momment = new Date();
 
 		PaymentService.pay(payment)
-			.then(function () {
+			.then(() => {
 				$scope.$ctrl.onBackClick();
 			});
 
 		if ($scope.itemsSelected.length > 0) {
 			$scope.itemsSelected.forEach((data) => {
-				data.status = "PASSED_ALONG";
-				$scope.thirdpartycheque.methods.put(data)
-			})
+				data.status = 'PASSED_ALONG';
+				$scope.thirdpartycheque.methods.put(data);
+			});
 		}
 	};
 
 	$scope.setarfocusPayment = function (value) {
+		$scope.focusValue = value;
 		switch (value) {
 			case 'money':
-				angular.element(document.getElementById("paymentMoneyFinanceunit"))
+				angular.element(document.getElementById('paymentMoneyFinanceunit'))
 					.find('input')[1].focus();
-				break
+				break;
 			case 'check':
-				angular.element(document.getElementById("paymentCheckFinanceunit"))
+				angular.element(document.getElementById('paymentCheckFinanceunit'))
 					.find('input')[1].focus();
-				break
+				break;
 			case 'ted':
-				document.getElementById("paymentBankFinanceunit").focus();
-				break
+				document.getElementById('paymentBankFinanceunit').focus();
+				break;
 			case 'companyCheck':
-				angular.element(document.getElementById("paymentBank2Financeunit"))
+				angular.element(document.getElementById('paymentBank2Financeunit'))
 					.find('input')[1].focus();
-				break
+				break;
 			case 'card':
-				angular.element(document.getElementById("paymentCardFinanceunit"))
+				angular.element(document.getElementById('paymentCardFinanceunit'))
 					.find('input')[1].focus();
-				break
+				break;
 			case 'credit':
-				angular.element(document.getElementById("paymentCreditFinanceunit"))
+				angular.element(document.getElementById('paymentCreditFinanceunit'))
 					.find('input')[1].focus();
-				break
-		};
+				break;
+		}
 	};
 
 	$scope.selectAllText = function (id) {
@@ -559,13 +569,11 @@ function PayEmbeddedController(
 	};
 
 	$scope.totalReceive = function () {
-		return $scope.payment.methodPayment.reduce((sum, current) => {
-			return sum + current.value;
-		}, 0);
+		return $scope.payment.methodPayment.reduce((sum, current) => sum + current.value, 0);
 	};
 
 	$scope.updateTotal = (value, interrest, penalty, discount) => {
-		let expiredDays = getExpiredDays(value.expiration);
+		const expiredDays = getExpiredDays(value.expiration);
 		value.interest.value = getInterestPerc(value, interrest, expiredDays);
 		value.penalty.value = getPenaltyPerc(value, penalty, expiredDays);
 		value.discount.value = getDiscountPerc(value, discount);
@@ -601,13 +609,10 @@ function PayEmbeddedController(
 		return PercentageFinanceUtilsService.divide6(discount, value.value);
 	}
 
-	$scope.getFinanceUnits = (param, name) => {
-		return FinanceUnitService.findByOpenUnitGroup(name).then(data => {
-			$scope.financeunit.data = data.data.values;
-			return data.data.values;
-		});
-	};
-
+	$scope.getFinanceUnits = (param, name) => FinanceUnitService.findByOpenUnitGroup(name).then((data) => {
+		$scope.financeunit.data = data.data.values;
+		return data.data.values;
+	});
 }
 
 module.exports = PayEmbeddedController;

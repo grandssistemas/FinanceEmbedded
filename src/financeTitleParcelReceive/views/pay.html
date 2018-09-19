@@ -4,6 +4,20 @@
 			<div class="col-md-6">
 				<cp-page-title title="'Recebimento de Título'"></cp-page-title>
 			</div>
+			<div class="col-md-6 align-right-flex">
+				<button type="button"
+				        ui-sref="app.titleparcel.list"
+				        class="btn btn-back">
+					<svg xmlns="http://www.w3.org/2000/svg"
+					     viewBox="0 0 80 80"
+					     x="0px"
+					     y="0px">
+						<path d="M58,30H10.49l15-16.66a2,2,0,0,0-3-2.68l-18,20-.06.08-.09.11-.06.09-.08.13-.06.12,0,.1,0,.15,0,.12,0,.1c0,.05,0,.1,0,.15S4,31.9,4,32s0,0,0,0,0,0,0,0,0,.09,0,.14,0,.1,0,.15l0,.1,0,.12,0,.15,0,.1.06.12.08.13.06.09.09.11.06.08,18,20a2,2,0,0,0,3-2.68L10.49,34H58a2,2,0,0,0,0-4Z"
+						/>
+					</svg>
+					Voltar
+				</button>
+			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-12"
@@ -11,73 +25,75 @@
 				<label class="text-danger">Nenhuma parcela selecionada para Receber.</label>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-md-12"
-			     ng-show="parcels.length">
-				<div class="panel panel-default">
-					<div class="panel-heading"
-					     style="padding-bottom: 30px">
-						<h3 style="float: right;font-size: 16px;">Total a receber {{total | currency: "R$"}}</h3>
+		<div ng-show="parcels.length">
+			<form name="PaymentForm">
+				<div class="row">
+					<div class="col-md-12">
+						<gumga-list class="table-striped table-condensed"
+						            data="parcels"
+						            on-row-change="rowEdit(row)"
+						            configuration="tableConfig"></gumga-list>
 					</div>
-					<div class="panel-body">
-						<form name="PaymentForm">
-							<div class="row">
-								<div class="col-sm-12">
-									<gumga-list class="table-striped table-condensed"
-									            data="parcels"
-									            on-row-change="rowEdit(row)"
-									            configuration="tableConfig"></gumga-list>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-6">
-									<div class="row">
-										<div class="col-md-9">
-											<label gumga-translate-tag="titleparcelreceive.receipt">receipt</label>
-											<br/>
+				</div>
+				<div class="panel gmd ma-panel panel-receiptpay">
+					<div class="panel-body ma-pad-panel">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="row">
+									<div class="col-md-12">
+										<label class="label-receiptpay"
+										       gumga-translate-tag="titleparcelreceive.receipt">receipt</label>
+										<br/>
+										<div style="display:flex;">
 											<label gumga-translate-tag="titleparcelreceive.money"
+											       ng-class="focusValue === 'money' ? 'btn-primary' : 'btn-default'"
 											       class="btn btn-primary gmd raised"
 											       ng-model="payment.method"
 											       uib-btn-radio="'money'"
 											       ng-click="setarfocusPayment('money')"
 											       ng-disabled="lastReceive <= 0">money</label>
 											<label gumga-translate-tag="titleparcelreceive.check"
+											       ng-class="focusValue === 'check' ? 'btn-primary' : 'btn-default'"
 											       class="btn btn-primary gmd raised"
 											       ng-model="payment.method"
 											       uib-btn-radio="'thirdCheck'"
 											       ng-click="setarfocusPayment('check')"
 											       ng-disabled="lastReceive <= 0">check</label>
 											<label gumga-translate-tag="titleparcelreceive.bank"
+											       ng-class="focusValue === 'bank' ? 'btn-primary' : 'btn-default'"
 											       class="btn btn-primary gmd raised"
 											       ng-model="payment.method"
 											       uib-btn-radio="'tedDoc'"
 											       ng-click="setarfocusPayment('bank')"
 											       ng-disabled="lastReceive <= 0">bank</label>
 											<label gumga-translate-tag="titleparcelreceive.card"
+											       ng-class="focusValue === 'card' ? 'btn-primary' : 'btn-default'"
 											       class="btn btn-primary gmd raised"
 											       ng-model="payment.method"
 											       uib-btn-radio="'card'"
 											       ng-click="setarfocusPayment('card')"
 											       ng-disabled="lastReceive <= 0">card</label>
 											<label class="btn btn-primary gmd raised"
+											       ng-class="focusValue === 'credit' ? 'btn-primary' : 'btn-default'"
 											       ng-model="payment.method"
+											       ng-hide="isFinalConsumer"
 											       uib-btn-radio="'credit'"
 											       gumga-translate-tag="titleparcel.credit"
 											       ng-if="showMenuPersonalCredit"
 											       ng-click="setarfocusPayment('credit')"
-											       ng-disabled="lastReceive <= 0 || isFinalConsumer">credit</label>
-										</div>
-										<div class="col-md-3">
-											<label gumga-translate-tag="titleparcelreceive.date">date</label>
-											<br/>
-											<gumga-date ng-model="payment.momment"
-											            id="insertMoment"
-											            name="insertMoment"
-											            configuration="{showCalendar: false}"></gumga-date>
+											       ng-disabled="lastReceive <= 0">credit</label>
+											<div style="display:flex;position:relative;margin-left:20px;">
+												<label style="position: absolute;top: -15px;"
+												       gumga-translate-tag="titleparcelreceive.date">date</label>
+												<gumga-date ng-model="payment.momment"
+												            id="insertMoment"
+												            name="insertMoment"
+												            configuration="{showCalendar: false}"></gumga-date>
+											</div>
 										</div>
 									</div>
-
-									<!--<editor-fold desc="DINHEIRO">-->
+								</div>
+								<div class="payments-wrapper-receiptpay">
 									<div class="row"
 									     ng-show="payment.method == 'money'">
 										<div class="col-md-8">
@@ -109,16 +125,14 @@
 										</div>
 										<div class="col-md-1 m-t-md">
 											<label style="height: 0;">&nbsp;</label>
-											<button class="btn gmd fab btn-success btn-sm"
+											<button style="margin-top: -22px;"
+											        class="btn gmd fab btn-success btn-sm"
 											        ng-click="addReceiveMoney(payment)"
 											        ng-disabled="!payment.value || payment.value == 0">
 												<i class="material-icons">add</i>
 											</button>
 										</div>
 									</div>
-									<!--</editor-fold>-->
-
-									<!--<editor-fold desc="CHEQUE TERCEIRO">-->
 									<div class="row"
 									     ng-show="payment.method == 'thirdCheck'">
 										<div class="col-md-2 m-t-md">
@@ -278,7 +292,8 @@
 										</div>
 										<div class="col-md-1 m-t-md">
 											<label style="height: 0;">&nbsp;</label>
-											<button class="btn gmd fab btn-success btn-sm"
+											<button style="margin-top: -22px;"
+											        class="btn gmd fab btn-success btn-sm"
 											        ng-disabled="validadeCheck(payment)"
 											        ng-click="addReceiveCheck(payment)">
 												<i class="material-icons">add</i>
@@ -292,10 +307,6 @@
 											<label class="text-danger">O vencimento não pode ser menor que a data atual.</label>
 										</div>
 									</div>
-
-									<!--</editor-fold>-->
-
-									<!--<editor-fold desc="TOC TED">-->
 									<div class="row"
 									     ng-show="payment.method == 'tedDoc'">
 										<div class="col-md-4">
@@ -341,15 +352,13 @@
 										</div>
 										<div class="col-md-1 m-t-md">
 											<label style="height: 0;">&nbsp;</label>
-											<button class="btn gmd fab btn-success btn-sm"
+											<button style="margin-top: -22px;"
+											        class="btn gmd fab btn-success btn-sm"
 											        ng-click="addReceiveBank(payment)">
 												<i class="material-icons">add</i>
 											</button>
 										</div>
 									</div>
-									<!--</editor-fold>-->
-
-									<!--<editor-fold desc="Card">-->
 									<div class="row"
 									     ng-show="payment.method == 'card'">
 										<div class="col-md-4">
@@ -390,15 +399,13 @@
 										</div>
 										<div class="col-md-1 m-t-md">
 											<label style="height: 0;">&nbsp;</label>
-											<button class="btn gmd fab btn-success btn-sm"
+											<button style="margin-top: -22px;"
+											        class="btn gmd fab btn-success btn-sm"
 											        ng-click="addReceiveCard(payment)">
 												<i class="material-icons">add</i>
 											</button>
 										</div>
 									</div>
-									<!--</editor-fold>-->
-
-									<!-- <editor-fold desc="CRÉDITO"> -->
 									<div class="row"
 									     ng-show="payment.method == 'credit' && showMenuPersonalCredit === true">
 										<div class="col-md-6">
@@ -455,7 +462,8 @@
 												</div>
 												<div class="col-md-2 m-t-md">
 													<label style="height: 0;">&nbsp;</label>
-													<button class="btn gmd fab btn-success btn-sm"
+													<button style="margin-top: -22px;"
+													        class="btn gmd fab btn-success btn-sm"
 													        ng-disabled="!payment.value || !hasLimit(balanceFinanceUnit, payment)"
 													        ng-click="addReceiveCredit(payment)">
 														<i class="material-icons">add</i>
@@ -470,33 +478,28 @@
 											</div>
 										</div>
 									</div>
-									<!--</editor-fold>-->
-
 								</div>
-								<div class="col-md-6">
-									<div class="row"
+
+							</div>
+							<div class="col-md-1">
+							</div>
+							<div class="col-md-5">
+								<div class="resumo-pagamento-list">
+									<div style="margin-bottom: 15px;"
+									     class="row"
 									     ng-if="payment.methodReceive.length > 0 && payment.numberReceive">
 										<div class="col-md-12">
-											<label class="pull-left">
-												<h3 gumga-translate-tag="titleparcelreceive.methodreceive"></h3>
-											</label>
-											<label class="pull-right"
-											       ng-show="lastReceive > 0">Falta a receber {{lastReceive | currency: 'R$ '}}
-												<span> </span>
-											</label>
-											<label class="pull-right"
-											       ng-show="lastReceive < 0">Crédito a ser gerado {{lastReceive * -1 | currency: 'R$ ' }}
-												<span> </span>
-											</label>
+											<h3 class="subtitle-receiptpay"
+											    gumga-translate-tag="titleparcelreceive.methodreceive"></h3>
 										</div>
 
 										<div class="col-md-3">
 											<label gumga-translate-tag="titleparcelreceive.method">method</label>
 										</div>
-										<div class="col-md-4">
+										<div class="col-md-5">
 											<label gumga-translate-tag="titleparcelreceive.account">account</label>
 										</div>
-										<div class="col-md-4">
+										<div class="col-md-3">
 											<label gumga-translate-tag="titleparcelreceive.value"
 											       class="pull-right">value</label>
 										</div>
@@ -504,59 +507,79 @@
 											&nbsp;
 										</div>
 									</div>
-									<div class="row"
-									     ng-repeat="method in payment.methodReceive"
+									<div ng-repeat="method in payment.methodReceive"
 									     ng-if="payment.methodReceive.length > 0 && payment.numberReceive">
-										<hr/>
-										<div class="col-md-3">
-											<span>{{method.historic}}</span>
+										<div class="row center-flex-row">
+
+											<div class="col-md-3">
+												<span>{{method.historic}}</span>
+											</div>
+											<div class="col-md-5">
+												<span>{{method.destination}}</span>
+											</div>
+											<div class="col-md-3">
+												<span class="pull-right">{{method.value | currency: "R$ "}}</span>
+											</div>
+											<div class="col-md-1"
+											     style="padding:0px;">
+												<button type="button"
+												        class="text-danger icon"
+												        uib-tooltip="Excluir"
+												        ng-click="removeLeaf(payment.methodReceive, $index)">
+
+													<svg xmlns="http://www.w3.org/2000/svg"
+													     xmlns:xlink="http://www.w3.org/1999/xlink"
+													     version="1.1"
+													     x="0px"
+													     y="0px"
+													     viewBox="0 0 100 100"
+													     enable-background="new 0 0 100 100"
+													     xml:space="preserve">
+														<path d="M59.835,72.094V34.495c0-1.657-1.343-3-3-3s-3,1.343-3,3v37.599c0,1.658,1.343,3,3,3S59.835,73.752,59.835,72.094z   M46.164,72.094V34.495c0-1.657-1.343-3-3-3s-3,1.343-3,3v37.599c0,1.658,1.343,3,3,3S46.164,73.752,46.164,72.094z M73.27,31.495  c-1.657,0-3,1.343-3,3v45.412c0,1.217-0.989,2.209-2.205,2.209H31.938c-1.218,0-2.209-0.992-2.209-2.209V34.495c0-1.657-1.343-3-3-3  s-3,1.343-3,3v45.412c0,4.525,3.683,8.209,8.209,8.209h36.126c4.524,0,8.205-3.684,8.205-8.209V34.495  C76.27,32.837,74.927,31.495,73.27,31.495z M79.93,22.148H66.348v-7.263c0-1.657-1.343-3-3-3H36.652c-1.657,0-3,1.343-3,3v7.263  H20.07c-1.657,0-3,1.343-3,3s1.343,3,3,3H79.93c1.657,0,3-1.343,3-3S81.587,22.148,79.93,22.148z M60.348,22.148H39.652v-4.263  h20.695V22.148z"
+														/>
+													</svg>
+												</button>
+											</div>
+
 										</div>
-										<div class="col-md-6">
-											<span>{{method.destination}}</span>
-										</div>
-										<div class="col-md-2">
-											<span class="pull-right">{{method.value | currency: "R$ "}}</span>
-										</div>
-										<div class="col-md-1">
-											<a type="button"
-											   class="text-danger pull-right"
-											   uib-tooltip="Excluir"
-											   ng-click="removeLeaf(payment.methodReceive, $index)">
-												<span class="glyphicon glyphicon-remove"></span>
-											</a>
-										</div>
+										<hr style="margin: 12px 0px;">
+									</div>
+									<div class="inf-wrapper"
+									     ng-if="payment.methodReceive.length > 0 && payment.numberReceive">
+										<h4 class="total">Total a pagar: {{total | currency: "R$"}}</h4>
+										<h4 class="success">Valor recebido: {{totalReceive() | currency: "R$"}}</h4>
+										<h4 ng-show="lastReceive < 0"
+										    class="warn">Troco: {{lastReceive * -1 | currency: 'R$ ' }}</h4>
+										<h4 ng-show="lastReceive > 0"
+										    class="error">Falta: {{lastReceive | currency: 'R$ '}}</h4>
 									</div>
 								</div>
 							</div>
+						</div>
 
 
 
-							<div class="row"
-							     ng-if="payment.methodReceive.length > 0 && payment.numberReceive ">
-								<div class="col-md-2 pull-right"
-								     style="padding-left:0;">
-									<label>&nbsp;</label>
-									<br/>
-									<button class="btn btn-block btn-primary gmd raised"
-									        ng-click="makePayment(payment)">Realizar Recebimento
-									</button>
-								</div>
-								<!--<div class="col-md-2 pull-right" style="margin-right:2%;">-->
-								<!--<label>&nbsp;</label><br/>-->
-								<!--<button type="button" class="btn btn-block btn-outline btn-default gmd raised" ng-click="printReceipt()">-->
-								<!--Imprimir Recibo-->
-								<!--</button>-->
-								<!--</div>-->
+						<div class="row"
+						     ng-if="payment.methodReceive.length > 0 && payment.numberReceive ">
+							<div class="col-md-12"
+							     style="display: flex;
+							align-items: flex-end;
+							justify-content: flex-end;">
+								<button class="btn btn-receiptpay"
+								        ng-click="makePayment(payment)">Fazer pagamento
+								</button>
 							</div>
-						</form>
+							<!--<div class="col-md-2 pull-right" style="margin-right:2%;">-->
+							<!--<label>&nbsp;</label><br/>-->
+							<!--<button type="button" class="btn btn-block btn-outline btn-default gmd raised" ng-click="printReceipt()">-->
+							<!--Imprimir Recibo-->
+							<!--</button>-->
+							<!--</div>-->
+						</div>
 					</div>
 				</div>
-				<button type="button"
-				        ui-sref="app.titleparcel.list"
-				        class="btn btn-warning pull-right gmd raised">
-					Cancelar
-				</button>
-			</div>
+
+			</form>
 		</div>
 	</div>
 </div>

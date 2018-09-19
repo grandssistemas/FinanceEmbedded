@@ -232,6 +232,7 @@ function PayReceiveEmbeddedController(
 			editable: true,
 			title: '<span>Juros</span>',
 			content: '<input type="text" ui-money-mask ' +
+				'class="input-in-list" ' +
 				'ng-change="$parent.$parent.updateTotal($value,interestValue,penaltyValue,discountValue)" ' +
 				'ng-disabled="!$parent.$parent.isExpired($value.expiration)" ' +
 				'ng-init="interestValue = $parent.$parent.calcInterestValue($value)" ' +
@@ -241,6 +242,7 @@ function PayReceiveEmbeddedController(
 			editable: true,
 			title: '<span>Multa</span>',
 			content: '<input type="text" ui-money-mask ' +
+				'class="input-in-list" ' +
 				'ng-change="$parent.$parent.updateTotal($value,interestValue,penaltyValue,discountValue)" ' +
 				'ng-disabled="!$parent.$parent.isExpired($value.expiration)" ' +
 				'ng-init="penaltyValue = $parent.$parent.calcPenaltyValue($value)" ' +
@@ -250,6 +252,7 @@ function PayReceiveEmbeddedController(
 			editable: true,
 			title: '<span>Desconto</span>',
 			content: '<input type="text" ui-money-mask ' +
+				'class="input-in-list" ' +
 				'ng-change="$parent.$parent.updateTotal($value,interestValue,penaltyValue,discountValue)" ' +
 				'ng-init="discountValue = $parent.$parent.calcDiscountValue($value)" ' +
 				'ng-model="discountValue">'
@@ -333,6 +336,7 @@ function PayReceiveEmbeddedController(
 	};
 
 	$scope.addReceiveMoney = function (receive) {
+		$scope.focusValue = '';
 		const methodReceive = {
 			historic: 'Dinheiro',
 			method: 'money',
@@ -344,6 +348,7 @@ function PayReceiveEmbeddedController(
 	};
 
 	$scope.addReceiveCheck = function (receive) {
+		$scope.focusValue = '';
 		const methodReceive = {
 			historic: 'Cheque',
 			method: 'check',
@@ -362,6 +367,7 @@ function PayReceiveEmbeddedController(
 	};
 
 	$scope.addReceiveBank = function (receive) {
+		$scope.focusValue = '';
 		const methodReceive = {
 			historic: $scope.isTed ? 'Banco - op: TED' : 'Banco - op: DOC',
 			type: $scope.isTed ? 'TED' : 'DOC',
@@ -374,6 +380,7 @@ function PayReceiveEmbeddedController(
 	};
 
 	$scope.addReceiveCard = function (receive) {
+		$scope.focusValue = '';
 		const methodReceive = {
 			historic: 'Cartão',
 			method: 'card',
@@ -385,6 +392,7 @@ function PayReceiveEmbeddedController(
 	};
 
 	$scope.addReceive = function (methodReceive, operation) {
+		$scope.focusValue = '';
 		$scope.payment.numberReceive++;
 		switch (operation) {
 			case 'docTed':
@@ -410,6 +418,7 @@ function PayReceiveEmbeddedController(
 
 	// Adicionar pagamento de crédito
 	$scope.addReceiveCredit = function (payment) {
+		$scope.focusValue = '';
 		const methodPayment = {
 			historic: 'Crédito',
 			method: 'credit',
@@ -501,6 +510,7 @@ function PayReceiveEmbeddedController(
 	}
 
 	$scope.setarfocusPayment = function (value) {
+		$scope.focusValue = value;
 		switch (value) {
 			case 'money':
 				angular.element(document.getElementById('paymentMoneyFinanceunit'))
