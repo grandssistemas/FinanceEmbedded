@@ -191,7 +191,7 @@ function TitleListEmbeddedController(
 		$scope.field = $scope.titleField || 'emissionDate';
 		$scope.dir = $scope.titleDir || 'desc';
 
-		$scope.exchangeList
+		$scope.title
 			.methods
 			.createQuery()
 			.gQuery($scope.lastGQuery)

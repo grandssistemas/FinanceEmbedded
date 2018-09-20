@@ -73,7 +73,7 @@ function TitleFilterController(
 
 		filters.vars.push({ key: 'type', value: $scope.titleType.key });
 		filters.vars.push({ key: 'payReceive', value: $scope.variationType.key });
-
+		
 		if ($scope.selecionados) {
 			filters.vars.push({ key: 'individuals', value: `obj.individual_id IN (${stringResult()})` });
 		} else {
@@ -84,6 +84,13 @@ function TitleFilterController(
 		}
 		if (endDate) {
 			filters.vars.push({ key: 'endDate', value: endDate.replace('00:00:00', '23:59:59') });
+		}
+		if (beginDate && endDate) {
+			if ($scope.variationType.key === 'IN') {
+				filters.vars.push({ key: 'dateWhere', value: 'e.momment' });
+			} else {
+				filters.vars.push({ key: 'dateWhere', value: 'obj.expiration' });
+			}
 		}
 		return filters;
 	};
