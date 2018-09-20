@@ -2,162 +2,234 @@
 	<div class="page-wrapper">
 		<div class="ma-container">
 			<div class="ma-page mbg-style">
-				<div class="row row-flex">
+				<div class="row">
 					<div class="col-md-6">
 						<cp-page-title title="'Minhas Contas'"></cp-page-title>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-md-6">
-						<label class="mbg-label input-label">Você está no cliente</label>
-						<gumga-many-to-one value="individualSearch"
-						                   list="individual.data"
-						                   class="gmd mbg-m-t-o"
-						                   search-method="searchIndividual(param)"
-						                   field="name"
-						                   authorize-add="false"
-						                   display-info="false">
-							<match>
-								<div>
-									{{match.model.name}}
+				<div class="tabs-my-accounts">
+					<uib-tabset active="activeForm">
+						<uib-tab index="1"
+						         select="alterTab('RECEIVE')"
+						         heading="Contas a receber">
+							<div class="row filters-wrapper">
+								<div class="col-md-12">
+									<label class="mbg-label input-label">Você está no cliente</label>
+									<gumga-many-to-one value="$parent.$parent.individualSearch"
+									                   list="individual.data"
+									                   class="gmd mbg-m-t-o"
+									                   search-method="searchIndividual(param)"
+									                   on-select="filterListIndividual(value)"
+									                   field="name"
+									                   authorize-add="false"
+									                   display-info="false">
+										<match>
+											<div>
+												{{match.model.name}}
+											</div>
+											<div>
+												<span>{{match.model.primaryDocument.length > 11 ? 'CNPJ: ' : 'CPF: '}}</span>
+												{{match.model.primaryDocument}}
+											</div>
+										</match>
+									</gumga-many-to-one>
 								</div>
-								<div>
-									<span>{{match.model.primaryDocument.length > 11 ? 'CNPJ: ' : 'CPF: '}}</span>
-									{{match.model.primaryDocument}}
+								<div class="col-md-5">
+									<label class="mbg-label input-label">Filtros rápidos</label>
+									<gumga-many-to-one value="$parent.$parent.filterMto"
+									                   list="filters"
+									                   on-select="filterListFilterMto(value)"
+									                   class="gmd mbg-m-t-o"
+									                   search-method="getSearchFilter(param)"
+									                   field="name"
+									                   authorize-add="false"
+									                   display-info="false">
+										<match>
+											<div>{{match.model.name}}</div>
+										</match>
+									</gumga-many-to-one>
 								</div>
-							</match>
-						</gumga-many-to-one>
-					</div>
-					<div class="col-md-3">
-						<label class="mbg-label input-label">Filtros rápidos</label>
-						<gumga-many-to-one value="filterMto"
-						                   list="filters"
-						                   class="gmd mbg-m-t-o"
-						                   search-method="getSearchFilter(param)"
-						                   field="name"
-						                   authorize-add="false"
-						                   display-info="false">
-							<match>
-								<div>{{match.model.name}}</div>
-							</match>
-						</gumga-many-to-one>
-					</div>
-					<div class="col-md-3">
-						<label class="mbg-label input-label">Plano de conta</label>
-						<gumga-many-to-one value="typeCategory"
-						                   list="typeCategorys"
-						                   search-method="getSearchFilterCategory(param)"
-						                   class="gmd mbg-m-t-o"
-						                   field="category"
-						                   authorize-add="false"
-						                   display-info="false">
-							<match>
-								<div>{{match.model.category}}</div>
-							</match>
-						</gumga-many-to-one>
-					</div>
-					<!-- <div class="col-md-3">
-					<label class="mbg-label input-label">Contas a</label>
-					<gumga-many-to-one value="categoryTitle"
-					                   list="listCategoryTitle"
-					                   class="gmd mbg-m-t-o"
-					                   on-select="filter"
-					                   search-method="getSearchCategory(param)"
-					                   field="name"
-					                   authorize-add="false"
-					                   display-info="false">
-						<match>
-							<div>{{match.model.name}}</div>
-						</match>
-					</gumga-many-to-one>
-				</div> -->
-				</div>
-				<div class="row">
-					<div ng-show="!categoryTitle || categoryTitle.key === 'RECEIVEPAY' || categoryTitle.key === 'RECEIVE'"
-					     ng-class="!categoryTitle || categoryTitle.key === 'RECEIVEPAY' ? 'col-md-6' : 'col-md-12'">
-						<div class="mbg-list">
-							<div class="mbg-title-pay-receive mbg-bg-receive">
-								<div class="mbg-left-box">
-									<i class="fas fa-long-arrow-alt-down mbg-icon-title"></i>
-									<h3>
-										Contas a Receber
-									</h3>
-									<h5>
-										Selecione aqui a(s) parcela(s) que irá receber do seu cliente
-									</h5>
-									<div class="mbg-right-box">
-										<button type="button"
-										        class="btn right-button mbg-clear-btn"
-										        ng-disabled="selectedValuesReceive.length > 1"
-										        ng-click="goList('RECEIVE', selectedValuesReceive[0])">
-											<i class="fas fa-edit"></i>
-											<span>Editar</span>
-										</button>
-										<button class="btn right-button mbg-clear-btn"
-										        ng-click="goNewTitle('RECEIVE')">
-											<i class="fas fa-plus"></i>
-											<span>Novo</span>
-										</button>
+								<div class="col-md-5">
+									<label class="mbg-label input-label">Plano de conta</label>
+									<gumga-many-to-one value="$parent.$parent.typeCategory"
+									                   list="typeCategorys"
+									                   on-select="filterListTypeCategory(value)"
+									                   search-method="getSearchFilterCategory(param)"
+									                   class="gmd mbg-m-t-o"
+									                   field="category"
+									                   authorize-add="false"
+									                   display-info="false">
+										<match>
+											<div>{{match.model.category}}</div>
+										</match>
+									</gumga-many-to-one>
+								</div>
+								<div class="col-md-2 btn-create-wrapper">
+									<button class="btn-create"
+									        ng-click="goNewTitle('RECEIVE')">
+										+ Novo Título
+									</button>
+								</div>
+							</div>
+
+
+							
+
+							<div class="row">
+								<div class="col-md-12">
+									<div class="mbg-list">
+										<!-- <div class="mbg-title-pay-receive mbg-bg-receive">
+											<div class="mbg-left-box">
+												<i class="fas fa-long-arrow-alt-down mbg-icon-title"></i>
+												<h3>
+													Contas a Receber
+												</h3>
+												<h5>
+													Selecione aqui a(s) parcela(s) que irá receber do seu cliente
+												</h5>
+												<div class="mbg-right-box">
+													<button type="button"
+													        class="btn right-button mbg-clear-btn"
+													        ng-disabled="selectedValuesReceive.length > 1"
+													        ng-click="goList('RECEIVE', selectedValuesReceive[0])">
+														<i class="fas fa-edit"></i>
+														<span>Editar</span>
+													</button>
+
+													<button class="btn right-button mbg-clear-btn"
+													        ng-click="goNewTitle('RECEIVE')">
+														<i class="fas fa-plus"></i>
+														<span>Novo</span>
+													</button>
+												</div>
+											</div>
+										</div> -->
+
+
+										<gumga-list class="mb-list table-striped"
+										            sort="sortByGQuery(field, dir, 'RECEIVE')"
+										            data="$parent.$parent.titleparcelReceive.data"
+										            selected-values="$parent.$parent.selectedValuesReceive"
+										            on-click="totalize('RECEIVE')"
+										            configuration="tableConfig"
+										            page-size="titleparcelReceive.pageSize"
+										            count="titleparcelReceive.count"
+										            page-model="titleparcelReceive.page"
+										            on-page-change="filter(filterMto.key, paidOut, 'RECEIVE', page, pageSize)">
+										</gumga-list>
 									</div>
 								</div>
 							</div>
-							<gumga-list class="table-striped"
-							            sort="sortByGQuery(field, dir, 'RECEIVE')"
-							            data="titleparcelReceive.data"
-							            selected-values="selectedValuesReceive"
-							            on-click="totalize('RECEIVE')"
-							            configuration="tableConfig"
-							            page-size="titleparcelReceive.pageSize"
-							            count="titleparcelReceive.count"
-							            page-model="titleparcelReceive.page"
-							            on-page-change="filter(filterMto.key, paidOut, 'RECEIVE', page, pageSize)">
-							</gumga-list>
-						</div>
-					</div>
-					<div ng-show="!categoryTitle || categoryTitle.key === 'RECEIVEPAY' || categoryTitle.key === 'PAY'"
-					     ng-class="!categoryTitle || categoryTitle.key === 'RECEIVEPAY' ? 'col-md-6' : 'col-md-12'">
-						<div class="mbg-title-pay-receive mbg-bg-pay">
-
-
-							<div class="mbg-left-box">
-								<i class="fas fa-long-arrow-alt-up mbg-icon-title"></i>
-								<h3>
-									Contas a Pagar
-								</h3>
-								<h5>
-									Selecione aqui a(s) parcela(s) que irá pagar ao seu fornecedor
-								</h5>
-								<div class="mbg-right-box">
-									<button class="btn right-button mbg-clear-btn"
-									        ng-disabled="selectedValuesPay.length > 1"
-									        ng-click="goList('PAY', selectedValuesPay[0])">
-										<i class="fas fa-edit"></i>
-										<span>Editar</span>
-									</button>
-									<button class="btn right-button mbg-clear-btn"
+						</uib-tab>
+						<uib-tab index="2"
+						         select="alterTab('PAY')"
+						         heading="Contas a pagar">
+							<div class="row filters-wrapper">
+								<div class="col-md-12">
+									<label class="mbg-label input-label">Você está no cliente</label>
+									<gumga-many-to-one value="$parent.$parent.individualSearch"
+									                   list="individual.data"
+									                   class="gmd mbg-m-t-o"
+									                   on-select="filterListIndividual(value)"
+									                   search-method="searchIndividual(param)"
+									                   field="name"
+									                   authorize-add="false"
+									                   display-info="false">
+										<match>
+											<div>
+												{{match.model.name}}
+											</div>
+											<div>
+												<span>{{match.model.primaryDocument.length > 11 ? 'CNPJ: ' : 'CPF: '}}</span>
+												{{match.model.primaryDocument}}
+											</div>
+										</match>
+									</gumga-many-to-one>
+								</div>
+								<div class="col-md-5">
+									<label class="mbg-label input-label">Filtros rápidos</label>
+									<gumga-many-to-one value="$parent.$parent.filterMto"
+									                   list="filters"
+									                   on-select="filterListFilterMto(value)"
+									                   class="gmd mbg-m-t-o"
+									                   search-method="getSearchFilter(param)"
+									                   field="name"
+									                   authorize-add="false"
+									                   display-info="false">
+										<match>
+											<div>{{match.model.name}}</div>
+										</match>
+									</gumga-many-to-one>
+								</div>
+								<div class="col-md-5">
+									<label class="mbg-label input-label">Plano de conta</label>
+									<gumga-many-to-one value="$parent.$parent.typeCategory"
+									                   list="typeCategorys"
+									                   on-select="filterListTypeCategory(value)"
+									                   search-method="getSearchFilterCategory(param)"
+									                   class="gmd mbg-m-t-o"
+									                   field="category"
+									                   authorize-add="false"
+									                   display-info="false">
+										<match>
+											<div>{{match.model.category}}</div>
+										</match>
+									</gumga-many-to-one>
+								</div>
+								<div class="col-md-2 btn-create-wrapper">
+									<button class="btn-create"
 									        ng-click="goNewTitle('PAY')">
-										<i class="fas fa-plus"></i>
-										<span>Novo</span>
+										+ Novo Título
 									</button>
 								</div>
 							</div>
-						</div>
-						<div class="mbg-list table-striped-reverse">
-							<gumga-list class="table-striped"
-							            sort="sortByGQuery(field, dir, 'PAY')"
-							            selected-values="selectedValuesPay"
-							            on-click="totalize('PAY')"
-							            data="titleparcelPay.data"
-							            configuration="tableConfig"
-							            page-size="titleparcelPay.pageSize"
-							            count="titleparcelPay.count"
-							            page-model="titleparcelPay.page"
-							            max-height="auto"
-							            on-page-change="filter(filterMto.key, paidOut, 'PAY', page, pageSize)">
-							</gumga-list>
-						</div>
-					</div>
+							<div class="row">
+								<div class="col-md-12">
+									<!-- <div class="mbg-title-pay-receive mbg-bg-pay">
+										<div class="mbg-left-box">
+											<i class="fas fa-long-arrow-alt-up mbg-icon-title"></i>
+											<h3>
+												Contas a Pagar
+											</h3>
+											<h5>
+												Selecione aqui a(s) parcela(s) que irá pagar ao seu fornecedor
+											</h5>
+											<div class="mbg-right-box">
+												<button class="btn right-button mbg-clear-btn"
+												        ng-disabled="selectedValuesPay.length > 1"
+												        ng-click="goList('PAY', selectedValuesPay[0])">
+													<i class="fas fa-edit"></i>
+													<span>Editar</span>
+												</button>
+												<button class="btn right-button mbg-clear-btn"
+												        ng-click="goNewTitle('PAY')">
+													<i class="fas fa-plus"></i>
+													<span>Novo</span>
+												</button>
+											</div>
+										</div>
+									</div> -->
+									<div class="mbg-list">
+										<gumga-list class="mb-list table-striped"
+										            sort="sortByGQuery(field, dir, 'PAY')"
+										            selected-values="$parent.$parent.selectedValuesPay"
+										            on-click="totalize('PAY')"
+										            data="$parent.$parent.titleparcelPay.data"
+										            configuration="tableConfig"
+										            page-size="titleparcelPay.pageSize"
+										            count="titleparcelPay.count"
+										            page-model="titleparcelPay.page"
+										            max-height="auto"
+										            on-page-change="filter(filterMto.key, paidOut, 'PAY', page, pageSize)">
+										</gumga-list>
+									</div>
+								</div>
+							</div>
+						</uib-tab>
+					</uib-tabset>
 				</div>
+
+
 				<gmd-fab force-click="false"
 				         fixed
 				         opened="!fabs"
@@ -167,7 +239,7 @@
 					        title="Pagar"
 					        gumga-button
 					        ng-class="{ 'gmd-disabled' : (total <= 0) && (increase <= 0)}"
-					        ng-click="compairTitleCategory(selectedValuesPay, selectedValuesReceive, containsFullPaid)"
+					        ng-click="compairTitleCategory(containsFullPaid)"
 					        ng-disabled="(total <= 0) && (increase <= 0)">
 						<span class="material-icons">attach_money</span>
 					</button>
