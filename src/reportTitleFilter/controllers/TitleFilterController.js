@@ -76,6 +76,8 @@ function TitleFilterController(
 
 		if ($scope.selecionados) {
 			filters.vars.push({ key: 'individuals', value: `obj.individual_id IN (${stringResult()})` });
+		} else {
+			filters.vars.push({ key: 'individuals', value: `obj.individual_id != 0` });
 		}
 		if (beginDate) {
 			filters.vars.push({ key: 'beginDate', value: $filter('date')(beginDate, 'yyyy-MM-dd HH:mm:ss') });
