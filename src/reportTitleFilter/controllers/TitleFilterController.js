@@ -25,13 +25,13 @@ function TitleFilterController(
 	$scope.selectType = (param) => {
 		if (param.key === 'PAY') {
 			$scope.variationTypes = [
-				{ name: 'Á Pagar', key: 'NOT IN' },
-				{ name: 'Pagas', key: 'IN' }
+				{ name: 'Á Pagar', key: 'false' },
+				{ name: 'Pagas', key: 'true' }
 			];
 		} else {
 			$scope.variationTypes = [
-				{ name: 'Á Receber', key: 'NOT IN' },
-				{ name: 'Recebidas', key: 'IN' }
+				{ name: 'Á Receber', key: 'false' },
+				{ name: 'Recebidas', key: 'true' }
 			];
 		}
 	};
