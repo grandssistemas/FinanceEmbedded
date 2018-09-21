@@ -50,17 +50,17 @@
 									</gumga-many-to-one>
 								</div>
 								<div class="col-md-5">
-									<label class="mbg-label input-label">Plano de conta</label>
-									<gumga-many-to-one value="$parent.$parent.typeCategory"
-									                   list="typeCategorys"
-									                   on-select="filterListTypeCategory(value)"
-									                   search-method="getSearchFilterCategory(param)"
+									<label class="mbg-label input-label">Parcelas</label>
+									<gumga-many-to-one value="$parent.$parent.paidOutFilter"
+									                   list="paidOutFilters"
+									                   on-select="filterListPaidOutFilter(value)"
+									                   search-method="getSearchPaidOutFilters(param)"
 									                   class="gmd mbg-m-t-o"
-									                   field="category"
+									                   field="name"
 									                   authorize-add="false"
 									                   display-info="false">
 										<match>
-											<div>{{match.model.category}}</div>
+											<div>{{match.model.name}}</div>
 										</match>
 									</gumga-many-to-one>
 								</div>
@@ -71,10 +71,6 @@
 									</button>
 								</div>
 							</div>
-
-
-							
-
 							<div class="row">
 								<div class="col-md-12">
 									<div class="mbg-list">
@@ -162,17 +158,17 @@
 									</gumga-many-to-one>
 								</div>
 								<div class="col-md-5">
-									<label class="mbg-label input-label">Plano de conta</label>
-									<gumga-many-to-one value="$parent.$parent.typeCategory"
-									                   list="typeCategorys"
-									                   on-select="filterListTypeCategory(value)"
-									                   search-method="getSearchFilterCategory(param)"
+									<label class="mbg-label input-label">Parcelas</label>
+									<gumga-many-to-one value="$parent.$parent.paidOutFilter"
+									                   list="paidOutFilters"
+									                   on-select="filterListPaidOutFilter(value)"
+									                   search-method="getSearchPaidOutFilters(param)"
 									                   class="gmd mbg-m-t-o"
-									                   field="category"
+									                   field="name"
 									                   authorize-add="false"
 									                   display-info="false">
 										<match>
-											<div>{{match.model.category}}</div>
+											<div>{{match.model.name}}</div>
 										</match>
 									</gumga-many-to-one>
 								</div>

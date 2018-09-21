@@ -11,7 +11,9 @@ TitleParcelPayListEmbeddedController.$inject = [
 	'$q',
 	'$state',
 	'SweetAlert',
-	'TitleService'];
+	'TitleService',
+	'PaymentService',
+	'FinanceReportService'];
 
 function TitleParcelPayListEmbeddedController(
 	$uibModal,
@@ -24,16 +26,17 @@ function TitleParcelPayListEmbeddedController(
 	$q,
 	$state,
 	SweetAlert,
-	TitleService
+	TitleService,
+	PaymentService,
+	FinanceReportService
 ) {
 	gumgaController.createRestMethods($scope, TitleParcelPayService, 'titleparcelPay');
 	gumgaController.createRestMethods($scope, IndividualEmbeddedService, 'individual');
+	gumgaController.createRestMethods($scope, PaymentService, 'payment');
 
 	$scope.searchIndividual = (param) => {
 		param = param || '';
-		return IndividualEmbeddedService.searchIndividual(param).then((resp) => {
-			return resp.data.values;
-		});
+		return IndividualEmbeddedService.searchIndividual(param).then((resp) => resp.data.values);
 	};
 
 
@@ -53,12 +56,17 @@ function TitleParcelPayListEmbeddedController(
 		{ name: 'Mês Passado', key: 'lastMonth' },
 		{ name: 'Este Ano', key: 'thisYear' }
 	];
+	$scope.paidOutFilters = [
+		{ name: 'Todos', key: null },
+		{ name: 'Pagos', key: true },
+		{ name: 'A Pagar', key: false }
+	];
 	$scope.filterMto = $scope.filters[0];
 	$scope.categoryTitle = $scope.listCategoryTitle[0];
 	$scope.urlStorage = StorageService.apiAmazonLocation;
 	$scope.beginDate = new Date();
 	$scope.endDate = new Date();
-	$scope.paidOut = false;
+	$scope.paidOut = null;
 	$scope.containsFullPaid = false;
 	$scope.lastClicked = null;
 	$scope.gQueryFilters = null;
@@ -90,33 +98,19 @@ function TitleParcelPayListEmbeddedController(
 		$scope.filter($scope.filterMto.key, $scope.paidOut, $scope.typeTab);
 	};
 
-	$scope.filterListTypeCategory = (value) => {
-		$scope.filterCategory = value;
+	$scope.filterListPaidOutFilter = (value) => {
+		$scope.paidOutFilter = value;
 		if ($scope.typeTab === 'RECEIVE') {
-			$scope.lastfilterCategoryReceive = value;
+			$scope.lastfilterPaidOutFilter = value;
 		} else {
-			$scope.lastfilterCategoryPay = value;
+			$scope.lastfilterPaidOutFilter = value;
 		}
-		$scope.filter($scope.filterMto.key, $scope.paidOut, $scope.typeTab);
+		$scope.filter($scope.filterMto.key, $scope.paidOutFilter.key, $scope.typeTab);
 	};
-
-	// $scope.getSearchCategory = function (param) {
-	// 	return $q((resolve) => {
-	// 		const arr = $scope.listCategoryTitle.filter((category) => category.name.indexOf(param) !== -1);
-	// 		resolve(arr);
-	// 	});
-	// };
 
 	$scope.getSearchFilter = function (param) {
 		return $q((resolve) => {
 			const arr = $scope.filters.filter((fil) => fil.name.indexOf(param) !== -1);
-			resolve(arr);
-		});
-	};
-
-	$scope.getSearchFilterCategory = function (param) {
-		return $q((resolve) => {
-			const arr = $scope.typeCategorys.filter((fil) => fil.category.indexOf(param) !== -1);
 			resolve(arr);
 		});
 	};
@@ -179,14 +173,8 @@ function TitleParcelPayListEmbeddedController(
 			gQuery = gQuery.and(new Criteria('obj.individual.name', ComparisonOperator.EQUAL, $scope.individualSearch.name));
 		}
 
-		if ($scope.paidOut) {
-			gQuery = gQuery.and(new Criteria('obj.fullPaid', ComparisonOperator.EQUAL, true));
-		} else {
-			gQuery = gQuery.and(new Criteria('obj.fullPaid', ComparisonOperator.EQUAL, false));
-		}
-
-		if ($scope.filterCategory && $scope.filterCategory.key !== '') {
-			gQuery = gQuery.and(new Criteria('obj.title.typeCategory.id', ComparisonOperator.EQUAL, $scope.filterCategory.id));
+		if ($scope.paidOut !== null) {
+			gQuery = gQuery.and(new Criteria('obj.fullPaid', ComparisonOperator.EQUAL, $scope.paidOut));
 		}
 
 		if (titleCategory === 'RECEIVE') {
@@ -292,7 +280,7 @@ function TitleParcelPayListEmbeddedController(
 	};
 
 	$scope.tableConfig = {
-		columns: 'documentNumber, parcel, individual, expiration, amountdoc, amount, receipt, balance, edit',
+		columns: 'documentNumber, parcel, individual, expiration, amountdoc, amount, receipt, balance, edit, print',
 		materialTheme: true,
 		itemsPerPage: [5, 10, 25, 50, 100],
 		selection: 'multi',
@@ -354,8 +342,44 @@ function TitleParcelPayListEmbeddedController(
 				content: `
 					<cp-edit-icon ng-click="$parent.$parent.goEdit($value.type, $value.titleData.idTitle, $value.fullPaid)"></cp-edit-icon>
 				`
+			},
+			{
+				name: 'print',
+				title: `Recibo`,
+				alignColumn: 'center',
+				alignRows: 'center',
+				content: `
+					<cp-print-icon ng-if="$value.totalpayed > 0 && $value.type !== 'PAY'" ng-click="$parent.$parent.$parent.printReceipt($value)"></cp-print-icon>
+				`
 			}
 		]
+	};
+
+	const getPayments = (parcels) => {
+		const arr = [];
+		parcels.forEach((parcelPayment) => {
+			const gQuery = new GQuery(new Criteria('pp.id', ComparisonOperator.EQUAL, parcelPayment.id))
+				.join(new Join('obj.parcelPayments as pp', JoinType.INNER));
+			arr.push($scope.payment.methods.asyncSearchWithGQuery(gQuery));
+		});
+		return Promise.all(arr).then((response) => {
+			const toReturn = [];
+			response.forEach((data) => data.forEach((payment) => {
+				if (toReturn.filter((d) => angular.equals(d, payment)).length === 0) {
+					toReturn.push(payment);
+				}
+			}));
+			return toReturn;
+		});
+	};
+
+	$scope.printReceipt = (parcel) => {
+		getPayments(parcel.parcelPayments).then((resp) => {
+			const baseState = '';
+			const variables = [];
+			variables.push(FinanceReportService.mountVariable('', 'idPayment', resp[0].id));
+			FinanceReportService.openModalViewer('RECEIPTTITLE', [], variables, () => true, baseState);
+		});
 	};
 
 	$scope.selectedType = 'pays';
@@ -365,9 +389,9 @@ function TitleParcelPayListEmbeddedController(
 
 	$scope.goEdit = (type, id, fullPaid) => {
 		if (!fullPaid) {
-			$state.go("app.title.edit" + type.toUpperCase(), { "id": id, "visualization": false })
+			$state.go('app.title.edit' + type.toUpperCase(), { id: id, 'visualization': false });
 		} else {
-			$state.go("app.title.edit" + type.toUpperCase(), { "id": id, "visualization": true })
+			$state.go('app.title.edit' + type.toUpperCase(), { 'id': id, 'visualization': true });
 		}
 	};
 
@@ -412,7 +436,6 @@ function TitleParcelPayListEmbeddedController(
 		}
 		TitleParcelPayService.getByGQueryMaxDate(null, titleCategory, page, $scope.individualSearch, $scope.paidOut, gQueryFilter, pageSize, $scope.sortField, $scope.sortDir)
 			.then((data) => {
-				console.log(data);
 				if (titleCategory === 'PAY') {
 					$scope.selectedPayValues = [];
 					$scope.titleparcelPay.data = data.data.values;
@@ -436,17 +459,34 @@ function TitleParcelPayListEmbeddedController(
 		$scope.getByGQuery(titleCategory);
 	};
 
+	$scope.getSearchPaidOutFilters = function (param) {
+		return $q((resolve) => {
+			const arr = $scope.paidOutFilters.filter((fil) => fil.name.indexOf(param) !== -1);
+			resolve(arr);
+		});
+	};
+
 	$scope.alterTab = (type) => {
 		$timeout(() => {
 			$scope.typeTab = type || 'RECEIVE';
 			if ($scope.typeTab === 'RECEIVE') {
+				$scope.paidOutFilters = [
+					{ name: 'Todos', key: null },
+					{ name: 'Recebidos', key: true },
+					{ name: 'A Receber', key: false }
+				];
 				$scope.individualSearch = $scope.lastIndividualReceive;
 				$scope.filterMto = $scope.lastfilterMtoReceive || $scope.filters[0];
-				$scope.filterCategory = $scope.lastfilterCategoryReceive || $scope.typeCategorys[0];
+				$scope.paidOutFilter = $scope.lastfilterPaidOutFilter || $scope.paidOutFilters[0];
 			} else {
+				$scope.paidOutFilters = [
+					{ name: 'Todos', key: null },
+					{ name: 'Pagos', key: true },
+					{ name: 'A Pagar', key: false }
+				];
 				$scope.individualSearch = $scope.lastIndividualPay;
 				$scope.filterMto = $scope.lastfilterMtoPay || $scope.filters[0];
-				$scope.filterCategory = $scope.lastfilterCategoryPay || $scope.typeCategorys[0];
+				$scope.paidOutFilter = $scope.lastfilterPaidOutFilter || $scope.paidOutFilters[0];
 			}
 		});
 	};

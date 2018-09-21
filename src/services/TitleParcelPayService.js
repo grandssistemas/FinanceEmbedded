@@ -54,7 +54,6 @@ function TitleParcelPayService(GumgaRest, $http, FinanceEmbeddedService) {
 			if (page === 1) page = 0;
 			var searchDate = date ? " AND obj.expiration <= '" + format(date, 'yyyy-MM-dd') + "'" : "";
 			var searchIndividual = individual ? ' AND obj.individual.id = ' + individual.id : '';
-			console.log(type);
 			return $http.get(Service._url
 				+ "?start=" + page + "&aq=obj.title.titleType='" + type + "' AND (obj.fullPaid = " + paidOut + " OR obj.fullPaid is null)"
 				+ searchDate
@@ -62,7 +61,7 @@ function TitleParcelPayService(GumgaRest, $http, FinanceEmbeddedService) {
 		}
 	};
 
-	service.getByGQueryMaxDate = function (date, type, page, individual, paidOut, gQuery, pageSize, sortField, sortDir) {
+	service.getByGQueryMaxDate = function (date, type, page, individual, paidOut, gQuery, pageSize, sortField, sortDir, paidOutFilter) {
 		if (gQuery === null) {
 			gQuery = new GQuery();
 
@@ -77,7 +76,9 @@ function TitleParcelPayService(GumgaRest, $http, FinanceEmbeddedService) {
 
 			gQuery = gQuery.and(new Criteria('title.titleType', ComparisonOperator.EQUAL, type))
 				.and(new Criteria('title.isReversed', ComparisonOperator.EQUAL, false))
-				.and(new GQuery(new Criteria('obj.fullPaid', ComparisonOperator.EQUAL, paidOut)));
+			if (paidOut != null) {
+				gQuery = gQuery.and(new GQuery(new Criteria('obj.fullPaid', ComparisonOperator.EQUAL, paidOut)));
+			}
 
 			// .or(new Criteria('obj.fullPaid', ComparisonOperator.IS, new CriteriaField("null")))
 			// ABERTO ISSUE NA GUMGA
