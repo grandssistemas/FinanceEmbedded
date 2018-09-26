@@ -73,7 +73,7 @@ function TitleFilterController(
 
 		filters.vars.push({ key: 'type', value: $scope.titleType.key });
 		filters.vars.push({ key: 'payReceive', value: $scope.variationType.key });
-		
+
 		if ($scope.selecionados) {
 			filters.vars.push({ key: 'individuals', value: `obj.individual_id IN (${stringResult()})` });
 		} else {
@@ -86,10 +86,20 @@ function TitleFilterController(
 			filters.vars.push({ key: 'endDate', value: endDate.replace('00:00:00', '23:59:59') });
 		}
 		if (beginDate && endDate) {
-			if ($scope.variationType.key === 'IN') {
+			if ($scope.variationType.key === 'true') {
 				filters.vars.push({ key: 'dateWhere', value: 'e.momment' });
+				if ($scope.titleType.key === 'PAY') {
+					filters.vars.push({ key: 'totalString', value: 'Total pago' });
+				} else {
+					filters.vars.push({ key: 'totalString', value: 'Total recebido' });
+				}
 			} else {
 				filters.vars.push({ key: 'dateWhere', value: 'obj.expiration' });
+				if ($scope.titleType.key === 'PAY') {
+					filters.vars.push({ key: 'totalString', value: 'Total a pagar' });
+				} else {
+					filters.vars.push({ key: 'totalString', value: 'Total a receber' });
+				}
 			}
 		}
 		return filters;
