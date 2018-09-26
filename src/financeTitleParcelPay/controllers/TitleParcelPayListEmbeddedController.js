@@ -280,7 +280,7 @@ function TitleParcelPayListEmbeddedController(
 	};
 
 	$scope.tableConfig = {
-		columns: 'documentNumber, parcel, individual, expiration, amountdoc, amount, receipt, balance, edit, print',
+		columns: 'documentNumber, parcel, individual, expiration, status, amount, receipt, balance, edit, print',
 		materialTheme: true,
 		itemsPerPage: [5, 10, 25, 50, 100],
 		selection: 'multi',
@@ -312,9 +312,13 @@ function TitleParcelPayListEmbeddedController(
 				sortField: 'expiration'
 			},
 			{
-				name: 'amountdoc',
-				title: '<span>Valor Doc</span>',
-				content: '<div>{{$value.titleData.totalValue | currency: "R$"}}</div>'
+				name: 'status',
+				title: '<span>Status</span>',
+				content: '<div class="mb-status mb-bg-info" ng-if="!$value.titleData.reversed && $value.totalpayed == 0 && !$value.isReplaced">A</div>' +
+					'<div class="mb-status active" ng-if="!$value.titleData.reversed && $value.fullPaid">R</div>' +
+					'<div class="mb-status mb-bg-warn" ng-if="$value.titleData.reversed">E</div>' +
+					'<div class="mb-status neutral" ng-if="!$value.titleData.reversed && $value.isReplaced">R</div>' +
+					'<div class="mb-status amortized" ng-if="!$value.titleData.reversed && ($value.totalpayed > 0) && !$value.fullPaid">A</div>'
 			},
 			{
 				name: 'amount',
@@ -326,11 +330,15 @@ function TitleParcelPayListEmbeddedController(
 			},
 			{
 				name: 'receipt',
+				alignRows: 'right',
+				alignColumn: 'right',
 				title: '<span>{{$parent.$parent.$parent.typeTab === "RECEIVE" ? "Recebido" : "Pago"}}</span>',
 				content: '<div>{{$value.totalpayed | currency: "R$"}}</div>'
 			},
 			{
 				name: 'balance',
+				alignRows: 'right',
+				alignColumn: 'right',
 				title: '<span>Saldo</span>',
 				content: '<div>{{$value.value - $value.totalpayed | currency: "R$"}}</div>'
 			},
