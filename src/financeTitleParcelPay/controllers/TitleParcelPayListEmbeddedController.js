@@ -314,11 +314,11 @@ function TitleParcelPayListEmbeddedController(
 			{
 				name: 'status',
 				title: '<span>Status</span>',
-				content: '<div class="mb-status mb-bg-info" ng-if="!$value.titleData.reversed && $value.totalpayed == 0 && !$value.isReplaced">A</div>' +
-					'<div class="mb-status active" ng-if="!$value.titleData.reversed && $value.fullPaid">R</div>' +
-					'<div class="mb-status mb-bg-warn" ng-if="$value.titleData.reversed">E</div>' +
-					'<div class="mb-status neutral" ng-if="!$value.titleData.reversed && $value.isReplaced">R</div>' +
-					'<div class="mb-status amortized" ng-if="!$value.titleData.reversed && ($value.totalpayed > 0) && !$value.fullPaid">A</div>'
+				content: '<div class="mb-status mb-bg-info" uib-tooltip="Aberta" ng-if="!$value.titleData.reversed && $value.totalpayed == 0 && !$value.isReplaced">A</div>' +
+					'<div class="mb-status active" uib-tooltip="Recebida" ng-if="!$value.titleData.reversed && $value.fullPaid">R</div>' +
+					'<div class="mb-status mb-bg-warn" uib-tooltip="Estornada" ng-if="$value.titleData.reversed">E</div>' +
+					'<div class="mb-status neutral" uib-tooltip="Refaturada" ng-if="!$value.titleData.reversed && $value.isReplaced">R</div>' +
+					'<div class="mb-status amortized" uib-tooltip="Amortizada" ng-if="!$value.titleData.reversed && ($value.totalpayed > 0) && !$value.fullPaid">A</div>'
 			},
 			{
 				name: 'amount',
