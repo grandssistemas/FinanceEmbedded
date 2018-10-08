@@ -66,7 +66,7 @@ function TitleParcelPayListEmbeddedController(
 	$scope.urlStorage = StorageService.apiAmazonLocation;
 	$scope.beginDate = new Date();
 	$scope.endDate = new Date();
-	$scope.paidOut = null;
+	$scope.paidOut = false;
 	$scope.containsFullPaid = false;
 	$scope.lastClicked = null;
 	$scope.gQueryFilters = null;
@@ -485,7 +485,7 @@ function TitleParcelPayListEmbeddedController(
 				];
 				$scope.individualSearch = $scope.lastIndividualReceive;
 				$scope.filterMto = $scope.lastfilterMtoReceive || $scope.filters[0];
-				$scope.paidOutFilter = $scope.lastfilterPaidOutFilter || $scope.paidOutFilters[0];
+				$scope.paidOutFilter = $scope.lastfilterPaidOutFilter || $scope.paidOutFilters[2];
 			} else {
 				$scope.paidOutFilters = [
 					{ name: 'Todos', key: null },
@@ -494,7 +494,7 @@ function TitleParcelPayListEmbeddedController(
 				];
 				$scope.individualSearch = $scope.lastIndividualPay;
 				$scope.filterMto = $scope.lastfilterMtoPay || $scope.filters[0];
-				$scope.paidOutFilter = $scope.lastfilterPaidOutFilter || $scope.paidOutFilters[0];
+				$scope.paidOutFilter = $scope.lastfilterPaidOutFilter || $scope.paidOutFilters[2];
 			}
 		});
 	};
