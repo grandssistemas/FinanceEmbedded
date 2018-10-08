@@ -19,7 +19,8 @@
 									                   list="individual.data"
 									                   class="gmd mbg-m-t-o"
 									                   search-method="searchIndividual(param)"
-									                   on-select="filterListIndividual(value)"
+													   on-select="filterListIndividual(value)"
+													   on-deselect="filterListIndividual(null)"
 									                   field="name"
 									                   authorize-add="false"
 									                   display-info="false">
@@ -127,6 +128,7 @@
 									                   list="individual.data"
 									                   class="gmd mbg-m-t-o"
 									                   on-select="filterListIndividual(value)"
+									                   on-deselect="filterListIndividual(null)"
 									                   search-method="searchIndividual(param)"
 									                   field="name"
 									                   authorize-add="false"
