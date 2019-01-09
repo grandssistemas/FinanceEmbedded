@@ -12,7 +12,7 @@ function CashCheckinEmbeddedService(GumgaRest, FinanceEmbeddedService, $http){
     };
 
     service.update = function (entity) {
-        if(entity.cashCheckouts.length > 0) {
+        if(entity.cashCheckouts && entity.cashCheckouts.length > 0) {
             return $http.post(FinanceEmbeddedService.getDefaultConfiguration().api + '/cashcheckin', entity);
         }
         const openCash = {
@@ -28,7 +28,7 @@ function CashCheckinEmbeddedService(GumgaRest, FinanceEmbeddedService, $http){
                 "change": entity.change
             }
         }
-        return $http.post('http://127.0.0.1:8084/finance-api/api/cashcheckin/do-cashcheckin', openCash);
+        return $http.post(FinanceEmbeddedService.getDefaultConfiguration().api  + '/cashcheckin/do-cashcheckin', openCash);
     }
 
     return service;

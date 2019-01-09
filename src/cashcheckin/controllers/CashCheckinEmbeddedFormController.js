@@ -47,6 +47,7 @@ function CashCheckinEmbeddedFormController(
 			entity.status = 'NORMAL';
 			entity.group = $scope.groupUnit;
 			CashCheckinEmbeddedService.update(entity).then((data) => {
+				console.log('aqui cashcheckin aberto', data)			
 				$scope.$ctrl.onGoHome({ data });
 			});
 		};
