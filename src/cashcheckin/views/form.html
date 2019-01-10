@@ -59,7 +59,7 @@
                                                                    display-info="false"
                                                                    data-disabled="disableOpening"
                                                                    on-select="onSelectGroup(value)"
-                                                                   on-deselect="onSelectGroup(value)">
+                                                                   on-deselect="descSelectGroup()">
                                                     <match>
                                                         <div>{{match.model.name}}</div>
                                                     </match>
@@ -74,7 +74,7 @@
                                                        class="gmd form-control"
                                                        ui-money-mask
                                                        ng-model="entity.change"
-                                                       ng-disabled="disableOpening">
+                                                       ng-disabled="disableChange || !groupUnit">
                                                 <span class="bar"></span>
                                                 <label gumga-translate-tag="cashcheckin.changevalue">Change Value
                                                 </label>
