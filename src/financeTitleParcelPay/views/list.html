@@ -5,6 +5,7 @@
 				<div class="row">
 					<div class="col-md-6">
 						<cp-page-title title="'Minhas Contas'"></cp-page-title>
+						sdpfihsdiufguishfosdufhdo
 					</div>
 				</div>
 				<div class="tabs-my-accounts">
@@ -30,7 +31,7 @@
 											</div>
 											<div>
 												<span>{{match.model.primaryDocument.length > 11 ? 'CNPJ: ' : 'CPF: '}}</span>
-												{{match.model.primaryDocument}}
+												{{match.model.primaryDocument ? match.model.primaryDocument : 'Não informado'}}
 											</div>
 										</match>
 									</gumga-many-to-one>
@@ -139,7 +140,7 @@
 											</div>
 											<div>
 												<span>{{match.model.primaryDocument.length > 11 ? 'CNPJ: ' : 'CPF: '}}</span>
-												{{match.model.primaryDocument}}
+												{{match.model.primaryDocument ? match.model.primaryDocument : 'Não informado'}}
 											</div>
 										</match>
 									</gumga-many-to-one>
