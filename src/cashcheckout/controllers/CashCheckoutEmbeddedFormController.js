@@ -63,7 +63,7 @@ function CashCheckoutEmbeddedFormController(
 
 		$scope.openModalConfirmClose = function (entity) {
 			$scope.change = $scope.getTotalRemaining();
-			$scope.defaultTransfer = entity.destinyChange.defaultTransfer;
+			$scope.defaultTransfer = entity.destinyChange.defaultTransfer;			
 			$scope.beforeCashCheckout(entity).then((response) => {
 				if (response && response.closeCashCheckout) {
 					$scope.change = response.change;
