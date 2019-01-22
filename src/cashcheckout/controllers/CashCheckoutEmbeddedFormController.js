@@ -115,6 +115,7 @@ function CashCheckoutEmbeddedFormController(
 											animation: $scope.animationsEnabled,
 											templateUrl: viewModal,
 											controller: 'ViewerController',
+											windowClass: 'full-modal',
 											backdrop: 'static',
 											size: 'lg',
 											resolve: {
