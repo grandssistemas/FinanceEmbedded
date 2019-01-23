@@ -483,6 +483,7 @@ function TitleParcelPayListEmbeddedController(
 					{ name: 'Recebidos', key: true },
 					{ name: 'A Receber', key: false }
 				];
+				$scope.selectedValuesPay = []
 				$scope.individualSearch = $scope.lastIndividualReceive;
 				$scope.filterMto = $scope.lastfilterMtoReceive || $scope.filters[0];
 				$scope.paidOutFilter = $scope.lastfilterPaidOutFilter || $scope.paidOutFilters[2];
@@ -492,10 +493,14 @@ function TitleParcelPayListEmbeddedController(
 					{ name: 'Pagos', key: true },
 					{ name: 'A Pagar', key: false }
 				];
+				$scope.selectedValuesReceive = []
 				$scope.individualSearch = $scope.lastIndividualPay;
 				$scope.filterMto = $scope.lastfilterMtoPay || $scope.filters[0];
 				$scope.paidOutFilter = $scope.lastfilterPaidOutFilter || $scope.paidOutFilters[2];
 			}
+
+			$scope.total = 0
+			$scope.increase = 0
 		});
 	};
 
