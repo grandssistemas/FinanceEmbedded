@@ -6,22 +6,23 @@ DesignerEmbeddedController.$inject = [
     '$scope',
     '$window',
     'FinanceReportService',
-    '$uibModal'
+    '$uibModal',
+    '$timeout'
 ];
 
 function DesignerEmbeddedController($scope,
-                                    $window,
-                                    FinanceReportService,
-                                    $uibModal) {
-
-    $scope.entity = angular.copy($scope.$ctrl.entity);
-    $scope.variable = angular.copy($scope.$ctrl.variable);
+    $window,
+    FinanceReportService,
+    $uibModal,
+    $timeout) { 
 
     $scope.back = function () {
-        $scope.$ctrl.backState({$type: $scope.entity.reportType})
+        $scope.$ctrl.backState({ $type: $scope.entity.reportType })
     };
 
     $scope.init = function () {
+        $scope.entity = angular.copy($scope.$ctrl.entity);
+        $scope.variable = angular.copy($scope.$ctrl.variable);
         configureOptions();
         var options = new $window.Stimulsoft.Designer.StiDesignerOptions();
         options.appearance.fullScreenMode = false;

@@ -1,0 +1,45 @@
+<div class="ma-container"
+     ng-init="invoiceErrors()">
+    <div class="mbg-modal">
+        <button type="button"
+                class="btn mbg-close-modal"
+                ng-click="dismiss()"> Fechar
+            <i class="fas fa-times"></i>
+        </button>
+        <!-- <div class="mbg-header-modal">
+
+        </div> -->
+        <div class="mbg-body-modal" ng-style="{ 'overflow': 'hidden' }">
+            <div class="confirm-cashcheckout-wrapper"
+                 ng-class="{ 'active' : step } ">
+                <div class="confirm-cashcheckout-step"
+                     ng-show="step"
+                     ng-class="{ 'hidden-left' : step != 1 }">
+                    <p>Quanto de troco você está deixando em caixa?</p>
+                    <input type="text"
+                           ng-model="change"
+                           placeholder="Se precisar, informe um troco"
+                           mobiage-money-mask
+                           data-prefix="R$ "
+                           data-decimal=","
+                           data-allow-negative="true"
+                           data-thousands="." />
+                    <button ng-click="nextStep()"
+                            ng-disabled="step != 1">Avançar</button>
+                </div>
+                <div class="confirm-cashcheckout-step"
+                     ng-show="step"
+                     ng-class="{ 'hidden-right' : step != 2 }">
+                    <p>
+                        Você está fechando o {{ entity.group.name }} aberto
+                        <br> em {{ entity.date | date: 'dd/MM/yy' }} ás {{ getHoursIgnoreDate(entity.date) }}. Deseja continuar?</p>
+                    <button ng-click="closeModal()"
+                            ng-disabled="step != 2">Fechar caixa</button>
+                    <button ng-click="dismiss()"
+                            ng-disabled="step != 2"
+                            class="cancel">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

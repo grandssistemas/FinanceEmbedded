@@ -18,7 +18,10 @@ TitleFormEmbeddedController.$inject = [
 	'TitleParcelPayService',
 	'$state',
 	'FinanceReportService',
-	'PaymentService'];
+	'PaymentService',
+	'CheckingAccountService',
+	'ThirdPartyChequeService',
+	'ChequePortfolioService'];
 
 function TitleFormEmbeddedController(
 	TitleService,
@@ -37,7 +40,10 @@ function TitleFormEmbeddedController(
 	TitleParcelPayService,
 	$state,
 	FinanceReportService,
-	PaymentService
+	PaymentService,
+	CheckingAccountService,
+	ThirdPartyChequeService,
+	ChequePortfolioService
 ) {
 	const ctrl = this;
 	ctrl.$onInit = () => {
@@ -60,12 +66,15 @@ function TitleFormEmbeddedController(
 		gumgaController.createRestMethods($scope, WalletService, 'wallet');
 		gumgaController.createRestMethods($scope, TitleService, 'title');
 		gumgaController.createRestMethods($scope, PaymentService, 'payment');
+		gumgaController.createRestMethods($scope, CheckingAccountService, 'checkingaccount');
+		gumgaController.createRestMethods($scope, ChequePortfolioService, 'chequeportfolio');
 
 		$scope.searchIndividual = (param) => IndividualEmbeddedService.searchIndividual(param);
 
 		$scope.documentType.methods.search('name', '');
 		$scope.financeunit.methods.search('name', '');
 		$scope.ratioPlan.methods.search('label', '');
+		$scope.chequeportfolio.methods.search('name', '');
 
 		$scope.titleType = $scope.$ctrl.typeTitle; // Tipo de lançamento podendo vir: pay para pagamento ou receive para receber.
 		$scope.editParcels = false;
@@ -76,7 +85,8 @@ function TitleFormEmbeddedController(
 		$scope.tags = [];
 		$scope.step = 1;
 		$scope.interestActive = true;
-
+		$scope.chequeList = [];
+		$scope.checks = [];
 
 		$scope.blockBtnSave = (formInvalid) => formInvalid;
 
@@ -86,7 +96,6 @@ function TitleFormEmbeddedController(
 			}
 			$scope.launchPaid();
 		};
-
 		$scope.update = (invalid, entity) => {
 			if (invalid) {
 				return;
@@ -175,6 +184,9 @@ function TitleFormEmbeddedController(
 				}
 			}
 			if (numStep === 2) {
+				$scope.disable = false;
+				$scope.step = numStep;
+			} else if (numStep === 3) {
 				$scope.disable = false;
 				$scope.step = numStep;
 			}
@@ -469,32 +481,32 @@ function TitleFormEmbeddedController(
 
 			let expiration = new Date($scope.title.data.expiration);
 			for (let i = 0; i < $scope.title.data.numberParcel; i++) {
-				if ($scope.titleType === 'pay' || $scope.titleType === 'editpay') {
-					let currentParcel = {
+				// if ($scope.titleType === 'pay' || $scope.titleType === 'editpay') {
+				// 	let currentParcel = {
+				// 		number: i + 1,
+				// 		value: valueParcel,
+				// 		expiration: setExpiration(i, expiration)
+				// 	};
+				// 	$scope.title.data.parcel.push(currentParcel);
+				// }
+
+				// if ($scope.titleType === 'receive' || $scope.titleType === 'editreceive') {
+				if (i === 0) {
+					var currentParcelInt = {
 						number: i + 1,
-						value: valueParcel,
+						value: (valueParcelReceive + valueRemainingCalculateReceive),
 						expiration: setExpiration(i, expiration)
 					};
-					$scope.title.data.parcel.push(currentParcel);
+					$scope.title.data.parcel.push(currentParcelInt);
+				} else {
+					var currentParcelInt = {
+						number: i + 1,
+						value: valueParcelReceive,
+						expiration: setExpiration(i, expiration)
+					};
+					$scope.title.data.parcel.push(currentParcelInt);
 				}
-
-				if ($scope.titleType === 'receive' || $scope.titleType === 'editreceive') {
-					if (i === 0) {
-						var currentParcelInt = {
-							number: i + 1,
-							value: (valueParcelReceive + valueRemainingCalculateReceive),
-							expiration: setExpiration(i, expiration)
-						};
-						$scope.title.data.parcel.push(currentParcelInt);
-					} else {
-						var currentParcelInt = {
-							number: i + 1,
-							value: valueParcelReceive,
-							expiration: setExpiration(i, expiration)
-						};
-						$scope.title.data.parcel.push(currentParcelInt);
-					}
-				}
+				// }
 			}
 
 			$scope.elem = angular.copy($scope.title.data.parcel);
@@ -740,6 +752,12 @@ function TitleFormEmbeddedController(
 				const variables = [];
 				variables.push(FinanceReportService.mountVariable('', 'idPayment', resp[0].id));
 				FinanceReportService.openModalViewer('RECEIPTTITLE', [], variables, () => true, baseState);
+			});
+		};
+
+		$scope.searchTypeCategory = (param, type) => {
+			return TitleService.searchTypeCategorys(param, type).then((resp) => {
+				return resp.data.values;
 			});
 		};
 

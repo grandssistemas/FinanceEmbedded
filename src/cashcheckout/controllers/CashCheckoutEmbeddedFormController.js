@@ -1,3 +1,6 @@
+import templateConfirmCashCheckout from '../views/confirm-cashcheckout-modal.html';
+const viewModal = require('../../financereport/views/viewermodal.html');
+
 CashCheckoutEmbeddedFormController.$inject = ['$scope',
 	'CashCheckinEmbeddedService',
 	'GenericReportService',
@@ -7,7 +10,9 @@ CashCheckoutEmbeddedFormController.$inject = ['$scope',
 	'SweetAlert',
 	'MoneyUtilsService',
 	'$filter',
-	'$uibModal'
+	'$timeout',
+	'$uibModal',
+	'MbgPageLoader'
 ];
 
 function CashCheckoutEmbeddedFormController(
@@ -20,96 +25,126 @@ function CashCheckoutEmbeddedFormController(
 	SweetAlert,
 	MoneyUtilsService,
 	$filter,
-	$uibModal
+	$timeout,
+	$uibModal,
+	MbgPageLoader
 ) {
 	$scope.$ctrl.$onInit = function () {
 		$scope.entity = angular.copy($scope.$ctrl.entity);
-
+		$scope.type = 'NORMAL';
+		// $scope.type = 'BLIND';
 
 		$scope.noCheckin = !$scope.entity;
-		$scope.close = function (entity) {
-			if (validateDiference(entity) && !$scope.noCheckin) {
+
+		$scope.beforeCashCheckout = (entity) => {
+			const modalInstance = $uibModal.open({
+				animation: true,
+				templateUrl: templateConfirmCashCheckout,
+				controller: 'ConfirmCashCheckoutModal',
+				openedClass: 'modal-center',
+				backdrop: 'static',
+				size: 'md',
+				resolve: {
+					entity: () => entity,
+					change: () => $scope.change,
+				}
+			});
+			return modalInstance.result;
+		}
+
+		$scope.getTotalRemaining = () => {
+			if (!$scope.entity || !$scope.entity.values) { return 0; }
+			let remaining = 0;
+			$scope.entity.values.forEach((account) => {
+				remaining += ((account.informedValue - account.movementedValue) * -1);
+			});
+			return remaining;
+		}
+
+		$scope.openModalConfirmClose = function (entity) {
+			$scope.change = $scope.getTotalRemaining();
+			$scope.defaultTransfer = entity.destinyChange.defaultTransfer;			
+			$scope.beforeCashCheckout(entity).then((response) => {
+				if (response && response.closeCashCheckout) {
+					$scope.change = response.change;
+					if (!$scope.noCheckin) {
+						(entity.values).forEach((value, i) => {
+							entity.values[i].informedValue = entity.values[i].movementedValue;
+						})
+						$scope.close(entity);
+					}
+				}
+			}, () => {
+				delete $scope.change;
+			});
+		};
+
+		$scope.close = (entity) => {
+			entity.cashCheckouts = entity.cashCheckouts || [];
+			entity.cashCheckouts.push({
+				date: new Date(),
+				status: 'NORMAL',
+				change: $scope.change,
+			});
+			CashCheckinEmbeddedService.update(entity).then((resp) => {
+
+				const cashier = resp.data.data;
 				SweetAlert.swal(
 					{
-						title: 'Deseja realmente fechar o Caixa?',
+						title: 'Confirmação',
+						text: 'Deseja imprimir o relatório deste fechamento de caixa?',
 						type: 'warning',
 						showCancelButton: true,
 						confirmButtonColor: '#DD6B55',
-						confirmButtonText: 'Sim!',
+						confirmButtonText: 'Sim',
 						cancelButtonText: 'Não',
 						closeOnConfirm: true,
 						closeOnCancel: true
 					},
 					(isConfirm) => {
 						if (isConfirm) {
-							entity.cashCheckouts = entity.cashCheckouts || [];
-							entity.cashCheckouts.push({
-								date: new Date(),
-								status: 'NORMAL',
-								change: $scope.change,
-								defaultTransfer: $scope.defaultTransfer
-							});
-							CashCheckinEmbeddedService.update(entity).then((resp) => {
-								const cashier = resp.data.data;
-								const baseState = '';
-								SweetAlert.swal(
-									{
-										title: 'Confirmação',
-										text: 'Deseja imprimir o relatório deste fechamento de caixa?',
-										type: 'warning',
-										showCancelButton: true,
-										confirmButtonColor: '#DD6B55',
-										confirmButtonText: 'Sim',
-										cancelButtonText: 'Não',
-										closeOnConfirm: true,
-										closeOnCancel: true
-									},
-									(isConfirm) => {
-										if (isConfirm) {
-											const variables = [];
-											GenericReportService.getDefault('CASHCHECKOUT').then((response) => {
-												if (response.data) {
-													CompanyService.variablesReport().then((vari) => {
-														const variables = vari;
-														const filters = '';
-														variables.push(FinanceReportService.mountVariable('', 'idpdv', cashier.group.id));
-														variables.push(FinanceReportService.mountVariable('', 'idcheckin', cashier.id));
-														const modalInstance = $uibModal.open({
-															animation: $scope.animationsEnabled,
-															templateUrl: '/modules/stimulsoftreport/views/viewermodal.html',
-															controller: 'ViewerController',
-															backdrop: 'static',
-															size: 'lg',
-															resolve: {
-																entity() {
-																	return response.data;
-																},
-																filters() {
-																	return filters;
-																},
-																variable() {
-																	return variables;
-																},
-																backState() {
-																	return '';
-																}
-															}
-														});
-													});
-												} else {
-													SweetAlert.swal('Falta de Relatório de Fechamento de Caixa', 'Você esta sem o relatório de fechamento de caixa, contate o suporte.', 'warning');
+							const variables = [];
+							GenericReportService.getDefault('CASHCHECKOUT').then((response) => {
+								if (response.data) {
+									CompanyService.variablesReport().then((vari) => {
+										const variables = vari;
+										const filters = '';
+										variables.push(FinanceReportService.mountVariable('', 'idpdv', cashier.group.id));
+										variables.push(FinanceReportService.mountVariable('', 'idcheckin', cashier.id));
+										const modalInstance = $uibModal.open({
+											animation: $scope.animationsEnabled,
+											templateUrl: viewModal,
+											controller: 'ViewerController',
+											windowClass: 'full-modal',
+											backdrop: 'static',
+											size: 'lg',
+											resolve: {
+												entity() {
+													return response.data;
+												},
+												filters() {
+													return filters;
+												},
+												variable() {
+													return variables;
+												},
+												backState() {
+													return '';
 												}
-											});
-										}
-									}
-								);
-								$scope.$ctrl.onGoHome();
+											}
+										});
+									});
+								} else {
+									SweetAlert.swal('Falta de Relatório de Fechamento de Caixa', 'Você esta sem o relatório de fechamento de caixa, contate o suporte.', 'warning');
+								}
 							});
 						}
 					}
 				);
-			}
-		};
+
+				$scope.$ctrl.onGoHome();
+			});
+		}
 
 		$scope.showWithoutMovement = false;
 
@@ -136,16 +171,16 @@ function CashCheckoutEmbeddedFormController(
 
 		calcMovement();
 
-		function validateDiference(entity) {
-			for (let i = 0; i < entity.values.length; i++) {
-				if (!isComparationCorrect(entity.values[i], entity.destinyChange)) {
-					SweetAlert.swal('Diferença de Valores!', `A conta ${entity.values[i].financeUnit.name
-						} esta com diferença de valores, realize movimentações de caixa para corrigir antes de fechar.`, 'error');
-					return false;
-				}
-			}
-			return true;
-		}
+		// function validateDiference(entity) {
+		// 	for (let i = 0; i < entity.values.length; i++) {
+		// 		if (!isComparationCorrect(entity.values[i], entity.destinyChange)) {
+		// 			SweetAlert.swal('Diferença de Valores!', `A conta ${entity.values[i].financeUnit.name
+		// 				} esta com diferença de valores, realize movimentações de caixa para corrigir antes de fechar.`, 'error');
+		// 			return false;
+		// 		}
+		// 	}
+		// 	return true;
+		// }
 
 		function isComparationCorrect(value, destiny) {
 			let change = 0;
@@ -154,6 +189,8 @@ function CashCheckoutEmbeddedFormController(
 			}
 			return value.movementedValue === MoneyUtilsService.sumMoney(value.informedValue, change);
 		}
+
+		$scope.stopClickPropagation = (evt) => evt.stopPropagation();
 
 		$scope.formatDate = function (date) {
 			return $filter('date')(new Date(date), 'dd/MM/yyyy HH:mm:ss');
@@ -218,6 +255,101 @@ function CashCheckoutEmbeddedFormController(
 				}
 			});
 		};
+
+		$scope.getHoursIgnoreDate = (dateValue) => {
+			
+			const mommentInstance = moment(dateValue);
+			console.log(mommentInstance.hours() + ':' + mommentInstance.utc().minutes())
+			return mommentInstance.hours() + ':' + mommentInstance.utc().minutes();
+		}
+
+		$scope.openDetailsAccount = (account, index) => {
+			if (account.openDetails) {
+				$scope.entity.values[index].openDetails = false;
+				return;
+			}
+			const acordionDetails = () => {
+				$scope.entity.values.forEach((value, i) => {
+					$scope.entity.values[i].openDetails = false;
+				});
+				$scope.entity.values[index].openDetails = true;
+			};
+			if (account.moviments) {
+				acordionDetails();
+			} else {
+				account.verified = false;
+				const promisse = FinanceUnitService.getEntriesByFinanceUnitAndCheckin(account.financeUnit.id, $scope.entity.id);
+				MbgPageLoader.open(promisse).finally(() => { });
+				promisse.then((response) => {
+					$scope.entity.values[index].moviments = response.data.values;
+					$scope.entity.values[index].moviments.forEach((moviment) => {
+						moviment.verified = false;
+					})
+					acordionDetails();
+				});
+			}
+		};
+
+		$scope.stopPropagation = (evt) => {
+			evt.stopPropagation();
+		}
+
+		$scope.getTotalValue = () => {
+			if (!$scope.entity || !$scope.entity.values) { return 0; }
+			return $scope.entity.values.reduce((value, account) => {
+				return value + account.movementedValue;
+			}, 0);
+		}
+
+		$scope.handlingAccountVerified = (newValue, account) => {
+			if ($scope.type == 'NORMAL') {
+				$timeout(() => {
+					(account.moviments || []).forEach((moviment) => {
+						moviment.verified = newValue;
+					});
+				});
+			}
+			if ($scope.type == 'BLIND') {
+				$timeout(() => {
+					if (account.verifiedValue == account.movementedValue) {
+						(account.moviments || []).forEach((moviment, i) => {
+							account.moviments[i].verifiedValue = moviment.value;
+						})
+					}
+				});
+			}
+		}
+
+		$scope.checkVerifiedAccount = (account) => {
+			if ($scope.type == 'NORMAL') {
+				$timeout(() => {
+					account.verified = (account.moviments || []).filter((moviment) => {
+						return moviment.verified == false;
+					}).length == 0;
+				});
+			}
+			if ($scope.type == 'BLIND') {
+				$timeout(() => {
+					account.verifiedValue = (account.moviments || []).reduce((value, moviment) => {
+						return value + moviment.verifiedValue;
+					}, 0);
+				});
+			}
+		}
+
+		$scope.allAccountsVerified = () => {
+			if ($scope.type == 'NORMAL') {
+				return $scope.entity.values.filter((account) => {
+					return (account.movementedValue < 0 || account.movementedValue > 0) && !account.verified;
+				}).length == 0;
+			}
+			if ($scope.type == 'BLIND') {
+				return $scope.entity.values.filter((account) => {
+					return (account.movementedValue < 0 || account.movementedValue > 0) && account.verifiedValue != account.movementedValue;
+				}).length == 0;
+			}
+		}
+
 	};
 }
 

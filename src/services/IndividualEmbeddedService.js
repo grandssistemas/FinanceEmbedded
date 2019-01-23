@@ -24,6 +24,16 @@ function IndividualEmbeddedService(GumgaRest, $http, FinanceEmbeddedService, Fin
 		return Service.extend('get', '/getlogged');
 	};
 
+	Service.searchEmployees = function (param, page, pageSize) {
+		let gQuery = new GQuery()
+		gQuery = gQuery.and(new Criteria("obj.individualType", ComparisonOperator.EQUAL, 'EMPLOYEE'))
+		if (param) {
+			gQuery = gQuery.and(new Criteria("obj.name", ComparisonOperator.CONTAINS, param).addIgnoreCase(param).addTranslate())
+			gQuery = gQuery.or(new Criteria("obj.primaryDocument", ComparisonOperator.CONTAINS, param).addIgnoreCase(param).addTranslate())
+		}
+		return Service.searchWithGQuery(gQuery, pageSize, page);
+	};
+
 	Service.getEmployees = function () {
 		return Service.extend('get', '/getemployees');
 	};

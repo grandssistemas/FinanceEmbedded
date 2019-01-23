@@ -232,6 +232,7 @@ function PayReceiveEmbeddedController(
 			editable: true,
 			title: '<span>Juros</span>',
 			content: '<input type="text" ui-money-mask ' +
+				'class="input-in-list" ' +
 				'ng-change="$parent.$parent.updateTotal($value,interestValue,penaltyValue,discountValue)" ' +
 				'ng-disabled="!$parent.$parent.isExpired($value.expiration)" ' +
 				'ng-init="interestValue = $parent.$parent.calcInterestValue($value)" ' +
@@ -241,6 +242,7 @@ function PayReceiveEmbeddedController(
 			editable: true,
 			title: '<span>Multa</span>',
 			content: '<input type="text" ui-money-mask ' +
+				'class="input-in-list" ' +
 				'ng-change="$parent.$parent.updateTotal($value,interestValue,penaltyValue,discountValue)" ' +
 				'ng-disabled="!$parent.$parent.isExpired($value.expiration)" ' +
 				'ng-init="penaltyValue = $parent.$parent.calcPenaltyValue($value)" ' +
@@ -250,6 +252,7 @@ function PayReceiveEmbeddedController(
 			editable: true,
 			title: '<span>Desconto</span>',
 			content: '<input type="text" ui-money-mask ' +
+				'class="input-in-list" ' +
 				'ng-change="$parent.$parent.updateTotal($value,interestValue,penaltyValue,discountValue)" ' +
 				'ng-init="discountValue = $parent.$parent.calcDiscountValue($value)" ' +
 				'ng-model="discountValue">'
@@ -333,6 +336,7 @@ function PayReceiveEmbeddedController(
 	};
 
 	$scope.addReceiveMoney = function (receive) {
+		$scope.focusValue = '';
 		const methodReceive = {
 			historic: 'Dinheiro',
 			method: 'money',
@@ -344,6 +348,7 @@ function PayReceiveEmbeddedController(
 	};
 
 	$scope.addReceiveCheck = function (receive) {
+		$scope.focusValue = '';
 		const methodReceive = {
 			historic: 'Cheque',
 			method: 'check',
@@ -362,6 +367,7 @@ function PayReceiveEmbeddedController(
 	};
 
 	$scope.addReceiveBank = function (receive) {
+		$scope.focusValue = '';
 		const methodReceive = {
 			historic: $scope.isTed ? 'Banco - op: TED' : 'Banco - op: DOC',
 			type: $scope.isTed ? 'TED' : 'DOC',
@@ -374,6 +380,7 @@ function PayReceiveEmbeddedController(
 	};
 
 	$scope.addReceiveCard = function (receive) {
+		$scope.focusValue = '';
 		const methodReceive = {
 			historic: 'Cartão',
 			method: 'card',
@@ -385,6 +392,7 @@ function PayReceiveEmbeddedController(
 	};
 
 	$scope.addReceive = function (methodReceive, operation) {
+		$scope.focusValue = '';
 		$scope.payment.numberReceive++;
 		switch (operation) {
 			case 'docTed':
@@ -410,6 +418,7 @@ function PayReceiveEmbeddedController(
 
 	// Adicionar pagamento de crédito
 	$scope.addReceiveCredit = function (payment) {
+		$scope.focusValue = '';
 		const methodPayment = {
 			historic: 'Crédito',
 			method: 'credit',
@@ -454,9 +463,8 @@ function PayReceiveEmbeddedController(
 
 	$scope.makePayment = function (payment) {
 		$scope.post = payment;
-
 		const paymentDTO = angular.copy(payment);
-
+		paymentDTO.momment = new Date();
 		paymentDTO.parcels.forEach((parcel, index) => {
 			paymentDTO.parcels[index].discount.value = paymentDTO.parcels[index].discount.value * 100;
 			paymentDTO.parcels[index].interest.value = paymentDTO.parcels[index].interest.value * 100;
@@ -491,7 +499,18 @@ function PayReceiveEmbeddedController(
 			});
 	};
 
+	function emptyCheck() {
+		$scope.payment.check.bank = '';
+		$scope.payment.check.branch = '';
+		$scope.payment.check.account = '';
+		$scope.payment.check.chequeNumber = '';
+		$scope.payment.check.issuer = { document: '', name: '' };
+		$scope.payment.check.validUntil = '';
+		$scope.payment.value = '';
+	}
+
 	$scope.setarfocusPayment = function (value) {
+		$scope.focusValue = value;
 		switch (value) {
 			case 'money':
 				angular.element(document.getElementById('paymentMoneyFinanceunit'))
@@ -499,6 +518,7 @@ function PayReceiveEmbeddedController(
 				break;
 			case 'check':
 				document.getElementById('paymentCheckFinanceunit').focus();
+				emptyCheck();
 				break;
 			case 'bank':
 				angular.element(document.getElementById('paymentBankFinanceunit'))
@@ -540,10 +560,28 @@ function PayReceiveEmbeddedController(
 		return data.data.values;
 	});
 
-	$scope.checkExpired = (validUntil) => {
-		if (!validUntil) return false;
-		const dateToCompare = validUntil instanceof Date ? validUntil : new Date(validUntil);
-		return (dateToCompare && moment(validUntil).isBefore(new Date(), 'day'));
+
+	$scope.validadeCheck = (payment) => {
+		if (payment && payment.check && (!payment.check.bank ||
+			!payment.check.branch ||
+			!payment.check.account ||
+			!payment.check.chequeNumber ||
+			!payment.check.portfolio ||
+			!payment.check.validUntil ||
+			!payment.value)) {
+			return true;
+		}
+		if (payment && payment.check && payment.check.issuer && (
+			!payment.check.issuer.document ||
+			!payment.check.issuer.name)
+		) {
+			return true;
+		}
+		if (payment && payment.check && !payment.check.validUntil) return false;
+		if (payment && payment.check && payment.check.validUntil) {
+			const dateToCompare = payment.check.validUntil instanceof Date ? payment.check.validUntil : new Date(payment.check.validUntil);
+			return (dateToCompare && moment(payment.check.validUntil).isBefore(new Date(), 'day'));
+		}
 	};
 }
 

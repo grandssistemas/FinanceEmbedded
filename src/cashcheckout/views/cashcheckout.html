@@ -1,0 +1,231 @@
+<div class="cashcheckout-wrapper">
+    <div class="cashcheckout-header"
+         ng-show="noCheckin">
+        <h1>Fechamento de caixa</h1>
+        <svg class="mbg-smc-detail"
+             xmlns="http://www.w3.org/2000/svg"
+             viewBox="0 0 78.56 7.99">
+            <path class="mbg-smc-detail-path"
+                  d="M11.82,5A9.21,9.21,0,0,0,23.76,5a7.23,7.23,0,0,1,9.59,0,9.21,9.21,0,0,0,11.9,0,7.24,7.24,0,0,1,9.56,0,9.21,9.21,0,0,0,12,0,7,7,0,0,1,4.78-1.8A6.47,6.47,0,0,1,75.68,4.5c.48-.47.95-1,1.41-1.45a8.6,8.6,0,0,0-5.55-1.88,8.94,8.94,0,0,0-6,2.2,7.24,7.24,0,0,1-9.56,0A9.21,9.21,0,0,0,44,3.37a7.23,7.23,0,0,1-9.55,0,9.21,9.21,0,0,0-11.94,0,7.23,7.23,0,0,1-9.55,0,8.94,8.94,0,0,0-6-2.2A8.58,8.58,0,0,0,1.51,3c.46.49.93,1,1.41,1.45A6.46,6.46,0,0,1,7,3.17,7,7,0,0,1,11.82,5Z"
+        
+                  transform="translate(-0.04 -0.16)"></path>
+        </svg>
+        <label>Parece que não existe caixa aberto,</label>
+        <label>mas fique tranquilo, quando você abrir um ele irá aparecer aqui.</label>
+        <label>Você pode ir agora para abertura de caixa e começar fazer suas vendas.</label>
+    </div>
+
+    <div class="cashcheckout-header"
+         ng-show="!noCheckin">
+        <h1>Fechamento de caixa</h1>
+        <svg class="mbg-smc-detail"
+             xmlns="http://www.w3.org/2000/svg"
+             viewBox="0 0 78.56 7.99">
+            <path class="mbg-smc-detail-path"
+                  d="M11.82,5A9.21,9.21,0,0,0,23.76,5a7.23,7.23,0,0,1,9.59,0,9.21,9.21,0,0,0,11.9,0,7.24,7.24,0,0,1,9.56,0,9.21,9.21,0,0,0,12,0,7,7,0,0,1,4.78-1.8A6.47,6.47,0,0,1,75.68,4.5c.48-.47.95-1,1.41-1.45a8.6,8.6,0,0,0-5.55-1.88,8.94,8.94,0,0,0-6,2.2,7.24,7.24,0,0,1-9.56,0A9.21,9.21,0,0,0,44,3.37a7.23,7.23,0,0,1-9.55,0,9.21,9.21,0,0,0-11.94,0,7.23,7.23,0,0,1-9.55,0,8.94,8.94,0,0,0-6-2.2A8.58,8.58,0,0,0,1.51,3c.46.49.93,1,1.41,1.45A6.46,6.46,0,0,1,7,3.17,7,7,0,0,1,11.82,5Z"
+        
+                  transform="translate(-0.04 -0.16)"></path>
+        </svg>
+        <label>Nome do Caixa:
+            <span>{{entity.group.name}}</span>
+        </label>
+        <label>Quem abriu:
+            <span>{{ entity.employee.name }}</span>
+        </label>
+        <label>Data e hora de abertura
+            <span>{{ entity.date | date: 'dd/MM/yy' }} ás {{ entity.date | date: 'h:mm'  }}</span>
+        </label>
+        <label>O caixa iniciou com
+            <span>{{entity.change | currency}}</span> de troco</label>
+    </div>
+    <div class="cashcheckout-body"
+         ng-show="!noCheckin">
+        <div class="cashcheckout-account-wrapper"
+             ng-repeat="account in entity.values"
+             ng-show="account.movementedValue < 0 || account.movementedValue > 0">
+            <div class="cashcheckout-account-header"
+                 ng-class="{ 'active': account.openDetails }"
+                 ng-click="openDetailsAccount(account, $index)">
+                <div class="cashcheckout-account-metadata">
+                    <label>
+                        {{ account.financeUnit.name }}
+                        <span ng-if="type == 'NORMAL'">: {{ account.movementedValue | currency:'R$' }}</span>
+                    </label>
+                </div>
+
+                <input type="text"
+                       mobiage-money-mask
+                       ng-click="stopClickPropagation($event)"
+                       ng-if="type == 'BLIND'"
+                       data-prefix="R$ "
+                       data-decimal=","
+                       data-allow-negative="true"
+                       ng-keyup="handlingAccountVerified(account.verifiedValue, account)"
+                       data-thousands="."
+                       placeholder="Digite o valor"
+                       ng-model="account.verifiedValue" />
+
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     xmlns:xlink="http://www.w3.org/1999/xlink"
+                     version="1.1"
+                     x="0px"
+                     y="0px"
+                     class="check-icon"
+                     viewBox="0 0 66 66"
+                     ng-if="type == 'BLIND' && account.verifiedValue == account.movementedValue"
+                     xml:space="preserve">
+                    <g>
+                        <path d="M33,60.3C48.1,60.3,60.3,48,60.3,33C60.3,17.9,48.1,5.7,33,5.7C17.9,5.7,5.7,17.9,5.7,33C5.7,48,17.9,60.3,33,60.3z    M21.7,30.9l7,7l15.6-15.6l3.6,3.6l-0.3,0.3L28.7,45L18.1,34.4L21.7,30.9z"
+                        />
+                    </g>
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     xmlns:xlink="http://www.w3.org/1999/xlink"
+                     viewBox="0 0 8 8"
+                     version="1.1"
+                     class="error-value-icon"
+                     ng-if="type == 'BLIND' && account.verifiedValue && account.verifiedValue != account.movementedValue"
+                     x="0px"
+                     y="0px">
+                    <g stroke="none"
+                       stroke-width="1">
+                        <g>
+                            <path d="M4.039,7.546 C2.08425,7.546 0.5,5.9615 0.5,4.007 C0.5,2.05225 2.08425,0.46775 4.039,0.46775 C5.9935,0.46775 7.578,2.05225 7.578,4.007 C7.578,5.9615 5.99375,7.546 4.039,7.546 Z M5.69875,2.791 C5.795,2.69475 5.7665,2.50975 5.63525,2.3785 L5.62025,2.36375 C5.489,2.2325 5.30425,2.20375 5.208,2.30025 L4.03075,3.47775 L2.768,2.21475 C2.67025,2.117 2.483,2.146 2.35,2.27925 L2.335,2.29425 C2.20175,2.42725 2.17325,2.6145 2.27075,2.71175 L3.5335,3.97475 L2.30125,5.20675 C2.20475,5.3035 2.23325,5.48775 2.36475,5.61925 L2.3795,5.634 C2.51075,5.76525 2.6955,5.79425 2.79175,5.6975 L4.02425,4.465 L5.21675,5.65775 C5.3145,5.75525 5.5015,5.72675 5.6345,5.5935 L5.64975,5.57825 C5.783,5.4455 5.81175,5.25825 5.714,5.1605 L4.5215,3.96775 L5.69875,2.791 Z"
+                            />
+                        </g>
+                    </g>
+                </svg>
+
+                <mb-check ng-model="account.verified"
+                          ng-if="type == 'NORMAL'"
+                          on-change="handlingAccountVerified(account.verified, account)"></mb-check>
+
+                <svg version="1.1"
+                     xmlns="http://www.w3.org/2000/svg"
+                     xmlns:xlink="http://www.w3.org/1999/xlink"
+                     x="0px"
+                     y="0px"
+                     width="612px"
+                     height="612px"
+                     viewBox="0 0 612 612"
+                     style="enable-background:new 0 0 612 612;"
+                     class="toogle-details"
+                     xml:space="preserve">
+                    <g>
+                        <g id="Right">
+                            <g>
+                                <path d="M277.58,179.679l-0.057,0.077c-5.125-4.705-11.857-7.631-19.335-7.631c-15.835,0-28.688,12.852-28.688,28.688
+                                  c0,8.377,3.634,15.835,9.352,21.076l-0.057,0.077L330.48,306l-91.686,84.055l0.057,0.076c-5.718,5.221-9.352,12.68-9.352,21.057
+                                  c0,15.836,12.852,28.688,28.688,28.688c7.478,0,14.21-2.926,19.335-7.611l0.057,0.076l114.75-105.188
+                                  c5.91-5.451,9.295-13.101,9.295-21.152s-3.385-15.702-9.295-21.152L277.58,179.679z M306,0C137.012,0,0,137.012,0,306
+                                  s137.012,306,306,306s306-137.012,306-306S474.988,0,306,0z M306,554.625C168.912,554.625,57.375,443.088,57.375,306
+                                  S168.912,57.375,306,57.375S554.625,168.912,554.625,306S443.088,554.625,306,554.625z" />
+                            </g>
+                        </g>
+                    </g>
+                </svg>
+
+            </div>
+            <div class="cashcheckout-account-body"
+                 ng-style="{ 'height': account.openDetails ? ((account.moviments.length + 1) * 44) + 10 + 'px' : '0px' }"
+                 ng-class="{ 'open': account.openDetails }">
+                <table>
+                    <tr>                    
+                        <th>
+                            Histórico
+                        </th>
+                        <th>
+                            Data
+                        </th>
+                        <th class="table-column-148">
+                            Valor da Venda
+                        </th>
+                        <th></th>
+                    </tr>
+                    <tr ng-repeat="moviment in account.moviments">
+                        <td>
+                            {{ moviment.historic }}
+                        </td>
+                        <td>
+                            {{ moviment.momment | date: 'dd/MM/yy' }} - {{ moviment.momment | date: 'HH:mm' }}
+                        </td>
+                        <td class="table-column-148">
+                            <input type="text"
+                                   mobiage-money-mask
+                                   ng-if="type == 'NORMAL'"
+                                   data-prefix="R$ "
+                                   data-decimal=","
+                                   data-allow-negative="true"
+                                   data-thousands="."
+                                   ng-keyup="checkVerifiedAccount(account)"
+                                   disabled
+                                   ng-model="moviment.value" />
+                            <input type="text"
+                                   mobiage-money-mask
+                                   ng-if="type == 'BLIND'"
+                                   data-prefix="R$ "
+                                   data-decimal=","
+                                   data-allow-negative="true"
+                                   ng-keyup="checkVerifiedAccount(account)"
+                                   data-thousands="."
+                                   placeholder="Digite o valor"
+                                   ng-model="moviment.verifiedValue" />
+                        </td>
+                        <td class="table-column-68">
+                            <mb-check ng-model="moviment.verified"
+                                      ng-if="type == 'NORMAL'"
+                                      on-change="checkVerifiedAccount(account)"></mb-check>
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 xmlns:xlink="http://www.w3.org/1999/xlink"
+                                 version="1.1"
+                                 x="0px"
+                                 y="0px"
+                                 class="check-icon"
+                                 viewBox="0 0 66 66"
+                                 ng-if="type == 'BLIND' && moviment.verifiedValue == moviment.value"
+                                 xml:space="preserve">
+                                <g>
+                                    <path d="M33,60.3C48.1,60.3,60.3,48,60.3,33C60.3,17.9,48.1,5.7,33,5.7C17.9,5.7,5.7,17.9,5.7,33C5.7,48,17.9,60.3,33,60.3z    M21.7,30.9l7,7l15.6-15.6l3.6,3.6l-0.3,0.3L28.7,45L18.1,34.4L21.7,30.9z"
+                                    />
+                                </g>
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 xmlns:xlink="http://www.w3.org/1999/xlink"
+                                 viewBox="0 0 8 8"
+                                 version="1.1"
+                                 class="error-value-icon"
+                                 ng-if="type == 'BLIND' && moviment.verifiedValue && moviment.verifiedValue != moviment.value"
+                        
+                                 x="0px"
+                                 y="0px">
+                                <g stroke="none"
+                                   stroke-width="1">
+                                    <g>
+                                        <path d="M4.039,7.546 C2.08425,7.546 0.5,5.9615 0.5,4.007 C0.5,2.05225 2.08425,0.46775 4.039,0.46775 C5.9935,0.46775 7.578,2.05225 7.578,4.007 C7.578,5.9615 5.99375,7.546 4.039,7.546 Z M5.69875,2.791 C5.795,2.69475 5.7665,2.50975 5.63525,2.3785 L5.62025,2.36375 C5.489,2.2325 5.30425,2.20375 5.208,2.30025 L4.03075,3.47775 L2.768,2.21475 C2.67025,2.117 2.483,2.146 2.35,2.27925 L2.335,2.29425 C2.20175,2.42725 2.17325,2.6145 2.27075,2.71175 L3.5335,3.97475 L2.30125,5.20675 C2.20475,5.3035 2.23325,5.48775 2.36475,5.61925 L2.3795,5.634 C2.51075,5.76525 2.6955,5.79425 2.79175,5.6975 L4.02425,4.465 L5.21675,5.65775 C5.3145,5.75525 5.5015,5.72675 5.6345,5.5935 L5.64975,5.57825 C5.783,5.4455 5.81175,5.25825 5.714,5.1605 L4.5215,3.96775 L5.69875,2.791 Z"
+                                        />
+                                    </g>
+                                </g>
+                            </svg>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="cashcheckout-footer"
+         ng-show="!noCheckin">
+        <div class="cashcheckout-footer-left">
+            <label>Valor total: {{ getTotalValue() | currency: 'R$' }}</label>
+        </div>
+        <button ng-click="openModalConfirmClose(entity)"
+                ng-disabled="!allAccountsVerified()">
+            Fechar caixa
+        </button>
+    </div>
+    <div class="cashcheckout-footer"
+         ng-show="noCheckin">
+        <button ui-sref="app.cashcheckin.checkin">
+            Abrir um caixa
+        </button>
+    </div>
+</div>

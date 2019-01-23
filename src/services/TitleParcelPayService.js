@@ -1,25 +1,31 @@
 TitleParcelPayService.$inject = ['GumgaRest', '$http', 'FinanceEmbeddedService'];
 
 function TitleParcelPayService(GumgaRest, $http, FinanceEmbeddedService) {
-	var Service = new GumgaRest(FinanceEmbeddedService.getDefaultConfiguration().api + '/titleparcel');
+	var service = new GumgaRest(FinanceEmbeddedService.getDefaultConfiguration().api + '/titleparcel');
 
 	var installmentsPayable = [];
 
-	Service.getInstallmentsPayable = function () {
+	service.searchProgramedPayment = (page, pageSize, LastgQuery) => {
+		let gQuery = LastgQuery;
+		gQuery.useDistinct = true;
+		return service.searchWithGQuery(gQuery, page, pageSize);
+	};
+
+	service.getInstallmentsPayable = function () {
 		return installmentsPayable;
 	};
 
-	Service.setInstallmentsPayable = function (arr) {
+	service.setInstallmentsPayable = function (arr) {
 		installmentsPayable = arr;
 	};
 
 
-	Service.grouped = function (type) {
-		return $http.get(Service._url + '/grouped/' + type);
+	service.grouped = function (type) {
+		return $http.get(service._url + '/grouped/' + type);
 	};
 
-	Service.individualSearch = function (idIndividual, type) {
-		return $http.get(Service._url + '/grouped/' + type + '/' + idIndividual)
+	service.individualSearch = function (idIndividual, type) {
+		return $http.get(service._url + '/grouped/' + type + '/' + idIndividual)
 	};
 
 	let format = function date2str(x, y) {
@@ -39,16 +45,15 @@ function TitleParcelPayService(GumgaRest, $http, FinanceEmbeddedService) {
 		});
 	};
 
-	Service.findOpenByMaxDate = function (date, type, page, individual, paidOut, aqFilterSelected) {
+	service.findOpenByMaxDate = function (date, type, page, individual, paidOut, aqFilterSelected) {
 		if (aqFilterSelected !== null) {
-			return $http.get(Service._url + "?start=" + page + "&aq="
+			return $http.get(service._url + "?start=" + page + "&aq="
 				+ aqFilterSelected);
 		} else {
 			if (page !== 1) page = (page * 10) - 10;
 			if (page === 1) page = 0;
 			var searchDate = date ? " AND obj.expiration <= '" + format(date, 'yyyy-MM-dd') + "'" : "";
 			var searchIndividual = individual ? ' AND obj.individual.id = ' + individual.id : '';
-			console.log(type);
 			return $http.get(Service._url
 				+ "?start=" + page + "&aq=obj.title.titleType='" + type + "' AND (obj.fullPaid = " + paidOut + " OR obj.fullPaid is null)"
 				+ searchDate
@@ -56,7 +61,7 @@ function TitleParcelPayService(GumgaRest, $http, FinanceEmbeddedService) {
 		}
 	};
 
-	Service.getByGQueryMaxDate = function (date, type, page, individual, paidOut, gQuery, pageSize, sortField, sortDir) {
+	service.getByGQueryMaxDate = function (date, type, page, individual, paidOut, gQuery, pageSize, sortField, sortDir, paidOutFilter) {
 		if (gQuery === null) {
 			gQuery = new GQuery();
 
@@ -71,7 +76,9 @@ function TitleParcelPayService(GumgaRest, $http, FinanceEmbeddedService) {
 
 			gQuery = gQuery.and(new Criteria('title.titleType', ComparisonOperator.EQUAL, type))
 				.and(new Criteria('title.isReversed', ComparisonOperator.EQUAL, false))
-				.and(new GQuery(new Criteria('obj.fullPaid', ComparisonOperator.EQUAL, paidOut)));
+			if (paidOut != null) {
+				gQuery = gQuery.and(new GQuery(new Criteria('obj.fullPaid', ComparisonOperator.EQUAL, paidOut)));
+			}
 
 			// .or(new Criteria('obj.fullPaid', ComparisonOperator.IS, new CriteriaField("null")))
 			// ABERTO ISSUE NA GUMGA
@@ -97,14 +104,14 @@ function TitleParcelPayService(GumgaRest, $http, FinanceEmbeddedService) {
 				qo.sortDir = sortDir
 		}
 
-		return Service.sendQueryObject(qo);
+		return service.sendQueryObject(qo);
 	}
 
-	Service.getPaymentsByParcel = function (id) {
-		return Service.extend('get', `/getpaymentsbyparcel/${id}`);
+	service.getPaymentsByParcel = function (id) {
+		return service.extend('get', `/getpaymentsbyparcel/${id}`);
 	};
 
-	return Service;
+	return service;
 }
 
 module.exports = TitleParcelPayService;

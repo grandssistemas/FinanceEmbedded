@@ -12,6 +12,8 @@ function TitleListEmbeddedController(
 ) {
 	TitleService.resetDefaultState();
 
+	$scope.lastGQuery = new GQuery();
+
 	gumgaController.createRestMethods($scope, TitleService, 'title');
 	$scope.participation = '';
 	$scope.currentPage = 1;
@@ -46,6 +48,7 @@ function TitleListEmbeddedController(
 		} else {
 			param = param.and(filterType);
 		}
+		$scope.lastGQuery = param;
 		$scope.title.methods.asyncSearchWithGQuery(param).then((values) => {
 			$scope.title.data = values;
 		}).catch((error) => {
@@ -95,35 +98,37 @@ function TitleListEmbeddedController(
 		$scope.title.methods.get(1);
 	};
 
+	$scope.titlePage = ($scope.titleType || '').toLowerCase() === 'pay' ? 'Listagem de Contas a Pagar' : 'Listagem de Contas a Receber';
+
 	$scope.titleList = [];
 
 	$scope.tableConf = {
 		columns: 'titleType, issuedAt,documentNumber, participationsFormatted, expiration, docname, value, btns',
 		materialTheme: true,
-		title: ($scope.titleType || '').toLowerCase() === 'pay' ? 'Listagem de Contas a Pagar' : 'Listagem de Contas a Receber',
 		columnsConfig: [
 			{
 				name: 'titleType',
 				title: '<span gumga-translate-tag="title.titleType"></span>',
 				content: '<span style="">{{$value.titleType == \'PAY\' ? \'A PAGAR\' : \'A RECEBER\'}}</span>',
+				sortField: 'titleType',
 				size: 'col-md-2 col-lg-1'
 
 			}, {
 				name: 'issuedAt',
 				title: '<span gumga-translate-tag="title.issuedAt"></span>',
+				sortField: 'emissionDate',
 				content: '<span>{{$value.emissionDate | date: \'dd/MM/yyyy\' }}</span>'
 
 			}, {
 				name: 'documentNumber',
 				title: '<span gumga-translate-tag="title.documentNumberAdapted"></span>',
+				sortField: 'documentNumber',
 				content: '<span>{{$value.documentNumber}}</span>'
 
 			}, {
 				name: 'participationsFormatted',
 				title: '<span gumga-translate-tag="title.participationsFormatted"></span>',
-				content: '<div uib-tooltip="{{$value.participationsFormatted}}" ng-class="{\'text-overflow-list\':$value.participations.length == 1, \'text-align-center\':$value.participations.length > 1}">' +
-					'<i class=" glyphicon glyphicon-user"></i><i class=" glyphicon glyphicon-user" ng-if="$value.participations.length > 1"></i>' +
-					'&nbsp;<span ng-if="$value.participations.length == 1">{{$value.participationsFormatted}}</span></div>'
+				content: '<div class="ellipsis" ng-if="$value.participations.length == 1">{{$value.participationsFormatted}}</div>'
 
 			}, {
 				name: 'expiration',
@@ -138,6 +143,9 @@ function TitleListEmbeddedController(
 			}, {
 				name: 'value',
 				title: '<span gumga-translate-tag="title.value"></span>',
+				sortField: 'value',
+				alignColumn: 'right',
+				alignRows: 'right',
 				content: '<span>{{$value.value | currency}}</span>'
 
 			}, {
@@ -166,6 +174,33 @@ function TitleListEmbeddedController(
 			}]
 	};
 
+	$scope.searchSortQuery = (field, dir, pageSize, page) => {
+		$scope.titleField = field;
+		$scope.titleDir = dir;
+		$scope.title.methods.createQuery()
+			.pageSize(pageSize)
+			.page(page)
+			.sort(field, dir)
+			.gQuery($scope.lastGQuery)
+			.send()
+			.then(() => {
+			});
+	};
+
+	$scope.createQuery = function (page, pageSize) {
+		$scope.field = $scope.titleField || 'emissionDate';
+		$scope.dir = $scope.titleDir || 'desc';
+
+		$scope.title
+			.methods
+			.createQuery()
+			.gQuery($scope.lastGQuery)
+			.page(page)
+			.sort($scope.field, $scope.dir)
+			.pageSize(pageSize)
+			.send();
+	};
+
 	$scope.openPrintings = function (id) {
 		$uibModal.open({
 			templateUrl: modalTemplate,
@@ -184,7 +219,7 @@ function TitleListEmbeddedController(
 		$scope.$ctrl.onNewTitle({ type: $scope.$ctrl.titleType });
 	};
 
-	$scope.goEdit = function (type, id, fullPaid) {		
+	$scope.goEdit = function (type, id, fullPaid) {
 		$scope.$ctrl.onEditTitle({ type, id, fullPaid });
 	};
 

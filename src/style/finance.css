@@ -139,3 +139,23 @@
     border-bottom: 1px solid #333 !important;
     text-align: center;
 }
+
+.nav-tabs>li.active>a,.nav-tabs>li.active>a:focus,.nav-tabs>li.active>a:hover {
+    border: 0px;
+    color: var(--neutral1);
+}
+.ma-container label.mbg-label.input-label.mbg-label, .mbg-label {
+    font-size: 11px;
+    color: #444;
+    margin-bottom: 3px;
+}
+
+.mbg-center-flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+gumga-many-to-one[name="documentType"] input{
+    text-transform: capitalize;
+}

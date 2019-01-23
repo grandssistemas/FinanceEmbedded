@@ -1,0 +1,339 @@
+.cashcheckout-wrapper {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    margin-top: 26px;
+    padding: 0 18px;
+}
+
+.cashcheckout-wrapper * {
+    font-family: MontSerrat,sans-serif;
+}
+
+.cashcheckout-header {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.cashcheckout-header h1 {
+    margin: 0;
+    font-size: 18px;
+    color: var(--contrast);
+    font-weight: bold;
+}
+
+.cashcheckout-header svg {
+    width: 44px;
+    margin: 12px 0 18px 0px;
+    fill: var(--contrast);
+}
+
+.cashcheckout-header label {
+    margin-bottom: 12px;
+    color: var(--neutral2);
+}
+
+.cashcheckout-header label span {
+    color: var(--color1);
+}
+
+.cashcheckout-account-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-top: 14px;
+}
+
+.cashcheckout-account-header {
+    min-height: 54px;
+    background: #F3F3F3;
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    border-radius: 5px;
+    transition: all 350ms ease;
+    will-change: transform, box-shadow;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.cashcheckout-account-header:focus, 
+.cashcheckout-account-header:hover,
+.cashcheckout-account-header:active,
+.cashcheckout-account-header.active {
+    transform: scale(1.002);
+    border: 1px solid #e8e8e8;
+}
+
+.cashcheckout-account-header svg.toogle-details {
+    width: 24px;
+    position: absolute;
+    height: 24px;
+    right: 24px;
+    transition: all 350ms ease;
+    transform: rotate(90deg);
+    will-change: transform;
+    fill: var(--neutral2);
+}
+
+.cashcheckout-account-header.active svg.toogle-details {
+    transform: rotate(270deg);
+}
+
+.cashcheckout-account-header label {
+    color: var(--color1);
+}
+
+.cashcheckout-account-header .difference {
+    color: var(--color1);
+    margin-left: 20px;
+}
+
+.cashcheckout-account-header .difference span {
+    color: var(--contrast);
+}
+
+.cashcheckout-account-header input {
+    margin-left: 24px;
+    margin-right: 14px;
+    border: none;
+    background: #FFF;
+    height: 34px;
+    border-radius: 5px;
+    padding-left: 24px;
+    padding-right: 24px;
+    outline: none;
+    text-align: right;
+}
+
+.cashcheckout-account-metadata {
+    display: flex;
+    flex-direction: column;
+    margin-right: 24px;
+}
+
+.cashcheckout-account-metadata label span {
+    color: var(--contrast);
+}
+
+.cashcheckout-account-metadata p {
+    font-size: 12px;
+    color: var(--neutral2);
+    margin: 0;
+}
+
+.cashcheckout-account-metadata p span {
+    font-weight: bold;
+    color: var(--contrast);
+}
+
+.cashcheckout-account-body {
+    transition: all 1s ease;
+    transform-origin: top;
+    height: 0;
+    opacity: 0;
+    justify-content: center;
+    padding: 0 18px;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+    display: flex;
+    align-items: flex-start;
+    overflow: hidden;
+    background: #f5f5f5;
+}
+
+.cashcheckout-account-body.open {
+    opacity: 1;
+    pointer-events: all;
+    margin-bottom: 5px;
+}
+
+.cashcheckout-account-body table {
+    width: 100%;
+}
+
+.cashcheckout-account-body table tr {
+    height: 44px;
+}
+
+.cashcheckout-account-body table tr th {
+    color: var(--color1);
+}
+
+.cashcheckout-footer {
+    height: 164px;
+    display: flex;
+    align-items: center;
+    padding: 0 0;
+}
+
+
+.cashcheckout-footer-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.cashcheckout-leftchange {
+    display: flex;
+    flex-direction: column;
+}
+
+.cashcheckout-footer .cashcheckout-leftchange label {
+    font-size: 12px;
+    margin-top: 12px;
+    color: var(--neutral2);
+}
+
+.cashcheckout-leftchange input {
+    width: 234px;
+    background: #f3f3f3;
+    border-radius: 4px;
+    border: none;
+    padding: 10px 12px;
+    outline: none;
+    margin-top: 5px;
+}
+
+.cashcheckout-footer label {
+    font-size: 18px;
+    color: var(--contrast);
+}
+
+.cashcheckout-footer button {
+    width: 250px;
+    height: 48px;
+    border-radius: 50px;
+    background: var(--contrast);
+    border: none;
+    text-transform: uppercase;
+    color: #FFF;
+    font-weight: bold;
+}
+
+.cashcheckout-footer button[disabled="disabled"] {
+    opacity: .6;
+}
+
+.confirm-cashcheckout-wrapper {
+    width: 364px;
+    height: 274px;
+    position: relative;
+    overflow: hidden;
+}
+
+.ma-container .mbg-modal .mbg-body-modal .confirm-cashcheckout-wrapper p {
+    padding: 0;
+    font-size: 18px;
+    width: 100%;
+    max-width: 100%;
+    margin: 44px 0;
+    text-align: center;
+    color: var(--neutral2);
+    font-weight: bold;
+    line-height: 20px;
+}
+
+.ma-container .confirm-cashcheckout-wrapper input {
+    width: 80%;
+    border-radius: 4px;
+    padding: 12px 24px;
+    border: 1px solid #CCC;
+    margin-bottom: 32px;
+    outline: none;
+}
+
+.confirm-cashcheckout-wrapper button {
+    width: 80%;
+    border: none;
+    background: var(--contrast);
+    color: #FFF;
+    height: 48px;
+    border-radius: 34px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.confirm-cashcheckout-wrapper button.cancel {
+    width: 144px;
+    border-radius: 50px;
+    margin-top: 24px;
+    background: var(--neutral3);
+}
+
+.confirm-cashcheckout-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    transition-timing-function: linear;
+    position: absolute;
+    left: 0;
+    top: 0;
+    will-change: transform, transition;
+    transform: translateX(0%);
+    opacity: 0;
+}
+
+.confirm-cashcheckout-step.hidden-left {
+    transform: translateX(-100%);
+}
+
+.confirm-cashcheckout-step.hidden-right {
+    transform: translateX(100%);
+}
+
+.confirm-cashcheckout-wrapper.active .confirm-cashcheckout-step {
+    opacity: 1;
+    transition: all 350ms ease;
+}
+
+.table-column-148 {
+    width: 148px;
+}
+
+.table-column-68 {
+    width: 68px;
+}
+
+.cashcheckout-wrapper .check-icon {
+    width: 24px;
+    fill: #0fc34c;
+}
+
+.cashcheckout-wrapper .error-value-icon {
+    width: 24px;
+    fill: var(--error);
+}
+
+.cashcheckout-account-body input {
+    border: 1px solid rgb(204, 204, 204);
+    border-radius: 5px;
+    background: rgb(255, 255, 255);
+    min-height: 34px;
+    outline: none;
+    width: 124px;
+    text-align: right;
+    padding: 0 14px;
+}
+
+/* .cashcheckout-wrapper .check-wrapper {
+    margin-left: 24px;
+}
+
+.cashcheckout-wrapper .check-wrapper svg {
+    position: relative;
+    transform: none;
+    right: 0;
+    width: 38px;
+    height: auto;
+}
+
+.cashcheckout-wrapper .check-wrapper svg .st0 {
+    fill: none;
+    stroke: #000000;
+    stroke-width: 5;
+    stroke-miterlimit: 10;                          
+} */

@@ -3,7 +3,7 @@ let template = require('../views/form.html');
 module.exports = {
     templateUrl: template,
     controller: 'CashCheckinEmbeddedFormController',
-    bindings:{
+    bindings: {
         employee: '=',
         disableOpening: '=',
         onGoHome: '&'

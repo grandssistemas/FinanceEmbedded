@@ -1,82 +1,88 @@
 <form name="forms"
       novalidate>
-    <div class="ma-container">
-        <div class="ma-page">
-            <mobiage-title label="Abertura de caixa"></mobiage-title>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="panel gmd ma-panel">
-                        <div class="panel-body ma-pad-panel">
-                            <div class="row"
-                                 ng-show="disableOpening">
-                                <h5 class="text-danger">
-                                    Este usuário já possui um caixa aberto.
-                                    <a style="text-decoration: underline; color:blue"
-                                       ng-if="!isFinance()"
-                                       ui-sref="app.cashcheckout.checkout"> Clique aqui</a>
-                                    <a style="text-decoration: underline; color:blue"
-                                       ng-if="isFinance()"
-                                       ui-sref="app.cashcheckin.checkout"> Clique aqui</a> para fechar o caixa aberto.
-                                </h5>
-                            </div>
-                            <div ng-show="entity.employee != null">
-                                <div class="row m-t">
-                                    <div class="col-md-4">
-                                        <label gumga-translate-tag="cashcheckin.user">Operator</label>
-                                        <input type="text"
-                                               ng-model="entity.employee.name"
-                                               class="form-control"
-                                               disabled/>
-                                    </div>
-                                    <div class="col-md-8 m-t">
-                                        <label gumga-translate-tag="cashcheckin.date">Date/Hour</label>
-                                        <br/>
-                                        <span style="font-size: 15px">{{entity.date | date: 'dd/MM/yyyy HH:mm:ss'}}</span>&nbsp;
-                                    </div>
+    <div class="page-wrapper">
+        <div class="ma-container">
+            <div class="ma-page">
+                <div class="row row-flex">
+                    <div class="col-md-6">
+                        <cp-page-title title="'Abertura de Caixa'"></cp-page-title>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel gmd ma-panel">
+                            <div class="panel-body ma-pad-panel">
+                                <div class="row"
+                                     ng-show="disableOpening">
+                                    <h5 class="text-danger">
+                                        Este usuário já possui um caixa aberto.
+                                        <a style="text-decoration: underline; color:blue"
+                                           ng-if="!isFinance()"
+                                           ui-sref="app.cashcheckout.checkout"> Clique aqui</a>
+                                        <a style="text-decoration: underline; color:blue"
+                                           ng-if="isFinance()"
+                                           ui-sref="app.cashcheckin.checkout"> Clique aqui</a> para fechar o caixa aberto.
+                                    </h5>
                                 </div>
-                            </div>
-                            <div ng-hide="disableOpening">
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <label>
-                                            <span gumga-translate-tag="cashcheckin.cash">Cash</span>
-                                            <strong class="text-danger"> *</strong>
-                                        </label>
-                                        <div class="reset-height">
-                                            <gumga-many-to-one value="groupUnit"
-                                                               search-method="getGroups(param)"
-                                                               authorize-add="false"
-                                                               active-favorite="true"
-                                                               name="financeUnit"
-                                                               field="name"
-                                                               async="true"
-                                                               class="gmd"
-                                                               display-info="false"
-                                                               data-disabled="disableOpening"
-                                                               on-select="onSelectGroup(value)"
-                                                               on-deselect="onSelectGroup(value)">
-                                                <match>
-                                                    <div>{{match.model.name}}</div>
-                                                </match>
-                                            </gumga-many-to-one>
+                                <div ng-show="entity.employee != null">
+                                    <div class="row m-t">
+                                        <div class="col-md-4">
+                                            <label gumga-translate-tag="cashcheckin.user">Operator</label>
+                                            <input type="text"
+                                                   ng-model="entity.employee.name"
+                                                   class="form-control"
+                                                   disabled/>
+                                        </div>
+                                        <div class="col-md-8 m-t">
+                                            <label gumga-translate-tag="cashcheckin.date">Date/Hour</label>
+                                            <br/>
+                                            <span style="font-size: 15px">{{entity.date | date: 'dd/MM/yyyy HH:mm:ss'}}</span>&nbsp;
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <gmd-input>
-                                            <input type="text"
-                                                   id="changeId"
-                                                   class="gmd form-control"
-                                                   ui-money-mask
-                                                   ng-model="entity.change"
-                                                   ng-disabled="disableOpening">
-                                            <span class="bar"></span>
-                                            <label gumga-translate-tag="cashcheckin.changevalue">Change Value
-                                            </label>
-                                        </gmd-input>
-
-                                    </div>
                                 </div>
-                                <!-- <div ng-show="entity.change"
+                                <div ng-hide="disableOpening">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <label>
+                                                <span gumga-translate-tag="cashcheckin.cash">Cash</span>
+                                                <strong class="text-danger"> *</strong>
+                                            </label>
+                                            <div class="reset-height">
+                                                <gumga-many-to-one value="groupUnit"
+                                                                   search-method="getGroups(param)"
+                                                                   authorize-add="false"
+                                                                   active-favorite="true"
+                                                                   name="financeUnit"
+                                                                   field="name"
+                                                                   async="true"
+                                                                   class="gmd"
+                                                                   display-info="false"
+                                                                   data-disabled="disableOpening"
+                                                                   on-select="onSelectGroup(value)"
+                                                                   on-deselect="descSelectGroup()">
+                                                    <match>
+                                                        <div>{{match.model.name}}</div>
+                                                    </match>
+                                                </gumga-many-to-one>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <gmd-input>
+                                                <input type="text"
+                                                       id="changeId"
+                                                       style="text-align: right"
+                                                       class="gmd form-control"
+                                                       ui-money-mask
+                                                       ng-model="entity.change"
+                                                       ng-disabled="disableChange || !groupUnit">
+                                                <span class="bar"></span>
+                                                <label gumga-translate-tag="cashcheckin.changevalue">Change Value
+                                                </label>
+                                            </gmd-input>
+
+                                        </div>
+                                    </div>
+                                    <!-- <div ng-show="entity.change"
                                      class="row">
                                     <div class="col-md-6">
                                         <label gumga-translate-tag="cashcheckin.changeorigin">Change origin
@@ -122,6 +128,7 @@
                                     </div>
 
                                 </div> -->
+                                </div>
                             </div>
                         </div>
                     </div>

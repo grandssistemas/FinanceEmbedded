@@ -6,6 +6,7 @@ require('./cashcheckout/module');
 require('./financeTitle/module');
 require('./financeTitleParcelPay/module');
 require('./financeTitleParcelReceive/module');
+require('./reportTitleFilter/module');
 require('./services/module');
 require('./providers/module');
 
@@ -26,6 +27,7 @@ const finance = angular.module('finance.embedded', [
     'finance.stimulsoftembedded',
     'finance.cashcheckinembedded',
     'finance.cashcheckoutembedded',
+    'finance.reporttitlefilter',
     'gumga.date']);
 
 finance.directive('ngDynamicController', ngDynamicController);

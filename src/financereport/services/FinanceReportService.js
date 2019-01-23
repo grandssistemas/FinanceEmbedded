@@ -55,6 +55,7 @@ function FinanceReportService(GumgaRest, $uibModal, FinanceEmbeddedService) {
 				const modal = $uibModal.open({
 					templateUrl: modalTemplate,
 					controller: 'ViewerEmbeddedController',
+					windowClass: 'modal-print-flex',
 					backdrop: 'static',
 					size: 'lg',
 					resolve: {
