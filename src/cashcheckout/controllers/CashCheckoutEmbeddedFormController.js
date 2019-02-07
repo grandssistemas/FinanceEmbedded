@@ -31,8 +31,9 @@ function CashCheckoutEmbeddedFormController(
 ) {
 	$scope.$ctrl.$onInit = function () {
 		$scope.entity = angular.copy($scope.$ctrl.entity);
-		$scope.type = 'NORMAL';
-		// $scope.type = 'BLIND';
+
+		const pdv = JSON.parse(sessionStorage.getItem('pdv')).pdv
+		$scope.type = pdv.enableValue && pdv.enableValue.value ? 'NORMAL' : 'BLIND';
 
 		$scope.noCheckin = !$scope.entity;
 
@@ -63,7 +64,7 @@ function CashCheckoutEmbeddedFormController(
 
 		$scope.openModalConfirmClose = function (entity) {
 			$scope.change = $scope.getTotalRemaining();
-			$scope.defaultTransfer = entity.destinyChange.defaultTransfer;			
+			$scope.defaultTransfer = entity.destinyChange.defaultTransfer;
 			$scope.beforeCashCheckout(entity).then((response) => {
 				if (response && response.closeCashCheckout) {
 					$scope.change = response.change;
@@ -257,7 +258,7 @@ function CashCheckoutEmbeddedFormController(
 		};
 
 		$scope.getHoursIgnoreDate = (dateValue) => {
-			
+
 			const mommentInstance = moment(dateValue);
 			console.log(mommentInstance.hours() + ':' + mommentInstance.utc().minutes())
 			return mommentInstance.hours() + ':' + mommentInstance.utc().minutes();
