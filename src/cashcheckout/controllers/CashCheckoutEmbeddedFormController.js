@@ -162,7 +162,8 @@ function CashCheckoutEmbeddedFormController(
 					.then((data) => {
 						$scope.entity.values = $scope.entity.group.financeUnits.map((financeUnit) => {
 							const movementedValue = data.data.filter((entry) => financeUnit.id === entry.financeUnit.id).reduce((a, b) => MoneyUtilsService.sumMoney(a, b.value), 0);
-							return { financeUnit, movementedValue, informedValue: 0 };
+							const hasMovements = data.data.filter((entry) => financeUnit.id === entry.financeUnit.id).length > 0
+							return { financeUnit, movementedValue, informedValue: 0 , hasMovements };
 						});
 
 						$scope.entity.values.sort((a, b) => Math.abs(b.movementedValue) - Math.abs(a.movementedValue));
