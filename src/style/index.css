@@ -8,3 +8,27 @@
 .bg-white {
     background-color: #FFFFFF;
 }
+
+gumga-date.mbg > div {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    height: 44px;
+}
+
+gumga-date.mbg .gumga-date {
+    display: block;
+    width: 250px;
+}
+gumga-date.mbg input.form-control {
+        border: 1px solid #ddd;
+        background: #FFF;
+        border-radius: 5px;
+        padding: 8px 14px;
+        flex: 1;
+        outline: none;
+        height: 100%;
+        width: 100%;
+        max-width: 100%;
+    }

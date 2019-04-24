@@ -64,43 +64,19 @@ function TitleFilterController(
 		const filters = {
 			vars: []
 		};
-
-		if (!$scope.titleType || !$scope.variationType) {
-			return;
-		}
-		const beginDate = $scope.beginDate || new Date('2000-01-01 00:00:00');
+		const startDate = $scope.startDate || new Date('2000-01-01 00:00:00');
 		const endDate = $filter('date')($scope.endDate, 'yyyy-MM-dd HH:mm:ss') || $filter('date')(new Date(), 'yyyy-MM-dd HH:mm:ss');
 
-		filters.vars.push({ key: 'type', value: $scope.titleType.key });
-		filters.vars.push({ key: 'payReceive', value: $scope.variationType.key });
-
 		if ($scope.selecionados) {
-			filters.vars.push({ key: 'individuals', value: `obj.individual_id IN (${stringResult()})` });
+			filters.vars.push({ key: 'individuals', value: `obj.individual_id IN (${stringResult()}) AND` });
 		} else {
-			filters.vars.push({ key: 'individuals', value: `obj.individual_id != 0` });
+			filters.vars.push({ key: 'individuals', value: `obj.individual_id != 0 AND ` });
 		}
-		if (beginDate) {
-			filters.vars.push({ key: 'beginDate', value: $filter('date')(beginDate, 'yyyy-MM-dd HH:mm:ss') });
+		if (startDate) {
+			filters.vars.push({ key: 'startDate', value: $filter('date')(startDate, 'yyyy-MM-dd HH:mm:ss') });
 		}
 		if (endDate) {
 			filters.vars.push({ key: 'endDate', value: endDate.replace('00:00:00', '23:59:59') });
-		}
-		if (beginDate && endDate) {
-			if ($scope.variationType.key === 'true') {
-				filters.vars.push({ key: 'dateWhere', value: 'e.momment' });
-				if ($scope.titleType.key === 'PAY') {
-					filters.vars.push({ key: 'totalString', value: 'Total pago' });
-				} else {
-					filters.vars.push({ key: 'totalString', value: 'Total recebido' });
-				}
-			} else {
-				filters.vars.push({ key: 'dateWhere', value: 'obj.expiration' });
-				if ($scope.titleType.key === 'PAY') {
-					filters.vars.push({ key: 'totalString', value: 'Total a pagar' });
-				} else {
-					filters.vars.push({ key: 'totalString', value: 'Total a receber' });
-				}
-			}
 		}
 		return filters;
 	};
