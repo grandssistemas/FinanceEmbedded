@@ -28,10 +28,7 @@
                                     <div class="row m-t">
                                         <div class="col-md-4">
                                             <label gumga-translate-tag="cashcheckin.user">Operator</label>
-                                            <input type="text"
-                                                   ng-model="entity.employee.name"
-                                                   class="form-control"
-                                                   disabled/>
+                        					<mbg-input-text ng-model="entity.employee.name" ng-disabled="true"></mbg-input-text>
                                         </div>
                                         <div class="col-md-8 m-t">
                                             <label gumga-translate-tag="cashcheckin.date">Date/Hour</label>
@@ -48,39 +45,22 @@
                                                 <strong class="text-danger"> *</strong>
                                             </label>
                                             <div class="reset-height">
-                                                <gumga-many-to-one value="groupUnit"
-                                                                   search-method="getGroups(param)"
-                                                                   authorize-add="false"
-                                                                   active-favorite="true"
-                                                                   name="financeUnit"
-                                                                   field="name"
-                                                                   async="true"
-                                                                   class="gmd"
-                                                                   display-info="false"
-                                                                   data-disabled="disableOpening"
-                                                                   on-select="onSelectGroup(value)"
-                                                                   on-deselect="descSelectGroup()">
-                                                    <match>
-                                                        <div>{{match.model.name}}</div>
-                                                    </match>
-                                                </gumga-many-to-one>
+                                                <mbg-select ng-model="groupUnit"
+                                                            fetch="getGroups(param)"
+                                                            label="name"
+                                                            on-select="onSelectGroup(value)"
+                                                            on-deselect="descSelectGroup()">
+                                                </mbg-select>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
-                                            <gmd-input>
-                                                <input type="text"
-                                                       id="changeId"
-                                                       style="text-align: right"
-                                                       class="gmd form-control"
-                                                       ui-money-mask
-                                                       ng-model="entity.change"
-                                                       ng-disabled="disableChange || !groupUnit"
-                                                       max="999999">
-                                                <span class="bar"></span>
-                                                <label gumga-translate-tag="cashcheckin.changevalue">Change Value
-                                                </label>
-                                            </gmd-input>
-
+                                        <label gumga-translate-tag="cashcheckin.changevalue">Change Value</label>
+                                            <mbg-input-money ng-model="entity.change"
+                                                            id="changeId"
+                                                            ng-disabled="disableChange || !groupUnit"
+                                                            class="enable-enter"
+                                                            placeholder="R$ 0,00">
+                                            </mbg-input-money>
                                         </div>
                                     </div>
                                     <!-- <div ng-show="entity.change"
