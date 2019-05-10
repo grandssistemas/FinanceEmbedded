@@ -4,7 +4,8 @@ CashCheckinEmbeddedFormController.$inject = [
 	'FinanceUnitGroupService',
 	'FinanceUnitService',
 	'$filter',
-	'$timeout'];
+	'$timeout',
+	'SweetAlert'];
 
 function CashCheckinEmbeddedFormController(
 	$scope,
@@ -12,7 +13,8 @@ function CashCheckinEmbeddedFormController(
 	FinanceUnitGroupService,
 	FinanceUnitService,
 	$filter,
-	$timeout
+	$timeout,
+	SweetAlert
 ) {
 	this.$onInit = function () {
 		$scope.changeOriginTooltip = 'Informe a conta de onde o valor do troco será retirado.';
@@ -23,7 +25,7 @@ function CashCheckinEmbeddedFormController(
 		$timeout(() => {
 			if ($scope.groupUnit) {
 				$scope.entity.change = 0;
-				document.getElementById('changeId').focus();
+				angular.element('#changeId input').focus()
 			}
 		}, 100);
 
@@ -45,13 +47,23 @@ function CashCheckinEmbeddedFormController(
 			$scope.entity.group = data.data.group;
 		});
 
+		$scope.validChange = () => {
+			if($scope.entity.change > 999999)
+				return false
+			return true
+		}
 
 		$scope.open = function (entity) {
-			entity.status = 'NORMAL';
-			entity.group = $scope.groupUnit;
-			CashCheckinEmbeddedService.update(entity).then((data) => {				
-				$scope.$ctrl.onGoHome({ data });
-			});
+			if($scope.validChange()) {
+				entity.status = 'NORMAL';
+				entity.group = $scope.groupUnit;
+				CashCheckinEmbeddedService.update(entity).then((data) => {				
+					$scope.$ctrl.onGoHome({ data });
+				});
+			} else {
+				SweetAlert.swal("Erro", "Valor do troco acima do permitido.", "error");
+				angular.element('#changeId input').focus()
+			}
 		};
 
 		$scope.formatDate = function (date) {
@@ -72,19 +84,18 @@ function CashCheckinEmbeddedFormController(
 			$scope.entity.destinyChange = undefined;
 			$timeout(() => {
 				$scope.entity.change = 0;
-				document.getElementById('changeId').focus();
+				angular.element('#changeId input').focus()
 			}, 100);
 		};
 		
 		$scope.descSelectGroup = () => {
 			$timeout(() => {
-				console.log('passou');
 				$scope.entity.change = 0;
 				$scope.disableChange = true;
 				$scope.financeUnits = null;
 				$scope.entity.originChange = undefined;
 				$scope.entity.destinyChange = undefined;
-				document.getElementById('changeId').focus();
+				angular.element('#changeId input').focus()				
 			}, 100);
 
 		}
