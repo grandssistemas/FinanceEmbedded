@@ -57,7 +57,7 @@ function TitleFilterController(
 		.page()
 		.send()
 		.then((resp) => {
-			$scope.individualList = resp.data.values;
+			$scope.individualList = resp.data.values.filter((client) => client.name);
 		});
 
 	$scope.$parent.$parent.mountFilterMyAccounts = function () {

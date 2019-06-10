@@ -1,34 +1,38 @@
-<div class="row">
-    <div class="col-md-6">
-        <label class="mbg-label input-label">Data inicial</label>
-        <gumga-date class="mbg"
-                    ng-model="$parent.startDate"
-                    id="beginDate"></gumga-date>
+<form name="filterMyAccounts"
+      autocomplete="off">
+    <div class="row">
+        <div class="col-md-6">
+            <label class="mbg-label input-label">Data inicial</label>
+            <gumga-date class="mbg"
+                        ng-model="$parent.startDate"
+                        id="beginDate"></gumga-date>
+        </div>
+        <div class="col-md-6">
+            <label class="mbg-label input-label">Data final</label>
+            <gumga-date ng-model="$parent.endDate"
+                        class="mbg"
+                        id="endDate"></gumga-date>
+        </div>
     </div>
-    <div class="col-md-6">
-        <label class="mbg-label input-label">Data final</label>
-        <gumga-date ng-model="$parent.endDate"
-                    class="mbg"
-                    id="endDate"></gumga-date>
+    <div class="row">
+        <div class="col-md-12">
+            <label class="mbg-label input-label">Clientes</label>
+            <gumga-chips placeholder="Buscar Clientes"
+                         class="mbg-chips"
+                         search-field="name"
+                         filter-option-by="name"
+                         full-mode
+                         name="clients"
+                         ng-model="$parent.selecionados">
+                <gumga-chips-item ng-repeat="item in selecionados track by $index"
+                                  ng-value="item">
+                    {{item.name}}
+                </gumga-chips-item>
+                <gumga-chips-option ng-repeat="option in individualList"
+                                    ng-value="option">
+                    {{option.name}}
+                </gumga-chips-option>
+            </gumga-chips>
+        </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <label class="mbg-label input-label">Clientes</label>
-        <gumga-chips placeholder="Buscar Clientes"
-                     class="mbg-chips"
-                     search-field="name"
-                     filter-option-by="contains"
-                     full-mode
-                     ng-model="$parent.selecionados">
-            <gumga-chips-item ng-repeat="item in selecionados track by $index"
-                              ng-value="item">
-                {{item.name}}
-            </gumga-chips-item>
-            <gumga-chips-option ng-repeat="option in individualList"
-                                ng-value="option">
-                {{option.name}}
-            </gumga-chips-option>
-        </gumga-chips>
-    </div>
-</div>
+</form>
