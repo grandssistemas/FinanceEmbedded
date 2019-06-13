@@ -7,6 +7,10 @@ function CashCheckinEmbeddedService(GumgaRest, FinanceEmbeddedService, $http){
         return service.extend('get', '/opencheckin');
     };
 
+    service.getLastCheckout = function (groupIntegrationId) {
+        return service.extend('get', '/getchangelastcheckout?idPdv='+groupIntegrationId);
+    };
+
     service.getByCurrentCashCheckin = function (date) {
         return service.extend('get', '/getbycurrentcashcheckin?date='+date);
     };
