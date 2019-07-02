@@ -130,61 +130,69 @@ function TitleParcelPayListEmbeddedController(
 			.join(new window.Join('obj.parcelPayments as pp', JoinType.INNER))
 			.join(new window.Join('pp.payment as pay', JoinType.INNER))
 			.and(new Criteria('obj.title.titleType', ComparisonOperator.EQUAL, titleCategory))
+
+		let beginDate;
+		let endDate;
+
+		switch (whichFilter) {
+			case 'thisWeek': {
+				beginDate = moment().startOf('isoWeek').subtract(1, 'days').format('YYYY-MM-DD');
+				endDate = moment().endOf('isoWeek').subtract(1, 'days').format('YYYY-MM-DD');
+				break;
+			}
+			case 'thisMonth': {
+				beginDate = moment().startOf('month').format('YYYY-MM-DD');
+				endDate = moment().endOf('month').format('YYYY-MM-DD');
+				break;
+			}
+			case 'lastMonth': {
+				beginDate = moment().startOf('month').subtract(31, 'days').format('YYYY-MM-DD');
+				endDate = moment().endOf('month').subtract(31, 'days').format('YYYY-MM-DD');
+				break;
+			}
+			case 'thisYear': {
+				beginDate = moment().startOf('year').format('YYYY-MM-DD');
+				endDate = moment().endOf('year').format('YYYY-MM-DD');
+				break;
+			}
+			case 'today': {
+				beginDate = `${moment().format('YYYY-MM-DD')} 00:00:00`;
+				endDate = `${moment().format('YYYY-MM-DD')} 23:59:59`;
+				break;
+			}
+			case 'custom': {
+				beginDate = `${moment($scope.gQueryFilterscope.beginDate).format('YYYY-MM-DD')} 00:00:00`;
+				endDate = `${moment($scope.endDate).format('YYYY-MM-DD')} 23:59:59`;
+				break;
+			}
+			default:
+				break;
+		}
 		
-				let beginDate;
-				let endDate;
-		
-				switch (whichFilter) {
-					case 'thisWeek': {
-						beginDate = moment().startOf('isoWeek').subtract(1, 'days').format('YYYY-MM-DD');
-						endDate = moment().endOf('isoWeek').subtract(1, 'days').format('YYYY-MM-DD');
-						break;
-					}
-					case 'thisMonth': {
-						beginDate = moment().startOf('month').format('YYYY-MM-DD');
-						endDate = moment().endOf('month').format('YYYY-MM-DD');
-						break;
-					}
-					case 'lastMonth': {
-						beginDate = moment().startOf('month').subtract(31, 'days').format('YYYY-MM-DD');
-						endDate = moment().endOf('month').subtract(31, 'days').format('YYYY-MM-DD');
-						break;
-					}
-					case 'thisYear': {
-						beginDate = moment().startOf('year').format('YYYY-MM-DD');
-						endDate = moment().endOf('year').format('YYYY-MM-DD');
-						break;
-					}
-					case 'today': {
-						beginDate = `${moment().format('YYYY-MM-DD')} 00:00:00`;
-						endDate = `${moment().format('YYYY-MM-DD')} 23:59:59`;
-						break;
-					}
-					case 'custom': {
-						beginDate = `${moment($scope.gQueryFilterscope.beginDate).format('YYYY-MM-DD')} 00:00:00`;
-						endDate = `${moment($scope.endDate).format('YYYY-MM-DD')} 23:59:59`;
-						break;
-					}
-					default:
-						break;
-				}
-		
-				if (beginDate && endDate) {
-					if (!$scope.paidOutFilter.key) {
-						gQuery = gQuery.and(new Criteria('obj.expiration', ComparisonOperator.BETWEEN, [beginDate, endDate]))
-					} else {
-						gQuery = gQuery.and(new Criteria('pay.momment', ComparisonOperator.BETWEEN, [beginDate, endDate]))
-					}
-				}
-		
-				if ($scope.individualSearch && $scope.individualSearch.id) {
-					gQuery = gQuery.and(new Criteria('obj.individual.name', ComparisonOperator.EQUAL, $scope.individualSearch.name));
-				}
-		
-				if ($scope.paidOut !== null) {
-					gQuery = gQuery.and(new Criteria('obj.fullPaid', ComparisonOperator.EQUAL, $scope.paidOut));
-				}
-		
+		if ($scope.paidOutFilter && $scope.paidOutFilter.key) {
+			$scope.sortField = 'pay.momment'
+			$scope.sortDir = 'DESC'
+		} else {
+			$scope.sortField = 'obj.expiration'
+			$scope.sortDir = 'DESC'
+		}
+
+		if (beginDate && endDate) {
+			if ($scope.paidOutFilter && $scope.paidOutFilter.key) {
+				gQuery = gQuery.and(new Criteria('pay.momment', ComparisonOperator.BETWEEN, [beginDate, endDate]))
+			} else {
+				gQuery = gQuery.and(new Criteria('obj.expiration', ComparisonOperator.BETWEEN, [beginDate, endDate]))
+			}
+		}
+
+		if ($scope.individualSearch && $scope.individualSearch.id) {
+			gQuery = gQuery.and(new Criteria('obj.individual.name', ComparisonOperator.EQUAL, $scope.individualSearch.name));
+		}
+
+		if ($scope.paidOut !== null) {
+			gQuery = gQuery.and(new Criteria('obj.fullPaid', ComparisonOperator.EQUAL, $scope.paidOut));
+		}
+
 		if (titleCategory === 'RECEIVE') {
 			$scope.gQueryFiltersReceive = gQuery;
 		} else {
