@@ -126,9 +126,9 @@ function TitleParcelPayListEmbeddedController(
 		$scope.paidOut = fullpaid;
 		$scope.lastClicked = whichFilter;
 		let gQuery = new GQuery()
-			.join(new window.Join('obj.title as title', JoinType.INNER))
-			.join(new window.Join('obj.parcelPayments as pp', JoinType.INNER))
-			.join(new window.Join('pp.payment as pay', JoinType.INNER))
+			.join(new window.Join('obj.title as title', JoinType.LEFT))
+			.join(new window.Join('obj.parcelPayments as pp', JoinType.LEFT))
+			.join(new window.Join('pp.payment as pay', JoinType.LEFT))
 			.and(new Criteria('obj.title.titleType', ComparisonOperator.EQUAL, titleCategory))
 
 		let beginDate;
