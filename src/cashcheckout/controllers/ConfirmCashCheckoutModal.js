@@ -18,7 +18,12 @@ function ConfirmCashCheckoutModal($scope,
         $scope.change = change;
     }
 
-    $timeout(() => $scope.step = 1, 350);
+    $timeout(() => {
+        $scope.step = 1
+    }, 350)
+    $timeout(() => {
+        document.getElementById('change-money').select()
+    }, 500)
     
     $scope.previousStep = () => {
         $scope.step--;

@@ -158,6 +158,10 @@
 
 gumga-many-to-one[name="documentType"] input{
     text-transform: capitalize;
+}
+
+.change-money {
+    text-align: right;
 }/*
 Stimulsoft.Reports.JS
 Version: 2017.1.4
