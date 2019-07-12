@@ -24,13 +24,14 @@ function CashCheckinEmbeddedFormController(
 		$timeout(() => {
 			if ($scope.groupUnit) {
 				$scope.entity.change = 0;
-				document.getElementById('changeId').focus();
+				angular.element('#changeId input')[0].focus();
 			}
 		}, 100);
 
 
 		$scope.entity.employee = angular.copy($scope.$ctrl.employee);
 		$scope.entity.date = new Date();
+		$scope.entity.dateFormatted = moment(new Date()).format('DD/MM/YYYY HH:mm:ss')
 		$scope.disableOpening = $scope.$ctrl.disableOpening;
 		$scope.disableChange = true;
 		$scope.getGroups = function (param) {
@@ -82,7 +83,8 @@ function CashCheckinEmbeddedFormController(
 				} else {
 					$scope.entity.change = 0;
 					$scope.disableChange = false;
-					document.getElementById('changeId').focus();
+					
+					angular.element('#changeId input')[0].focus()
 				}
 			});
 		};
@@ -94,7 +96,7 @@ function CashCheckinEmbeddedFormController(
 				$scope.financeUnits = null;
 				$scope.entity.originChange = undefined;
 				$scope.entity.destinyChange = undefined;
-				document.getElementById('changeId').focus();
+				angular.element('#changeId input')[0].focus();
 			}, 100);
 
 		}
