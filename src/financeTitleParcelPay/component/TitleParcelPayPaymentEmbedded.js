@@ -4,6 +4,7 @@ module.exports = {
     templateUrl: template,
     controller: 'PayEmbeddedController',
     bindings:{
-        onBackClick: '&'
+        onBackClick: '&',
+        reverseTitle: '&?'
     }
 };

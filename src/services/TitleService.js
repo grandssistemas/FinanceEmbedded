@@ -90,6 +90,10 @@ function TitleEmbeddedService(
 		return $http.get(`${FinanceEmbeddedService.getDefaultConfiguration().api}/title/findbylabel/${label}/${typeTitle}`);
 	};
 
+	service.reverseTitle = function () {
+		return $http.get(`${FinanceEmbeddedService.getDefaultConfiguration().api}/http://localhost:8765/mobiage-api/api/financeintegration/title/reverse/9204`)
+	}
+
 	return service;
 }
 

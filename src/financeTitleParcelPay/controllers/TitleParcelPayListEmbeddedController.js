@@ -168,7 +168,7 @@ function TitleParcelPayListEmbeddedController(
 			default:
 				break;
 		}
-		
+
 		if ($scope.paidOutFilter && $scope.paidOutFilter.key) {
 			$scope.sortField = 'pay.momment'
 			$scope.sortDir = 'DESC'
@@ -281,9 +281,9 @@ function TitleParcelPayListEmbeddedController(
 			if (sameIndividual && !hasReversed) {
 				TitleParcelPayService.setInstallmentsPayable(parcels);
 				if (parcels[0].type === 'PAY') {
-					$scope.$ctrl.onSameIndividual({parcels});
+					$scope.$ctrl.onSameIndividual({ parcels });
 				} else {
-					$scope.$ctrl.onSameIndividualReceive({parcels});
+					$scope.$ctrl.onSameIndividualReceive({ parcels });
 				}
 			} else {
 				$scope.errorMessage = hasReversed ? 'Foram selecionados títulos já estornados. Não é possível fazer a movimentação desses títulos.' : 'Foram selecionadas parcelas de fornecedores diferentes, altere sua seleção.';
@@ -296,7 +296,7 @@ function TitleParcelPayListEmbeddedController(
 	};
 
 	$scope.tableConfig = {
-		columns: 'documentNumber, parcel, individual, expiration, status, amount, receipt, balance, edit, print',
+		columns: 'documentNumber, parcel, individual, expiration, status, amount, receipt, balance, edit, actions',
 		materialTheme: true,
 		itemsPerPage: [5, 10, 25, 50, 100],
 		selection: 'multi',
@@ -368,16 +368,22 @@ function TitleParcelPayListEmbeddedController(
 				`
 			},
 			{
-				name: 'print',
-				title: `Recibo`,
+				name: 'actions',
+				title: `Ações`,
 				alignColumn: 'center',
 				alignRows: 'center',
 				content: `
 					<cp-print-icon ng-if="$value.totalpayed > 0 && $value.type !== 'PAY'" ng-click="$parent.$parent.$parent.printReceipt($value)"></cp-print-icon>
-				`
-			}
+					<cp-reverse-icon ng-if="$value.totalpayed == 0" ng-click="$parent.$parent.$parent.reverseParcel($value)"></cp-reverse-icon>
+					`
+			},
 		]
 	};
+
+	$scope.reverseParcel = (parcel) => {
+		console.log(parcel)
+		$scope.$ctrl.reverseTitle({id: parcel.titleData.idTitle})
+	}
 
 	const getPayments = (parcels) => {
 		const arr = [];

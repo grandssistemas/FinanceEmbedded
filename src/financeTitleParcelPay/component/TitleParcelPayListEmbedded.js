@@ -5,6 +5,7 @@ module.exports = {
     controller: 'TitleParcelPayListEmbeddedController',
     bindings:{
         onSameIndividual: '&',
-        onSameIndividualReceive: '&'
+        onSameIndividualReceive: '&',
+        reverseTitle: '&?'
     }
 };
