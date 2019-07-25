@@ -128,7 +128,7 @@ function FinanceReportListEmbeddedController(
 
 	$scope.copyReport = function (entity) {
 		const newEntity = angular.copy(entity);
-		const oi = { value: JSON.parse(window.sessionStorage.getItem('user')).organizationHierarchyCode };
+		const oi = { value: JSON.parse(window.localStorage.getItem('user')).organizationHierarchyCode };
 		delete newEntity.id;
 		delete newEntity.report.id;
 		newEntity.oi = oi;

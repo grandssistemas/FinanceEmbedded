@@ -89,7 +89,7 @@ function TitleParcelReceiveListEmbeddedController(
 		const variables = [];
 		const sql = ' in ('.concat(items.parcels.reduce((final, current) => `${final},${current.id}`, '')).concat(')').replace('\(\,', '\(');
 		variables.push(FinanceReportService.mountVariable('', 'parcelIds', sql));
-		variables.push(FinanceReportService.mountVariable('', 'orgName', JSON.parse(window.sessionStorage.getItem('user')).organization));
+		variables.push(FinanceReportService.mountVariable('', 'orgName', JSON.parse(window.localStorage.getItem('user')).organization));
 		FinanceReportService.openModalViewer('RECEIPT', '', variables, () => {
 			SweetAlert.swal('Falta de Recibos', 'Você esta sem o recibo configurado contate o suporte.', 'warning');
 		});

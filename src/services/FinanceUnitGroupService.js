@@ -6,7 +6,7 @@ function FinanceUnitGroupService(GumgaRest, FinanceEmbeddedService){
 
     service.getOpen = () => {
         if (!group) {
-            let cash = sessionStorage.getItem('groupOpen');
+            let cash = localStorage.getItem('groupOpen');
             if (cash !== 'undefined') {
                 return group = JSON.parse(cash);
             }
@@ -17,7 +17,7 @@ function FinanceUnitGroupService(GumgaRest, FinanceEmbeddedService){
 
     service.getUpdateGroup = function () {
         if (!group) {
-            let cash = sessionStorage.getItem('groupOpen');
+            let cash = localStorage.getItem('groupOpen');
             if (cash === 'undefined' || cash === 'null') {
                 return service.getDefaultGroup().then(function (data) {
                     service.setGroup(data.data);
@@ -34,13 +34,13 @@ function FinanceUnitGroupService(GumgaRest, FinanceEmbeddedService){
 
     service.setGroup = function (value) {
         if (value) {
-            sessionStorage.setItem('groupOpen', JSON.stringify(value));
+            localStorage.setItem('groupOpen', JSON.stringify(value));
             group = value;   
         }
     };
 
     service.removeSessionGroup = function () {
-        sessionStorage.removeItem('groupOpen');
+        localStorage.removeItem('groupOpen');
         group = null;
     };
 

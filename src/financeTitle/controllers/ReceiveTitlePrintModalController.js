@@ -25,7 +25,7 @@ function ReceiveTitlePrintModalController($scope,
 
 		switch (type) {
 			case 'DUPLICATE':
-				let user = JSON.parse(sessionStorage.getItem('user'));
+				let user = JSON.parse(localStorage.getItem('user'));
 				variables.add(FinanceReportService.mountVariable('Empresa', 'nameEmployee', user.name));
 				title = "Falta de Relatorio de Duplicatas";
 				message = "Você esta sem o relátorio de duplicatas contate o suporte.";

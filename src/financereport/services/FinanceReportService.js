@@ -10,7 +10,7 @@ function FinanceReportService(GumgaRest, $uibModal, FinanceEmbeddedService) {
 	};
 
 	service.setConnectionLocal = function () {
-		service.connectionLocal = FinanceEmbeddedService.getDefaultConfiguration().api + '/financereportconnect?gumgaToken=' + window.sessionStorage['token'];
+		service.connectionLocal = FinanceEmbeddedService.getDefaultConfiguration().api + '/financereportconnect?gumgaToken=' + window.localStorage['token'];
 	};
 
 	service.setConnectionLocal();

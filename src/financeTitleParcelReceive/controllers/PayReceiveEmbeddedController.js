@@ -461,7 +461,7 @@ function PayReceiveEmbeddedController(
 	$scope.printPaid = function (items) {
 		const variables = [];
 		variables.push('', 'parcelIds', items.map((item) => item.id));
-		variables.push('', 'orgName', JSON.parse(window.sessionStorage.getItem('user')).organization);
+		variables.push('', 'orgName', JSON.parse(window.localStorage.getItem('user')).organization);
 		FinanceReportService.openModalViewer('RECEIPT', '', variables, () => {
 			SweetAlert.swal('Falta de Recibos', 'Você esta sem o recibo configurado contate o suporte.', 'warning');
 		});

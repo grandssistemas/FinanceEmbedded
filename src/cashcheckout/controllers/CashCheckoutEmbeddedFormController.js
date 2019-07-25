@@ -32,7 +32,7 @@ function CashCheckoutEmbeddedFormController(
 	$scope.$ctrl.$onInit = function () {
 		$scope.entity = angular.copy($scope.$ctrl.entity);
 
-		const pdv = JSON.parse(sessionStorage.getItem('pdv')).pdv
+		const pdv = JSON.parse(localStorage.getItem('pdv')).pdv
 		$scope.type = pdv.enableValue && pdv.enableValue.value ? 'NORMAL' : 'BLIND';
 
 		$scope.noCheckin = !$scope.entity;
