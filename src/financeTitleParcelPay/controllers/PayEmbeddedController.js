@@ -564,7 +564,6 @@ function PayEmbeddedController(
 		const days = getExpiredDays($value.expiration);
 		if (days && $value.interest && $value.interest.value) {
 			const total = MoneyUtilsService.divideMoney(MoneyUtilsService.multiplyMoney(MoneyUtilsService.multiplyMoney($value.interest.value, $value.value), days), 30);
-			console.log('calcInterestValue', $value.interest.value, $value.value, days, '=', total);
 			return total;
 		}
 		return 0;
@@ -575,7 +574,6 @@ function PayEmbeddedController(
 	};
 
 	$scope.updateTotal = (value, interrest, penalty, discount) => {
-		console.log('updateTotal', value, interrest, penalty, discount)
 		const expiredDays = getExpiredDays(value.expiration);
 		value.interest.value = getInterestPerc(value, interrest, expiredDays);
 		value.penalty.value = getPenaltyPerc(value, penalty, expiredDays);
@@ -596,7 +594,6 @@ function PayEmbeddedController(
 	function getInterestPerc(value, interrest, expiredDays) {
 		if (expiredDays) {
 			const total = PercentageFinanceUtilsService.multiply6(30, PercentageFinanceUtilsService.divide6(PercentageFinanceUtilsService.divide6(interrest, expiredDays), value.value));
-			console.log('getInterestPerc', value, interrest, expiredDays, '=', total)
 			return total;
 		}
 		return 0;

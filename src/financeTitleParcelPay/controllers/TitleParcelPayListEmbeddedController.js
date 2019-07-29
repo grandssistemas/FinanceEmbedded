@@ -168,14 +168,17 @@ function TitleParcelPayListEmbeddedController(
 			default:
 				break;
 		}
-		
-		if ($scope.paidOutFilter && $scope.paidOutFilter.key) {
-			$scope.sortField = 'pay.momment'
-			$scope.sortDir = 'DESC'
-		} else {
-			$scope.sortField = 'obj.expiration'
-			$scope.sortDir = 'DESC'
-		}
+
+		// if ($scope.paidOutFilter && $scope.paidOutFilter.key) {
+		// 	$scope.sortField = 'pay.momment'
+		// 	$scope.sortDir = 'DESC'
+		// } else {
+		// 	$scope.sortField = 'obj.expiration'
+		// 	$scope.sortDir = 'DESC'
+		// }
+
+		$scope.sortField = 'obj.expiration'
+		$scope.sortDir = 'DESC'
 
 		if (beginDate && endDate) {
 			if ($scope.paidOutFilter && $scope.paidOutFilter.key) {
@@ -281,9 +284,9 @@ function TitleParcelPayListEmbeddedController(
 			if (sameIndividual && !hasReversed) {
 				TitleParcelPayService.setInstallmentsPayable(parcels);
 				if (parcels[0].type === 'PAY') {
-					$scope.$ctrl.onSameIndividual({parcels});
+					$scope.$ctrl.onSameIndividual({ parcels });
 				} else {
-					$scope.$ctrl.onSameIndividualReceive({parcels});
+					$scope.$ctrl.onSameIndividualReceive({ parcels });
 				}
 			} else {
 				$scope.errorMessage = hasReversed ? 'Foram selecionados títulos já estornados. Não é possível fazer a movimentação desses títulos.' : 'Foram selecionadas parcelas de fornecedores diferentes, altere sua seleção.';

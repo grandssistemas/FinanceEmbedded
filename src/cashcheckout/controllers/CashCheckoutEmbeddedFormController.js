@@ -261,7 +261,6 @@ function CashCheckoutEmbeddedFormController(
 		$scope.getHoursIgnoreDate = (dateValue) => {
 
 			const mommentInstance = moment(dateValue);
-			console.log(mommentInstance.hours() + ':' + mommentInstance.utc().minutes())
 			return mommentInstance.hours() + ':' + mommentInstance.utc().minutes();
 		}
 
