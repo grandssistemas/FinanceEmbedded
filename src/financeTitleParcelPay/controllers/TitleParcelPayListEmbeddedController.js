@@ -359,7 +359,7 @@ function TitleParcelPayListEmbeddedController(
 				alignRows: 'right',
 				alignColumn: 'right',
 				title: '<span>Saldo</span>',
-				content: '<div>{{$value.value - $value.totalpayed | currency: "R$"}}</div>'
+				content: '<div>{{($value.value - ($value.discount.value || 0)) - $value.totalpayed | currency: "R$"}}</div>'
 			},
 			{
 				name: 'edit',
