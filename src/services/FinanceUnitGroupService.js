@@ -49,11 +49,15 @@ function FinanceUnitGroupService(GumgaRest, FinanceEmbeddedService){
     };
 
     service.getGQueryV2 = function(param) {
-        return service.searchWithGQuery(new GQuery(new Criteria('obj.name', ComparisonOperator.CONTAINS, param).addIgnoreCase().addTranslate())
+        let GQueryBase = new GQuery()
         .select("exists(select cc.id from CashCheckin cc join cc.group as g where g.id = obj.id and cc.status = 'ABERTO') as caixaAberto")
         .select("obj.id as id")
         .select("obj.name as name")
-        .select("obj.integrationValue as integrationValue"))
+        .select("obj.integrationValue as integrationValue")
+
+        return service.searchWithGQuery(GQueryBase
+            .and(new Criteria('obj.name', ComparisonOperator.CONTAINS, param).addIgnoreCase().addTranslate())
+            .and(new Criteria('obj.pdvintegration', ComparisonOperator.IS, new CriteriaField('null'))))
     }
 
 
