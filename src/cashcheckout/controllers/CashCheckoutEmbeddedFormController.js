@@ -31,8 +31,9 @@ function CashCheckoutEmbeddedFormController(
 ) {
 	$scope.$ctrl.$onInit = function () {
 		$scope.entity = angular.copy($scope.$ctrl.entity);
-		$scope.type = 'NORMAL';
-		// $scope.type = 'BLIND';
+
+		const pdv = JSON.parse(localStorage.getItem('pdv')).pdv
+		$scope.type = pdv.enableValue && pdv.enableValue.value ? 'NORMAL' : 'BLIND';
 
 		$scope.noCheckin = !$scope.entity;
 
@@ -63,7 +64,7 @@ function CashCheckoutEmbeddedFormController(
 
 		$scope.openModalConfirmClose = function (entity) {
 			$scope.change = $scope.getTotalRemaining();
-			$scope.defaultTransfer = entity.destinyChange.defaultTransfer;			
+			$scope.defaultTransfer = entity.destinyChange.defaultTransfer;
 			$scope.beforeCashCheckout(entity).then((response) => {
 				if (response && response.closeCashCheckout) {
 					$scope.change = response.change;
@@ -161,7 +162,8 @@ function CashCheckoutEmbeddedFormController(
 					.then((data) => {
 						$scope.entity.values = $scope.entity.group.financeUnits.map((financeUnit) => {
 							const movementedValue = data.data.filter((entry) => financeUnit.id === entry.financeUnit.id).reduce((a, b) => MoneyUtilsService.sumMoney(a, b.value), 0);
-							return { financeUnit, movementedValue, informedValue: 0 };
+							const hasMovements = data.data.filter((entry) => financeUnit.id === entry.financeUnit.id).length > 0
+							return { financeUnit, movementedValue, informedValue: 0 , hasMovements };
 						});
 
 						$scope.entity.values.sort((a, b) => Math.abs(b.movementedValue) - Math.abs(a.movementedValue));
@@ -257,9 +259,7 @@ function CashCheckoutEmbeddedFormController(
 		};
 
 		$scope.getHoursIgnoreDate = (dateValue) => {
-			
 			const mommentInstance = moment(dateValue);
-			console.log(mommentInstance.hours() + ':' + mommentInstance.utc().minutes())
 			return mommentInstance.hours() + ':' + mommentInstance.utc().minutes();
 		}
 

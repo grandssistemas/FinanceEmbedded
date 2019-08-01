@@ -1,6 +1,10 @@
 {
   "name": "@mobiage/finance-embedded",
+<<<<<<< HEAD
   "version": "2.9.3",
+=======
+  "version": "2.9.23",
+>>>>>>> develop
   "description": "Financeiro embutido",
   "main": "src/index.js",
   "author": "Augusto Cesar",
@@ -38,6 +42,7 @@
     "webpack-stream": "^3.2.0"
   },
   "dependencies": {
+    "@mobiage/components": "^1.94.3",
     "angular-input-masks": "^2.6.0",
     "autoprefixer": "^7.2.5",
     "jquery": "^3.2.1"

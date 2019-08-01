@@ -125,7 +125,11 @@ function TitleParcelPayListEmbeddedController(
 	$scope.filter = function (whichFilter, fullpaid, titleCategory, page, pageSize) {
 		$scope.paidOut = fullpaid;
 		$scope.lastClicked = whichFilter;
-		let gQuery = new GQuery(new Criteria('obj.title.titleType', ComparisonOperator.EQUAL, titleCategory));
+		let gQuery = new GQuery()
+			.join(new window.Join('obj.title as title', JoinType.LEFT))
+			.join(new window.Join('obj.parcelPayments as pp', JoinType.LEFT))
+			.join(new window.Join('pp.payment as pay', JoinType.LEFT))
+			.and(new Criteria('obj.title.titleType', ComparisonOperator.EQUAL, titleCategory))
 
 		let beginDate;
 		let endDate;
@@ -157,7 +161,7 @@ function TitleParcelPayListEmbeddedController(
 				break;
 			}
 			case 'custom': {
-				beginDate = `${moment($s$scope.gQueryFilterscope.beginDate).format('YYYY-MM-DD')} 00:00:00`;
+				beginDate = `${moment($scope.gQueryFilterscope.beginDate).format('YYYY-MM-DD')} 00:00:00`;
 				endDate = `${moment($scope.endDate).format('YYYY-MM-DD')} 23:59:59`;
 				break;
 			}
@@ -165,8 +169,23 @@ function TitleParcelPayListEmbeddedController(
 				break;
 		}
 
+		// if ($scope.paidOutFilter && $scope.paidOutFilter.key) {
+		// 	$scope.sortField = 'pay.momment'
+		// 	$scope.sortDir = 'DESC'
+		// } else {
+		// 	$scope.sortField = 'obj.expiration'
+		// 	$scope.sortDir = 'DESC'
+		// }
+
+		$scope.sortField = 'obj.expiration'
+		$scope.sortDir = 'DESC'
+
 		if (beginDate && endDate) {
-			gQuery = gQuery.and(new Criteria('obj.expiration', ComparisonOperator.BETWEEN, [beginDate, endDate]));
+			if ($scope.paidOutFilter && $scope.paidOutFilter.key) {
+				gQuery = gQuery.and(new Criteria('pay.momment', ComparisonOperator.BETWEEN, [beginDate, endDate]))
+			} else {
+				gQuery = gQuery.and(new Criteria('obj.expiration', ComparisonOperator.BETWEEN, [beginDate, endDate]))
+			}
 		}
 
 		if ($scope.individualSearch && $scope.individualSearch.id) {
@@ -265,9 +284,9 @@ function TitleParcelPayListEmbeddedController(
 			if (sameIndividual && !hasReversed) {
 				TitleParcelPayService.setInstallmentsPayable(parcels);
 				if (parcels[0].type === 'PAY') {
-					$scope.$ctrl.onSameIndividual();
+					$scope.$ctrl.onSameIndividual({ parcels });
 				} else {
-					$scope.$ctrl.onSameIndividualReceive();
+					$scope.$ctrl.onSameIndividualReceive({ parcels });
 				}
 			} else {
 				$scope.errorMessage = hasReversed ? 'Foram selecionados títulos já estornados. Não é possível fazer a movimentação desses títulos.' : 'Foram selecionadas parcelas de fornecedores diferentes, altere sua seleção.';
@@ -340,7 +359,7 @@ function TitleParcelPayListEmbeddedController(
 				alignRows: 'right',
 				alignColumn: 'right',
 				title: '<span>Saldo</span>',
-				content: '<div>{{$value.value - $value.totalpayed | currency: "R$"}}</div>'
+				content: '<div>{{($value.value - ($value.discount.value || 0)) - $value.totalpayed | currency: "R$"}}</div>'
 			},
 			{
 				name: 'edit',
@@ -483,6 +502,7 @@ function TitleParcelPayListEmbeddedController(
 					{ name: 'Recebidos', key: true },
 					{ name: 'A Receber', key: false }
 				];
+				$scope.selectedValuesPay = []
 				$scope.individualSearch = $scope.lastIndividualReceive;
 				$scope.filterMto = $scope.lastfilterMtoReceive || $scope.filters[0];
 				$scope.paidOutFilter = $scope.lastfilterPaidOutFilter || $scope.paidOutFilters[2];
@@ -492,10 +512,14 @@ function TitleParcelPayListEmbeddedController(
 					{ name: 'Pagos', key: true },
 					{ name: 'A Pagar', key: false }
 				];
+				$scope.selectedValuesReceive = []
 				$scope.individualSearch = $scope.lastIndividualPay;
 				$scope.filterMto = $scope.lastfilterMtoPay || $scope.filters[0];
 				$scope.paidOutFilter = $scope.lastfilterPaidOutFilter || $scope.paidOutFilters[2];
 			}
+
+			$scope.total = 0
+			$scope.increase = 0
 		});
 	};
 

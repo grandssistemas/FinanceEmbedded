@@ -33,8 +33,6 @@ function ViewerEmbeddedController($scope,
         IndividualEmbeddedService.variablesReport().then(vars => {
             variableVar = variableVar.concat(vars);
 
-            console.log(variableVar);
-
             init();
         });
 

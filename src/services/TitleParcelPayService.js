@@ -86,6 +86,8 @@ function TitleParcelPayService(GumgaRest, $http, FinanceEmbeddedService) {
 			gQuery = gQuery.and(new Criteria('title.isReversed', ComparisonOperator.EQUAL, false));
 		}
 
+		gQuery.useDistinct = true
+
 		if (!page || page === 1) {
 			page = 0;
 		} else {

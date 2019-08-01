@@ -1,52 +1,16 @@
-<div class="mbg-style">
-    <div class="row">
-        <div class="col-md-4">
-            <label class="mbg-label input-label">Contas a</label>
-            <gumga-many-to-one value="$parent.titleType"
-                               list="$parent.titleTypes"
-                               class="gmd mbg-m-t-o"
-                               active-favorite="true"
-                               name="typeTitle"
-                               on-select="selectType(value)"
-                               on-deselect="clearVariationTypes()"
-                               search-method="getSearchTypes(param)"
-                               field="name"
-                               authorize-add="false"
-                               async="false"
-                               display-info="false">
-                <match>
-                    <div>{{match.model.name}}</div>
-                </match>
-            </gumga-many-to-one>
-        </div>
-        <div class="col-md-8"
-             ng-if="$parent.titleType">
-            <label class="mbg-label input-label">Status</label>
-            <gumga-many-to-one value="$parent.$parent.variationType"
-                               list="$parent.$parent.variationTypes"
-                               class="gmd mbg-m-t-o"
-                               name="variationType"
-                               search-method="getSearchVariationTypes(param)"
-                               field="name"
-                               authorize-add="false"
-                               async="false"
-                               display-info="false">
-                <match>
-                    <div>{{match.model.name}}</div>
-                </match>
-            </gumga-many-to-one>
-        </div>
-    </div>
+<form name="filterMyAccounts"
+      autocomplete="off">
     <div class="row">
         <div class="col-md-6">
             <label class="mbg-label input-label">Data inicial</label>
-            <gumga-date class="mbg-m-t-o"
-                        ng-model="$parent.beginDate"
+            <gumga-date class="mbg"
+                        ng-model="$parent.startDate"
                         id="beginDate"></gumga-date>
         </div>
         <div class="col-md-6">
             <label class="mbg-label input-label">Data final</label>
             <gumga-date ng-model="$parent.endDate"
+                        class="mbg"
                         id="endDate"></gumga-date>
         </div>
     </div>
@@ -54,9 +18,11 @@
         <div class="col-md-12">
             <label class="mbg-label input-label">Clientes</label>
             <gumga-chips placeholder="Buscar Clientes"
+                         class="mbg-chips"
                          search-field="name"
-                         filter-option-by="contains"
+                         filter-option-by="name"
                          full-mode
+                         name="clients"
                          ng-model="$parent.selecionados">
                 <gumga-chips-item ng-repeat="item in selecionados track by $index"
                                   ng-value="item">
@@ -69,4 +35,4 @@
             </gumga-chips>
         </div>
     </div>
-</div>
+</form>

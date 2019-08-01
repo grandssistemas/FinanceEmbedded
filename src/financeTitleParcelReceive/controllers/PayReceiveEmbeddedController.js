@@ -229,7 +229,7 @@ function PayReceiveEmbeddedController(
 			content: '{{$value.value | currency: "R$"}}'
 		}, {
 			name: 'interest',
-			editable: true,
+			editable: false,
 			title: '<span>Juros</span>',
 			content: '<input type="text" ui-money-mask ' +
 				'class="input-in-list" ' +
@@ -239,7 +239,7 @@ function PayReceiveEmbeddedController(
 				'ng-model="interestValue">'
 		}, {
 			name: 'penalty',
-			editable: true,
+			editable: false,
 			title: '<span>Multa</span>',
 			content: '<input type="text" ui-money-mask ' +
 				'class="input-in-list" ' +
@@ -249,7 +249,7 @@ function PayReceiveEmbeddedController(
 				'ng-model="penaltyValue">'
 		}, {
 			name: 'discount',
-			editable: true,
+			editable: false,
 			title: '<span>Desconto</span>',
 			content: '<input type="text" ui-money-mask ' +
 				'class="input-in-list" ' +
@@ -282,7 +282,9 @@ function PayReceiveEmbeddedController(
 	$scope.calcInterestValue = ($value) => {
 		const days = getExpiredDays($value.expiration);
 		if (days && $value.interest && $value.interest.value) {
-			return MoneyUtilsService.divideMoney(MoneyUtilsService.multiplyMoney(MoneyUtilsService.multiplyMoney($value.interest.value, $value.value), days), 30);
+			const total = MoneyUtilsService.divideMoney(MoneyUtilsService.multiplyMoney(MoneyUtilsService.multiplyMoney($value.interest.value, $value.value), days), 30);
+			// console.log('calcInterestValue', $value.interest.value, $value.value, days, '=', total);
+			return total;
 		}
 		return 0;
 	};
@@ -291,6 +293,7 @@ function PayReceiveEmbeddedController(
 	$scope.isExpired = getExpiredDays;
 
 	$scope.updateTotal = (value, interrest, penalty, discount) => {
+		// console.log('updateTotal', value, interrest, penalty)
 		const expiredDays = getExpiredDays(value.expiration);
 		value.interest.value = getInterestPerc(value, interrest, expiredDays);
 		value.penalty.value = getPenaltyPerc(value, penalty, expiredDays);
@@ -298,6 +301,7 @@ function PayReceiveEmbeddedController(
 
 		$scope.total = $scope.totalizeRemaining();
 		$scope.lastReceive = ($scope.totalizeRemaining() - $scope.totalReceive());
+		// console.log('updateTotal - END ', $scope.total, $scope.lastReceive)
 		// $scope.totalize();
 	};
 
@@ -308,7 +312,9 @@ function PayReceiveEmbeddedController(
 
 	function getInterestPerc(value, interrest, expiredDays) {
 		if (expiredDays) {
-			return PercentageFinanceUtilsService.multiply6(30, PercentageFinanceUtilsService.divide6(PercentageFinanceUtilsService.divide6(interrest, expiredDays), value.value));
+			const total = PercentageFinanceUtilsService.multiply6(30, PercentageFinanceUtilsService.divide6(PercentageFinanceUtilsService.divide6(interrest, expiredDays), value.value));
+			// console.log('getInterestPerc', value.value, interrest, expiredDays, '=', total);
+			return total;
 		}
 		return 0;
 	}
@@ -455,7 +461,7 @@ function PayReceiveEmbeddedController(
 	$scope.printPaid = function (items) {
 		const variables = [];
 		variables.push('', 'parcelIds', items.map((item) => item.id));
-		variables.push('', 'orgName', JSON.parse(window.sessionStorage.getItem('user')).organization);
+		variables.push('', 'orgName', JSON.parse(window.localStorage.getItem('user')).organization);
 		FinanceReportService.openModalViewer('RECEIPT', '', variables, () => {
 			SweetAlert.swal('Falta de Recibos', 'Você esta sem o recibo configurado contate o suporte.', 'warning');
 		});
@@ -466,11 +472,13 @@ function PayReceiveEmbeddedController(
 		const paymentDTO = angular.copy(payment);
 		paymentDTO.momment = new Date();
 		paymentDTO.parcels.forEach((parcel, index) => {
+			// console.log('makePayment', paymentDTO.parcels[index].discount.value, paymentDTO.parcels[index].discount.value * 100)
 			paymentDTO.parcels[index].discount.value = paymentDTO.parcels[index].discount.value * 100;
 			paymentDTO.parcels[index].interest.value = paymentDTO.parcels[index].interest.value * 100;
 			paymentDTO.parcels[index].penalty.value = paymentDTO.parcels[index].penalty.value * 100;
 		});
-
+		// console.log('makePayment - save ', paymentDTO)
+		
 		PaymentService.receive(paymentDTO)
 			.then((resp) => {
 				const baseState = 'titleparcelreceive.list';
@@ -497,6 +505,7 @@ function PayReceiveEmbeddedController(
 				);
 				$scope.$ctrl.onMakePayment();
 			});
+			
 	};
 
 	function emptyCheck() {

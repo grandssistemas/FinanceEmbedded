@@ -159,3 +159,15 @@
 gumga-many-to-one[name="documentType"] input{
     text-transform: capitalize;
 }
+
+.change-money {
+    text-align: right;
+}
+
+.mbg-label {
+    font-size: 14px;
+    color: var(--neutral1);
+    margin-top: 15px;
+    font-weight: 400;
+    margin-bottom: 12px;
+}

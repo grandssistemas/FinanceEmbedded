@@ -388,7 +388,7 @@ function PayEmbeddedController(
 			content: '{{$value.value | currency: "R$"}}'
 		}, {
 			name: 'interest',
-			editable: true,
+			editable: false,
 			title: '<span>Juros</span>',
 			content: '<input type="text" ui-money-mask ' +
 				'class="input-in-list" ' +
@@ -398,7 +398,7 @@ function PayEmbeddedController(
 				'ng-model="interestValue">'
 		}, {
 			name: 'penalty',
-			editable: true,
+			editable: false,
 			title: '<span>Multa</span>',
 			content: '<input type="text" ui-money-mask ' +
 				'class="input-in-list" ' +
@@ -408,7 +408,7 @@ function PayEmbeddedController(
 				'ng-model="penaltyValue">'
 		}, {
 			name: 'discount',
-			editable: true,
+			editable: false,
 			title: '<span>Desconto</span>',
 			content: '<input type="text" ui-money-mask ' +
 				'class="input-in-list" ' +
@@ -563,7 +563,8 @@ function PayEmbeddedController(
 	$scope.calcInterestValue = ($value) => {
 		const days = getExpiredDays($value.expiration);
 		if (days && $value.interest && $value.interest.value) {
-			return MoneyUtilsService.divideMoney(MoneyUtilsService.multiplyMoney(MoneyUtilsService.multiplyMoney($value.interest.value, $value.value), days), 30);
+			const total = MoneyUtilsService.divideMoney(MoneyUtilsService.multiplyMoney(MoneyUtilsService.multiplyMoney($value.interest.value, $value.value), days), 30);
+			return total;
 		}
 		return 0;
 	};
@@ -592,7 +593,8 @@ function PayEmbeddedController(
 
 	function getInterestPerc(value, interrest, expiredDays) {
 		if (expiredDays) {
-			return PercentageFinanceUtilsService.multiply6(30, PercentageFinanceUtilsService.divide6(PercentageFinanceUtilsService.divide6(interrest, expiredDays), value.value));
+			const total = PercentageFinanceUtilsService.multiply6(30, PercentageFinanceUtilsService.divide6(PercentageFinanceUtilsService.divide6(interrest, expiredDays), value.value));
+			return total;
 		}
 		return 0;
 	}

@@ -15,7 +15,6 @@ require('./Utils/GroupDependencies');
 // UTILS
 import ngDynamicController from './Utils/DynamicController'
 import bindHtmlCompile from './Utils/bindHtmlCompile'
-
 const finance = angular.module('finance.embedded', [
     'ui.bootstrap',
     'group.dependencies',
@@ -28,7 +27,8 @@ const finance = angular.module('finance.embedded', [
     'finance.cashcheckinembedded',
     'finance.cashcheckoutembedded',
     'finance.reporttitlefilter',
-    'gumga.date']);
+    'gumga.date'
+]);
 
 finance.directive('ngDynamicController', ngDynamicController);
 finance.directive('bindHtmlCompile', bindHtmlCompile);

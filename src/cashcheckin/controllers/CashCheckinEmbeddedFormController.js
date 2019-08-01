@@ -4,7 +4,8 @@ CashCheckinEmbeddedFormController.$inject = [
 	'FinanceUnitGroupService',
 	'FinanceUnitService',
 	'$filter',
-	'$timeout'];
+	'$timeout'
+];
 
 function CashCheckinEmbeddedFormController(
 	$scope,
@@ -19,17 +20,18 @@ function CashCheckinEmbeddedFormController(
 		$scope.changeDestinyTooltip = 'Informe a conta onde o valor do troco será incluído.';
 		$scope.entity = {};
 		$scope.isFinance = () => window.APILocation.apiLocation.indexOf('finance-api') !== -1;
-		
+
 		$timeout(() => {
 			if ($scope.groupUnit) {
 				$scope.entity.change = 0;
-				document.getElementById('changeId').focus();
+				angular.element('#changeId input')[0].focus();
 			}
 		}, 100);
 
 
 		$scope.entity.employee = angular.copy($scope.$ctrl.employee);
 		$scope.entity.date = new Date();
+		$scope.entity.dateFormatted = moment(new Date()).format('DD/MM/YYYY HH:mm:ss')
 		$scope.disableOpening = $scope.$ctrl.disableOpening;
 		$scope.disableChange = true;
 		$scope.getGroups = function (param) {
@@ -49,8 +51,10 @@ function CashCheckinEmbeddedFormController(
 		$scope.open = function (entity) {
 			entity.status = 'NORMAL';
 			entity.group = $scope.groupUnit;
-			CashCheckinEmbeddedService.update(entity).then((data) => {				
-				$scope.$ctrl.onGoHome({ data });
+			CashCheckinEmbeddedService.update(entity).then((data) => {
+				$scope.$ctrl.onGoHome({
+					data
+				});
 			});
 		};
 
@@ -59,8 +63,9 @@ function CashCheckinEmbeddedFormController(
 		};
 
 		$scope.onSelectGroup = (value) => {
-			
+
 			$scope.disableChange = value.caixaAberto
+
 			FinanceUnitGroupService.getById(value.id).then((data) => {
 				$scope.financeUnits = data.data.financeUnits;
 			});
@@ -70,21 +75,28 @@ function CashCheckinEmbeddedFormController(
 			}
 			$scope.entity.originChange = undefined;
 			$scope.entity.destinyChange = undefined;
-			$timeout(() => {
-				$scope.entity.change = 0;
-				document.getElementById('changeId').focus();
-			}, 100);
+
+			CashCheckinEmbeddedService.getLastCheckout(value.integrationValue.integrationId).then((data) => {
+				if (data.data && data.data.change && data.data.change > 0) {
+					$scope.entity.change = data.data.change;
+					$scope.disableChange = true;
+				} else {
+					$scope.entity.change = 0;
+					$scope.disableChange = false;
+					
+					angular.element('#changeId input')[0].focus()
+				}
+			});
 		};
-		
+
 		$scope.descSelectGroup = () => {
 			$timeout(() => {
-				console.log('passou');
 				$scope.entity.change = 0;
 				$scope.disableChange = true;
 				$scope.financeUnits = null;
 				$scope.entity.originChange = undefined;
 				$scope.entity.destinyChange = undefined;
-				document.getElementById('changeId').focus();
+				angular.element('#changeId input')[0].focus();
 			}, 100);
 
 		}
