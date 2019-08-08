@@ -13,7 +13,8 @@ TitleParcelPayListEmbeddedController.$inject = [
 	'SweetAlert',
 	'TitleService',
 	'PaymentService',
-	'FinanceReportService'];
+	'FinanceReportService',
+	'genericReportV2Service'];
 
 function TitleParcelPayListEmbeddedController(
 	$uibModal,
@@ -28,7 +29,8 @@ function TitleParcelPayListEmbeddedController(
 	SweetAlert,
 	TitleService,
 	PaymentService,
-	FinanceReportService
+	FinanceReportService,
+	genericReportV2Service
 ) {
 	gumgaController.createRestMethods($scope, TitleParcelPayService, 'titleparcelPay');
 	gumgaController.createRestMethods($scope, IndividualEmbeddedService, 'individual');
@@ -372,15 +374,20 @@ function TitleParcelPayListEmbeddedController(
 			},
 			{
 				name: 'print',
-				title: `Recibo`,
+				title: `Ações`,
 				alignColumn: 'center',
 				alignRows: 'center',
 				content: `
 					<cp-print-icon ng-if="$value.totalpayed > 0 && $value.type !== 'PAY'" ng-click="$parent.$parent.$parent.printReceipt($value)"></cp-print-icon>
+					<cp-barcode-icon uib-tooltip="Imprimir Boleto" ng-if="$value.boletoURL" ng-click="$parent.$parent.$parent.printPdf($value)"></cp-barcode-icon>
 				`
 			}
 		]
 	};
+
+	$scope.printPdf = (titleParcel) => {
+		genericReportV2Service.printPdfReport('Impressão de boleto', titleParcel.boletoURL)
+	}
 
 	const getPayments = (parcels) => {
 		const arr = [];
