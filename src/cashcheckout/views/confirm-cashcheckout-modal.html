@@ -21,14 +21,16 @@
                            class="change-money"
                            id="change-money"
                            ng-model="change"
-                           placeholder="Se precisar, informe um troco"
+                           placeholder="Se quiser, informe um troco"
                            mobiage-money-mask
                            data-prefix="R$ "
                            data-decimal=","
                            data-allow-negative="true"
                            data-thousands="." />
+                    <label ng-style="{opacity: change > initialChange ? 1 : 0}">
+                        Você só pode deixar {{ initialChange | currency: 'R$ ' }} como troco.</label>
                     <button ng-click="nextStep()"
-                            ng-disabled="step != 1">Avançar</button>
+                            ng-disabled="step != 1 || (change > initialChange)">Avançar</button>
                 </div>
                 <div class="confirm-cashcheckout-step"
                      ng-show="step"

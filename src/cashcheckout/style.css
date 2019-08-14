@@ -241,8 +241,13 @@
     border-radius: 4px;
     padding: 12px 24px;
     border: 1px solid #CCC;
-    margin-bottom: 32px;
+    margin-bottom: 5px;
     outline: none;
+}
+
+.ma-container .confirm-cashcheckout-wrapper input ~ label {
+    margin: 10px 0;
+    color: var(--error);
 }
 
 .confirm-cashcheckout-wrapper button {

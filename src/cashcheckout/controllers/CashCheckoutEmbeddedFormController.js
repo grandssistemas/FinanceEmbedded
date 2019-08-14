@@ -62,8 +62,26 @@ function CashCheckoutEmbeddedFormController(
 			return remaining;
 		}
 
+		$scope.getTotalMoney = () => {
+			if (!$scope.entity || !$scope.entity.values) { return 0; }
+			return $scope.entity.values
+				.filter((account) => account.financeUnit.isRealMoneyAccount)
+				.reduce((v, account) => {
+					return v + account.movementedValue
+				}, 0)
+		}
+
 		$scope.openModalConfirmClose = function (entity) {
-			$scope.change = $scope.getTotalRemaining();
+			$scope.change = $scope.getTotalMoney();
+			if ($scope.change == 0) {
+				if (!$scope.noCheckin) {
+					(entity.values).forEach((value, i) => {
+						entity.values[i].informedValue = entity.values[i].movementedValue;
+					})
+					$scope.close(entity);
+				}
+				return
+			}
 			$scope.defaultTransfer = entity.destinyChange.defaultTransfer;
 			$scope.beforeCashCheckout(entity).then((response) => {
 				if (response && response.closeCashCheckout) {
@@ -163,7 +181,7 @@ function CashCheckoutEmbeddedFormController(
 						$scope.entity.values = $scope.entity.group.financeUnits.map((financeUnit) => {
 							const movementedValue = data.data.filter((entry) => financeUnit.id === entry.financeUnit.id).reduce((a, b) => MoneyUtilsService.sumMoney(a, b.value), 0);
 							const hasMovements = data.data.filter((entry) => financeUnit.id === entry.financeUnit.id).length > 0
-							return { financeUnit, movementedValue, informedValue: 0 , hasMovements };
+							return { financeUnit, movementedValue, informedValue: 0, hasMovements };
 						});
 
 						$scope.entity.values.sort((a, b) => Math.abs(b.movementedValue) - Math.abs(a.movementedValue));
