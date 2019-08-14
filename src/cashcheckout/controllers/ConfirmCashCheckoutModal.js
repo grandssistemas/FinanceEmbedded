@@ -15,6 +15,7 @@ function ConfirmCashCheckoutModal($scope,
     $scope.entity = entity;
 
     if (change) {
+        $scope.initialChange = change;
         $scope.change = change;
     }
 
