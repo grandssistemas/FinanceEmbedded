@@ -99,14 +99,13 @@ function CashCheckoutEmbeddedFormController(
 		};
 
 		$scope.close = (entity) => {
-			entity.cashCheckouts = entity.cashCheckouts || [];
-			entity.cashCheckouts.push({
-				date: new Date(),
-				status: 'NORMAL',
-				change: $scope.change,
-			});
-			CashCheckinEmbeddedService.update(entity).then((resp) => {
-
+			// entity.cashCheckouts = entity.cashCheckouts || [];
+			// entity.cashCheckouts.push({
+			// 	date: new Date(),
+			// 	status: 'NORMAL',
+			// 	change: $scope.change,
+			// });
+			CashCheckinEmbeddedService.close(entity.id).then((resp) => {
 				const cashier = resp.data.data;
 				SweetAlert.swal(
 					{
@@ -185,6 +184,7 @@ function CashCheckoutEmbeddedFormController(
 						});
 
 						$scope.entity.values.sort((a, b) => Math.abs(b.movementedValue) - Math.abs(a.movementedValue));
+						console.log($scope.entity)
 					});
 			}
 		}
