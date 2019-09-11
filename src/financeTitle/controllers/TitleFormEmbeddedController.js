@@ -110,7 +110,7 @@ function TitleFormEmbeddedController(
 			// } else {
 			// 	title = 'pay';
 			// }
-			$state.go(`app.titleparcel.list`);
+			$state.go(`app.finance.title-parcel-list`);
 		};
 
 		$scope.ratioPlanSearch = (param) => {
