@@ -176,7 +176,7 @@ function CashCheckoutEmbeddedFormController(
 
 		function calcMovement() {
 			if ($scope.entity && $scope.entity.date) {
-				CashCheckinEmbeddedService.getByCurrentCashCheckin($scope.entity.date)
+                CashCheckinEmbeddedService.getByCurrentCashCheckin($scope.entity.date, pdv.idFinanceUnitGroup)
 					.then((data) => {
 						$scope.entity.values = $scope.entity.group.financeUnits.map((financeUnit) => {
 							const movementedValue = data.data.filter((entry) => financeUnit.id === entry.financeUnit.id).reduce((a, b) => MoneyUtilsService.sumMoney(a, b.value), 0);
