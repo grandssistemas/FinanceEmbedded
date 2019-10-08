@@ -99,14 +99,13 @@ function CashCheckoutEmbeddedFormController(
 		};
 
 		$scope.close = (entity) => {
-			entity.cashCheckouts = entity.cashCheckouts || [];
-			entity.cashCheckouts.push({
-				date: new Date(),
-				status: 'NORMAL',
-				change: $scope.change,
-			});
-			CashCheckinEmbeddedService.update(entity).then((resp) => {
-
+			// entity.cashCheckouts = entity.cashCheckouts || [];
+			// entity.cashCheckouts.push({
+			// 	date: new Date(),
+			// 	status: 'NORMAL',
+			// 	change: $scope.change,
+			// });
+			CashCheckinEmbeddedService.close(entity.id).then((resp) => {
 				const cashier = resp.data.data;
 				SweetAlert.swal(
 					{
@@ -129,8 +128,8 @@ function CashCheckoutEmbeddedFormController(
 										CompanyService.variablesReport().then((vari) => {
 											const variables = vari;
 											const filters = '';
-											variables.push(FinanceReportService.mountVariable('', 'idpdv', cashier.group.id));
-											variables.push(FinanceReportService.mountVariable('', 'idcheckin', cashier.id));
+											variables.push(FinanceReportService.mountVariable('', 'idpdv', entity.group.id));
+											variables.push(FinanceReportService.mountVariable('', 'idcheckin', entity.id));
 											const modalInstance = $uibModal.open({
 												animation: $scope.animationsEnabled,
 												templateUrl: viewModal,
@@ -140,6 +139,7 @@ function CashCheckoutEmbeddedFormController(
 												backdrop: 'static',
 												size: 'lg',
 												resolve: {
+													type: () => `RELATORIOS`,
 													entity() {
 														return response.data;
 													},
@@ -180,7 +180,7 @@ function CashCheckoutEmbeddedFormController(
 
 		function calcMovement() {
 			if ($scope.entity && $scope.entity.date) {
-				CashCheckinEmbeddedService.getByCurrentCashCheckin($scope.entity.date)
+                CashCheckinEmbeddedService.getByCurrentCashCheckin($scope.entity.date, pdv.idFinanceUnitGroup)
 					.then((data) => {
 						$scope.entity.values = $scope.entity.group.financeUnits.map((financeUnit) => {
 							const movementedValue = data.data.filter((entry) => financeUnit.id === entry.financeUnit.id).reduce((a, b) => MoneyUtilsService.sumMoney(a, b.value), 0);
