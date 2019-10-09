@@ -28,5 +28,6 @@ module.exports = angular.module('finance.services', ['finance.providers'])
     .service('EmployeeService', require('./EmployeeService'))
     .service('FinanceUnitGroupService', require('./FinanceUnitGroupService'))
     .service('MoneyUtilsService', require('./MoneyUtilsService'))
-    .service('PercentageFinanceUtilsService', require('./PercentageFinanceUtilsService'));
+    .service('PercentageFinanceUtilsService', require('./PercentageFinanceUtilsService'))
+    .service('CheckingAccountIndividualService', require('./CheckingAccountIndividualService'))
 
