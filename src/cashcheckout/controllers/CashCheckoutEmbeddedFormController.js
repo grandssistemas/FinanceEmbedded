@@ -99,14 +99,13 @@ function CashCheckoutEmbeddedFormController(
 		};
 
 		$scope.close = (entity) => {
-			entity.cashCheckouts = entity.cashCheckouts || [];
-			entity.cashCheckouts.push({
-				date: new Date(),
-				status: 'NORMAL',
-				change: $scope.change,
-			});
-			CashCheckinEmbeddedService.update(entity).then((resp) => {
-
+			// entity.cashCheckouts = entity.cashCheckouts || [];
+			// entity.cashCheckouts.push({
+			// 	date: new Date(),
+			// 	status: 'NORMAL',
+			// 	change: $scope.change,
+			// });
+			CashCheckinEmbeddedService.close(entity.id).then((resp) => {
 				const cashier = resp.data.data;
 				SweetAlert.swal(
 					{
@@ -122,41 +121,46 @@ function CashCheckoutEmbeddedFormController(
 					},
 					(isConfirm) => {
 						if (isConfirm) {
-							const variables = [];
-							GenericReportService.getDefault('CASHCHECKOUT').then((response) => {
-								if (response.data) {
-									CompanyService.variablesReport().then((vari) => {
-										const variables = vari;
-										const filters = '';
-										variables.push(FinanceReportService.mountVariable('', 'idpdv', cashier.group.id));
-										variables.push(FinanceReportService.mountVariable('', 'idcheckin', cashier.id));
-										const modalInstance = $uibModal.open({
-											animation: $scope.animationsEnabled,
-											templateUrl: viewModal,
-											controller: 'ViewerController',
-											windowClass: 'full-modal',
-											backdrop: 'static',
-											size: 'lg',
-											resolve: {
-												entity() {
-													return response.data;
-												},
-												filters() {
-													return filters;
-												},
-												variable() {
-													return variables;
-												},
-												backState() {
-													return '';
+							$timeout(() => {
+								const variables = [];
+								GenericReportService.getDefault('CASHCHECKOUT').then((response) => {
+									if (response.data) {
+										CompanyService.variablesReport().then((vari) => {
+											const variables = vari;
+											const filters = '';
+											variables.push(FinanceReportService.mountVariable('', 'idpdv', entity.group.id));
+											variables.push(FinanceReportService.mountVariable('', 'idcheckin', entity.id));
+											const modalInstance = $uibModal.open({
+												animation: $scope.animationsEnabled,
+												templateUrl: viewModal,
+												controller: 'ViewerController',
+												type: 'RELATORIOS',
+												windowClass: 'full-modal',
+												backdrop: 'static',
+												size: 'lg',
+												resolve: {
+													type: () => `RELATORIOS`,
+													entity() {
+														return response.data;
+													},
+													filters() {
+														return filters;
+													},
+													variable() {
+														return variables;
+													},
+													backState() {
+														return '';
+													}
 												}
-											}
+											});
 										});
-									});
-								} else {
-									SweetAlert.swal('Falta de Relatório de Fechamento de Caixa', 'Você esta sem o relatório de fechamento de caixa, contate o suporte.', 'warning');
-								}
-							});
+									} else {
+										SweetAlert.swal('Falta de Relatório de Fechamento de Caixa', 'Você esta sem o relatório de fechamento de caixa, contate o suporte.', 'warning');
+									}
+								});
+							})
+
 						}
 					}
 				);

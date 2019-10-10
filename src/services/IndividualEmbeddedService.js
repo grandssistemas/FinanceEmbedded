@@ -3,6 +3,14 @@ IndividualEmbeddedService.$inject = ['GumgaRest', '$http', 'FinanceEmbeddedServi
 function IndividualEmbeddedService(GumgaRest, $http, FinanceEmbeddedService, FinanceReportService) {
 	let Service = new GumgaRest(`${FinanceEmbeddedService.getDefaultConfiguration().api}/individual`);
 
+	Service.getCompany = (login) => {
+		let gQuery = new GQuery();
+		if (param) {
+			gQuery = gQuery.and(new Criteria("obj.employeeValue.securityLogin", ComparisonOperator.EQUAL, login))
+		}
+		return Service.searchWithGQuery(gQuery);
+	}
+
 	Service.searchIndividual = (param) => {
 		let gQuery = new GQuery();
 		if (param) {
