@@ -35,8 +35,8 @@ function CashCheckinEmbeddedService(GumgaRest, FinanceEmbeddedService, $http) {
         return $http.post(FinanceEmbeddedService.getDefaultConfiguration().api + '/cashcheckin/do-cashcheckin', openCash);
     }
 
-    service.close = function (cashCheckinId) {
-        return $http.post(`${FinanceEmbeddedService.getDefaultConfiguration().api}/cashcheckin/close/${cashCheckinId}`);
+    service.close = function (cashCheckinId, change) {
+        return $http.post(`${FinanceEmbeddedService.getDefaultConfiguration().api}/cashcheckin/close/${cashCheckinId}?change=${change}`);
     }
 
     return service;

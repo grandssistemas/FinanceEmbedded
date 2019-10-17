@@ -105,7 +105,7 @@ function CashCheckoutEmbeddedFormController(
 			// 	status: 'NORMAL',
 			// 	change: $scope.change,
 			// });
-			CashCheckinEmbeddedService.close(entity.id).then((resp) => {
+			CashCheckinEmbeddedService.close(entity.id, $scope.change).then((resp) => {
 				const cashier = resp.data.data;
 				SweetAlert.swal(
 					{
