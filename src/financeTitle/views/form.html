@@ -67,7 +67,9 @@
         <div class="page-wrapper">
           <div class="row row-flex">
             <div class="col-md-6">
-              <cp-page-title title="'Títulos a {{titleType === 'pay' || titleType === 'editpay' ? 'PAGAR' : 'RECEBER'}}'"></cp-page-title>
+              <cp-page-title
+                             title="'Títulos a {{titleType === 'pay' || titleType === 'editpay' ? 'PAGAR' : 'RECEBER'}}'">
+              </cp-page-title>
             </div>
           </div>
           <div>
@@ -301,7 +303,7 @@
                                    tabindex="9" />
                             <span class="bar"></span>
                             <label>
-                              <span gumga-translate-tag="title.valueparcelReceive">valueparcel</span>
+                              <span>Valor total</span>
                               <strong class="text-danger"> *</strong>
                             </label>
 
@@ -322,7 +324,7 @@
                                    ng-model="title.data.numberParcel"
                                    tabindex="10"
                                    gumga-error
-                                   required/>
+                                   required />
                             <span class="bar"></span>
                             <label for="numberParcel">
                               <span gumga-translate-tag="title.numberParcels"> numberParcel</span>
@@ -516,7 +518,8 @@
                             <label ng-if="title.data.parcel.length > 0 && title.data.numberParcel"
                                    class="pull-right"
                                    style="margin-top: 1%;margin-right: 4%;">
-                              <span style="font-size: 20px">Total {{sumParcels(title.data.parcel) | currency: 'R$ '}}</span>
+                              <span style="font-size: 20px">Total
+                                {{sumParcels(title.data.parcel) | currency: 'R$ '}}</span>
                             </label>
                             <label ng-if="title.data.parcel.length > 0 && title.data.numberParcel && titleType == 'editpay' && paymentRest > 0"
                                    class="pull-right"
@@ -557,7 +560,8 @@
                                    class="pull-right"
                                    style="margin-top: 1%;margin-right: 4%;">
                               <span class=""
-                                    style="font-size: 20px">Total {{sumParcels(title.data.parcel) | currency: 'R$ '}}</span>
+                                    style="font-size: 20px">Total
+                                {{sumParcels(title.data.parcel) | currency: 'R$ '}}</span>
                             </label>
                           </div>
                         </div>
@@ -684,12 +688,13 @@
                                     </div>
                                   </li>
                                 </ul>
-                                <br/>
+                                <br />
                                 <p class="text-danger"
                                    ng-show="pL.value != subLeafs[$index] && plan.planChild.length>0">
                                   Valor dos rateios deve ser igual o valor da conta</p>
                                 <p class="text-danger"
-                                   ng-show="pL.sub.planLeaf.value > pL.value ">Valor do rateio filho deve ser menor que o valor do rateio pai</p>
+                                   ng-show="pL.sub.planLeaf.value > pL.value ">Valor do rateio filho deve ser menor que
+                                  o valor do rateio pai</p>
                               </li>
                             </ul>
                           </div>
