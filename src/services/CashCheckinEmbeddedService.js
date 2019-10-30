@@ -25,10 +25,10 @@ function CashCheckinEmbeddedService(GumgaRest, FinanceEmbeddedService, $http) {
                 "securityLogin": entity.employee.employeeValue.securityLogin
             },
             "cashRegister": {
-                "id": entity.group.id
+                "id": entity.group.idFinanceUnitGroup
             },
             "pointOfSale": {
-                "id": entity.group.integrationValue.integrationId,
+                "id": entity.group.id,
                 "change": entity.change
             }
         }
