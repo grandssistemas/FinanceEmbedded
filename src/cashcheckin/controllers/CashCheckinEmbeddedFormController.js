@@ -4,7 +4,8 @@ CashCheckinEmbeddedFormController.$inject = [
 	'FinanceUnitGroupService',
 	'FinanceUnitService',
 	'$filter',
-	'$timeout'
+	'$timeout',
+	'pdvV2Service'
 ];
 
 function CashCheckinEmbeddedFormController(
@@ -13,7 +14,8 @@ function CashCheckinEmbeddedFormController(
 	FinanceUnitGroupService,
 	FinanceUnitService,
 	$filter,
-	$timeout
+	$timeout,
+	pdvV2Service
 ) {
 	this.$onInit = function () {
 		$scope.changeOriginTooltip = 'Informe a conta de onde o valor do troco será retirado.';
@@ -34,9 +36,16 @@ function CashCheckinEmbeddedFormController(
 		$scope.entity.dateFormatted = moment(new Date()).format('DD/MM/YYYY HH:mm:ss')
 		$scope.disableOpening = $scope.$ctrl.disableOpening;
 		$scope.disableChange = true;
+		
 		$scope.getGroups = function (param) {
-			return FinanceUnitGroupService.getGQueryV2(param || '').then((data) => {
-				return $scope.groups = data.data.values;
+			const pagination = {
+				gQuery: new GQuery(),
+				page: 1,
+				pageSize: 999999,
+			}
+			pagination.gQuery = pagination.gQuery.and(new Criteria('obj.name', 'CONTAINS', param || ''))
+			return pdvV2Service.search(pagination).then((data) => {
+				return $scope.groups = data.data.values
 			});
 			// return FinanceUnitGroupService.getSearch('name', param || '').then((data) => {
 			// 	return $scope.groups = data.data.values;
@@ -63,10 +72,9 @@ function CashCheckinEmbeddedFormController(
 		};
 
 		$scope.onSelectGroup = (value) => {
-
 			$scope.disableChange = value.caixaAberto
 
-			FinanceUnitGroupService.getById(value.id).then((data) => {
+			FinanceUnitGroupService.getById(value.idFinanceUnitGroup).then((data) => {
 				$scope.financeUnits = data.data.financeUnits;
 			});
 
@@ -76,7 +84,7 @@ function CashCheckinEmbeddedFormController(
 			$scope.entity.originChange = undefined;
 			$scope.entity.destinyChange = undefined;
 
-			CashCheckinEmbeddedService.getLastCheckout(value.integrationValue.integrationId).then((data) => {
+			CashCheckinEmbeddedService.getLastCheckout(value.id).then((data) => {
 				if (data.data && data.data.change && data.data.change > 0) {
 					$scope.entity.change = data.data.change;
 					$scope.disableChange = true;

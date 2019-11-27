@@ -25,18 +25,18 @@ function CashCheckinEmbeddedService(GumgaRest, FinanceEmbeddedService, $http) {
                 "securityLogin": entity.employee.employeeValue.securityLogin
             },
             "cashRegister": {
-                "id": entity.group.id
+                "id": entity.group.idFinanceUnitGroup
             },
             "pointOfSale": {
-                "id": entity.group.integrationValue.integrationId,
+                "id": entity.group.id,
                 "change": entity.change
             }
         }
         return $http.post(FinanceEmbeddedService.getDefaultConfiguration().api + '/cashcheckin/do-cashcheckin', openCash);
     }
 
-    service.close = function (cashCheckinId) {
-        return $http.post(`${FinanceEmbeddedService.getDefaultConfiguration().api}/cashcheckin/close/${cashCheckinId}`);
+    service.close = function (cashCheckinId, change) {
+        return $http.post(`${FinanceEmbeddedService.getDefaultConfiguration().api}/cashcheckin/close/${cashCheckinId}?change=${change}`);
     }
 
     return service;
