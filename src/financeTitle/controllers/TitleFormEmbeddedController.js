@@ -47,6 +47,7 @@ function TitleFormEmbeddedController(
 ) {
 	const ctrl = this;
 	ctrl.$onInit = () => {
+		$scope.submitted = false
 		$scope.entity = angular.copy(ctrl.entity) || {
 			data: {
 				parcel: []
@@ -353,20 +354,27 @@ function TitleFormEmbeddedController(
 		}
 
 		$scope.save = function (entity) {
+			if ($scope.submitted) {
+				return
+			}
+			$scope.submitted = true
 			if ($scope.$ctrl.operation === 'REPLEACEMENT') {
 				$scope.replecement.replacedBy = entity;
 				TitleService.saveReplecement(entity)
 					.then(() => {
 						$scope.$ctrl.onSaveOperationReplecement();
+						$scope.submitted = false
 					});
 			} else if ($scope.$ctrl.operation === 'RENEGOTIATION') {
 				entity.parcelsToReplace = $scope.idParcels;
 				TitleService.saveRenegotiation(entity)
 					.then(() => {
 						$scope.$ctrl.onSaveOperationRenegotiation();
+						$scope.submitted = false
 					});
 			} else {
-				$scope.title.methods.put(entity);
+				$scope.title.methods.put(entity)
+				$scope.submitted = false
 			}
 		};
 

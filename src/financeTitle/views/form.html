@@ -749,7 +749,8 @@
             <button class="bg-accent gmd-ripple"
                     type="button"
                     gumga-button
-                    ng-class="{ 'gmd-disabled' : blockBtnSave(TitleForm.$invalid || dateNull)}"
+                    ng-disabled="submitted"
+                    ng-class="{ 'gmd-disabled' : blockBtnSave(TitleForm.$invalid || dateNull || submitted)}"
                     ng-click="update(blockBtnSave(TitleForm.$invalid || dateNull), title.data)">
               <span class="material-icons">check</span>
             </button>
