@@ -522,12 +522,12 @@
                                 {{sumParcels(title.data.parcel) | currency: 'R$ '}}</span>
                             </label>
                             <label ng-if="title.data.parcel.length > 0 && title.data.numberParcel && titleType == 'editpay' && paymentRest > 0"
-                                   class="pull-right"
+                                   class="pull-right info-title-edit"
                                    style="margin-right:4%">
                               <span>Restante a pagar {{paymentRest | currency: "R$"}}</span>
                             </label>
                             <label ng-if="title.data.parcel.length > 0 && title.data.numberParcel && titleType == 'editreceive' && paymentRest > 0"
-                                   class="pull-right"
+                                   class="pull-right info-title-edit"
                                    style="margin-right:4%">
                               <span>Restante a receber {{paymentRest | currency: "R$"}}</span>
                             </label>
