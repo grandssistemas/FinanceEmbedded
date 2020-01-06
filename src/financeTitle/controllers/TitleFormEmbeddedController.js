@@ -373,8 +373,10 @@ function TitleFormEmbeddedController(
 						$scope.submitted = false
 					});
 			} else {
-				$scope.title.methods.put(entity)
-				$scope.submitted = false
+				$timeout(() => {
+					$scope.title.methods.put(entity)
+					$scope.submitted = false
+				}, 200)
 			}
 		};
 
