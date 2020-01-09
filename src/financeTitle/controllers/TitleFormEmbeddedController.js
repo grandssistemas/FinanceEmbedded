@@ -21,7 +21,8 @@ TitleFormEmbeddedController.$inject = [
 	'PaymentService',
 	'CheckingAccountService',
 	'ThirdPartyChequeService',
-	'ChequePortfolioService'];
+	'ChequePortfolioService',
+	'titleV2Service'];
 
 function TitleFormEmbeddedController(
 	TitleService,
@@ -43,7 +44,8 @@ function TitleFormEmbeddedController(
 	PaymentService,
 	CheckingAccountService,
 	ThirdPartyChequeService,
-	ChequePortfolioService
+	ChequePortfolioService,
+	titleV2Service
 ) {
 	const ctrl = this;
 	ctrl.$onInit = () => {
@@ -353,7 +355,7 @@ function TitleFormEmbeddedController(
 			});
 		}
 
-		$scope.save = function (entity) {
+		$scope.save = (entity) => {
 			if ($scope.submitted) {
 				return
 			}
@@ -373,10 +375,11 @@ function TitleFormEmbeddedController(
 						$scope.submitted = false
 					});
 			} else {
-				$timeout(() => {
-					$scope.title.methods.put(entity)
+				titleV2Service.save(entity).then(() => {
+					history.back()
+				}).catch((e) => {
 					$scope.submitted = false
-				}, 200)
+				})
 			}
 		};
 
