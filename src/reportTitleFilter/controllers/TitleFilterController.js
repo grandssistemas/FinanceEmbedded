@@ -67,7 +67,7 @@ function TitleFilterController(
 		const startDate = $scope.startDate || new Date('2000-01-01 00:00:00');
 		const endDate = $filter('date')($scope.endDate, 'yyyy-MM-dd HH:mm:ss') || $filter('date')(new Date(), 'yyyy-MM-dd HH:mm:ss');
 
-		if ($scope.selecionados) {
+		if ($scope.selecionados && $scope.selecionados.length > 0) {
 			filters.vars.push({ key: 'individuals', value: `obj.individual_id IN (${stringResult()}) AND` });
 		} else {
 			filters.vars.push({ key: 'individuals', value: `obj.individual_id != 0 AND ` });
