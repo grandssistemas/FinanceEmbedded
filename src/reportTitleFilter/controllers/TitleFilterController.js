@@ -1,3 +1,4 @@
+import moment from 'moment'
 /**
  * Created by kolecha on 13/08/18.
  */
@@ -51,7 +52,12 @@ function TitleFilterController(
 			resolve(arr);
 		});
 	};
-
+	$timeout(() => {
+		$scope.dates = {
+			start: new Date(moment().startOf('month')),
+			end: new Date(moment().endOf('month'))
+		}
+	})
 	$scope.individual.methods.createQuery()
 		.pageSize(1000)
 		.page()
@@ -64,20 +70,20 @@ function TitleFilterController(
 		const filters = {
 			vars: []
 		};
-		const startDate = $scope.startDate || new Date('2000-01-01 00:00:00');
-		const endDate = $filter('date')($scope.endDate, 'yyyy-MM-dd HH:mm:ss') || $filter('date')(new Date(), 'yyyy-MM-dd HH:mm:ss');
 
-		if ($scope.selecionados) {
+		if ($scope.dates && $scope.dates.start && $scope.dates.end) {
+			filters.vars = [
+				{ key: 'startDate', value: moment($scope.dates.start || new Date('2000-01-01 00:00:00')).hours(0).minutes(0).seconds(0).format('YYYY-MM-DD HH:mm:ss') },
+				{ key: 'endDate', value: moment($scope.dates.end).hours(23).minutes(59).seconds(59).format('YYYY-MM-DD HH:mm:ss') }
+			]
+		}
+
+		if ($scope.selecionados && $scope.selecionados.length > 0) {
 			filters.vars.push({ key: 'individuals', value: `obj.individual_id IN (${stringResult()}) AND` });
 		} else {
 			filters.vars.push({ key: 'individuals', value: `obj.individual_id != 0 AND ` });
 		}
-		if (startDate) {
-			filters.vars.push({ key: 'startDate', value: $filter('date')(startDate, 'yyyy-MM-dd HH:mm:ss') });
-		}
-		if (endDate) {
-			filters.vars.push({ key: 'endDate', value: endDate.replace('00:00:00', '23:59:59') });
-		}
+
 		return filters;
 	};
 

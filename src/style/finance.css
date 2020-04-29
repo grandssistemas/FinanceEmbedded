@@ -171,3 +171,7 @@ gumga-many-to-one[name="documentType"] input{
     font-weight: 400;
     margin-bottom: 12px;
 }
+
+.info-title-edit {
+    text-align: right;
+}

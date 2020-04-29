@@ -1,17 +1,14 @@
 <form name="filterMyAccounts"
       autocomplete="off">
     <div class="row">
-        <div class="col-md-6">
-            <label class="mbg-label input-label">Data inicial</label>
-            <gumga-date class="mbg"
-                        ng-model="$parent.startDate"
-                        id="beginDate"></gumga-date>
-        </div>
-        <div class="col-md-6">
-            <label class="mbg-label input-label">Data final</label>
-            <gumga-date ng-model="$parent.endDate"
-                        class="mbg"
-                        id="endDate"></gumga-date>
+        <div class="col-md-12 report-dates">
+            <label class="mbg-label input-label">Pesquise entre as datas</label>
+            <mbg-input-date ng-model="$parent.dates"
+                            placeholder-start="Inicial"
+                            placeholder-end="Final"
+                            between="true"
+                            between-text="até"
+                            calendar="true"></mbg-input-date>
         </div>
     </div>
     <div class="row">

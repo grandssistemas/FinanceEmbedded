@@ -21,7 +21,8 @@ TitleFormEmbeddedController.$inject = [
 	'PaymentService',
 	'CheckingAccountService',
 	'ThirdPartyChequeService',
-	'ChequePortfolioService'];
+	'ChequePortfolioService',
+	'titleV2Service'];
 
 function TitleFormEmbeddedController(
 	TitleService,
@@ -43,10 +44,12 @@ function TitleFormEmbeddedController(
 	PaymentService,
 	CheckingAccountService,
 	ThirdPartyChequeService,
-	ChequePortfolioService
+	ChequePortfolioService,
+	titleV2Service
 ) {
 	const ctrl = this;
 	ctrl.$onInit = () => {
+		$scope.submitted = false
 		$scope.entity = angular.copy(ctrl.entity) || {
 			data: {
 				parcel: []
@@ -352,21 +355,31 @@ function TitleFormEmbeddedController(
 			});
 		}
 
-		$scope.save = function (entity) {
+		$scope.save = (entity) => {
+			if ($scope.submitted) {
+				return
+			}
+			$scope.submitted = true
 			if ($scope.$ctrl.operation === 'REPLEACEMENT') {
 				$scope.replecement.replacedBy = entity;
 				TitleService.saveReplecement(entity)
 					.then(() => {
 						$scope.$ctrl.onSaveOperationReplecement();
+						$scope.submitted = false
 					});
 			} else if ($scope.$ctrl.operation === 'RENEGOTIATION') {
 				entity.parcelsToReplace = $scope.idParcels;
 				TitleService.saveRenegotiation(entity)
 					.then(() => {
 						$scope.$ctrl.onSaveOperationRenegotiation();
+						$scope.submitted = false
 					});
 			} else {
-				$scope.title.methods.put(entity);
+				titleV2Service.save(entity).then(() => {
+					history.back()
+				}).catch((e) => {
+					$scope.submitted = false
+				})
 			}
 		};
 

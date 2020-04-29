@@ -170,6 +170,10 @@ gumga-many-to-one[name="documentType"] input{
     margin-top: 15px;
     font-weight: 400;
     margin-bottom: 12px;
+}
+
+.info-title-edit {
+    text-align: right;
 }/*
 Stimulsoft.Reports.JS
 Version: 2017.1.4
